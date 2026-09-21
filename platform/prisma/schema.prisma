@@ -1,0 +1,645 @@
+// =============================================================================
+//  Northpath Cloud — data model
+//
+//  Designed around Canadian obligations, not retrofitted to them:
+//   • PIPEDA      — consent is a first-class record, not a boolean flag; every
+//                   collection has a stated purpose; subject access and
+//                   deletion requests are tracked as entities.
+//   • CASL        — consent to receive commercial electronic messages is stored
+//                   separately from consent to be contacted about an enquiry,
+//                   with proof of when and how it was obtained (s.13 places the
+//                   burden of proving consent on the sender).
+//   • Retention   — every record carries a purgeAfter date so retention is
+//                   enforceable rather than aspirational.
+//
+//  Local dev uses SQLite. For production change `provider` to "postgresql"
+//  and point DATABASE_URL at your Postgres instance — no model changes needed.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+//  CUSTOMERS
+// -----------------------------------------------------------------------------
+
+model Lead {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Identity
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  jobTitle  String?
+  website   String?
+
+  // Qualification
+  source        String   @default("website")   // website | chat | linkedin | referral
+  serviceIds    String   @default("")          // comma-separated ids from the catalogue
+  budgetBand    String?                        // under-25k | 25-75k | 75-150k | 150k-plus | unsure
+  timeline      String?                        // immediate | 1-3-months | 3-6-months | exploring
+  message       String?
+
+  // Pipeline
+  stage         LeadStage @default(NEW)
+  score         Int       @default(0)          // 0-100, set by the qualification agent
+  estimateLow   Int?                           // CAD cents
+  estimateHigh  Int?
+  ownerEmail    String?                        // human owner once assigned
+  lostReason    String?
+
+  // Consent — kept granular because CASL and PIPEDA ask different questions
+  consentContact     Boolean   @default(false) // may we reply to this enquiry
+  consentMarketing   Boolean   @default(false) // may we send commercial messages (CASL express consent)
+  consentAt          DateTime?
+  consentSourceUrl   String?
+  consentIpHash      String?                   // hashed, never the raw address
+  unsubscribedAt     DateTime?
+  unsubscribeToken   String    @unique @default(cuid())
+
+  // Retention (PIPEDA Principle 5 — limiting use, disclosure and retention)
+  purgeAfter DateTime?
+
+  conversations Conversation[]
+  emails        EmailMessage[]
+  documents     Document[]
+  agentRuns     AgentRun[]
+  approvals     Approval[]
+  tasks         FollowUpTask[]
+  bookings      Booking[]
+  inboundMail   InboundMail[]
+  workItems     WorkItem[]
+  events        AuditEvent[]
+
+  @@index([email])
+  @@index([stage])
+  @@index([createdAt])
+}
+
+enum LeadStage {
+  NEW
+  QUALIFYING
+  SCOPING
+  PROPOSAL_SENT
+  NEGOTIATING
+  CONTRACT_SENT
+  WON
+  LOST
+  DORMANT
+}
+
+// -----------------------------------------------------------------------------
+//  CHAT
+// -----------------------------------------------------------------------------
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessionId String   @unique          // opaque, browser-generated; no cookie needed
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  pageUrl   String?
+  locale    String   @default("en-CA")
+  userAgent String?
+
+  // Routing state maintained by the orchestrator
+  activeAgent String  @default("concierge")
+  intent      String?
+  handedOff   Boolean @default(false)
+  resolved    Boolean @default(false)
+
+  purgeAfter DateTime?
+
+  messages  Message[]
+  agentRuns AgentRun[]
+
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  createdAt      DateTime     @default(now())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role     MessageRole
+  agentKey String?              // which agent produced an assistant turn
+  content  String
+  // Retrieval / model metadata, stored as JSON text for SQLite portability
+  meta     String?
+
+  @@index([conversationId, createdAt])
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// -----------------------------------------------------------------------------
+//  AGENTS
+// -----------------------------------------------------------------------------
+
+model AgentRun {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  agentKey  String              // concierge | qualifier | pricing | delivery | ...
+  trigger   String              // chat | schedule | manual | webhook
+  status    RunStatus @default(SUCCEEDED)
+
+  inputJson  String
+  outputJson String?
+  error      String?
+  latencyMs  Int?
+  model      String?
+
+  leadId         String?
+  lead           Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  approvals Approval[]
+
+  @@index([agentKey, createdAt])
+  @@index([leadId])
+}
+
+enum RunStatus {
+  RUNNING
+  SUCCEEDED
+  FAILED
+  BLOCKED_PENDING_APPROVAL
+}
+
+/// Every outward-facing action an agent proposes lands here first.
+/// Nothing reaches a customer without a human decision recorded against it.
+model Approval {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  kind        ApprovalKind
+  title       String
+  summary     String
+  payloadJson String                 // the exact artefact to be sent if approved
+  riskNote    String?                // why this needs eyes on it
+
+  status      ApprovalStatus @default(PENDING)
+  decidedBy   String?
+  decidedAt   DateTime?
+  decisionNote String?
+
+  agentRunId String?
+  agentRun   AgentRun? @relation(fields: [agentRunId], references: [id], onDelete: SetNull)
+  leadId     String?
+  lead       Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+}
+
+enum ApprovalKind {
+  OUTBOUND_EMAIL
+  PROPOSAL
+  LEGAL_DOCUMENT
+  PRICE_CONCESSION
+  SALES_HANDOFF
+  HR_RESPONSE
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+// -----------------------------------------------------------------------------
+//  OUTBOUND EMAIL (CASL)
+// -----------------------------------------------------------------------------
+
+model EmailMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  toEmail String
+  subject String
+  bodyText String
+  bodyHtml String?
+
+  /// TRANSACTIONAL messages answer an enquiry the recipient initiated and are
+  /// outside CASL's commercial-electronic-message definition. COMMERCIAL
+  /// messages require consent, sender identification, a mailing address and a
+  /// working unsubscribe link. The sender refuses to send COMMERCIAL without
+  /// an express consent record on the Lead.
+  category EmailCategory @default(TRANSACTIONAL)
+
+  status      EmailStatus @default(QUEUED)
+  approvalId  String?
+  providerId  String?
+  sentAt      DateTime?
+  failedAt    DateTime?
+  error       String?
+
+  // Follow-up threading
+  sequenceKey String?           // e.g. "enquiry-followup"
+  sequenceStep Int?
+
+  @@index([status, createdAt])
+  @@index([leadId])
+}
+
+enum EmailCategory {
+  TRANSACTIONAL
+  COMMERCIAL
+}
+
+enum EmailStatus {
+  QUEUED
+  AWAITING_APPROVAL
+  SENT
+  FAILED
+  SUPPRESSED
+}
+
+// -----------------------------------------------------------------------------
+//  FOLLOW-UP SCHEDULING
+// -----------------------------------------------------------------------------
+
+model FollowUpTask {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  agentKey String            // which agent should handle it when it fires
+  runAfter DateTime
+  reason   String
+  step     Int      @default(1)
+  maxSteps Int      @default(3)
+
+  status   TaskStatus @default(SCHEDULED)
+  ranAt    DateTime?
+  result   String?
+
+  @@index([status, runAfter])
+}
+
+enum TaskStatus {
+  SCHEDULED
+  RUNNING
+  DONE
+  CANCELLED
+  FAILED
+}
+
+// -----------------------------------------------------------------------------
+//  DOCUMENTS (proposals, SOWs, agreements)
+// -----------------------------------------------------------------------------
+
+model Document {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  kind      DocumentKind
+  title     String
+  bodyMd    String
+  version   Int      @default(1)
+
+  /// Documents start as DRAFT and can only advance to SENT after a human has
+  /// approved them. A generated agreement is never treated as legal advice and
+  /// the underlying template must be reviewed by a Canadian lawyer once before
+  /// first use — see docs/LEGAL-REVIEW.md.
+  status          DocumentStatus @default(DRAFT)
+  templateVersion String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  sentAt          DateTime?
+  signedAt        DateTime?
+  signerName      String?
+  signerEmail     String?
+  esignProvider   String?
+  esignEnvelopeId String?
+
+  @@index([leadId])
+  @@index([status])
+}
+
+enum DocumentKind {
+  PROPOSAL
+  STATEMENT_OF_WORK
+  MASTER_SERVICES_AGREEMENT
+  NDA
+  DATA_PROCESSING_AGREEMENT
+  CHANGE_ORDER
+}
+
+enum DocumentStatus {
+  DRAFT
+  AWAITING_INTERNAL_REVIEW
+  APPROVED
+  SENT
+  SIGNED
+  DECLINED
+  SUPERSEDED
+}
+
+// -----------------------------------------------------------------------------
+//  CALL BOOKINGS
+// -----------------------------------------------------------------------------
+
+/// A requested scoping call.
+///
+/// HONEST LIMITATION: without OAuth into the firm's Google or Microsoft
+/// calendar we cannot see real availability, so a booking is a *request*
+/// against published office hours, confirmed by a human. The visitor gets a
+/// calendar file immediately so the slot is held in their own diary; the
+/// confirmation email carries the meeting link once a person accepts.
+model Booking {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  name    String
+  email   String
+  company String?
+  phone   String?
+  topic   String?
+
+  /// Start of the requested slot, stored in UTC.
+  startsAt   DateTime
+  durationMin Int      @default(30)
+  timezone   String    @default("America/Toronto")
+
+  /// How the visitor wants to meet.
+  platform BookingPlatform @default(EITHER)
+
+  status      BookingStatus @default(REQUESTED)
+  meetingUrl  String?
+  confirmedAt DateTime?
+  confirmedBy String?
+  cancelledAt DateTime?
+  notes       String?
+
+  purgeAfter DateTime?
+
+  @@index([startsAt])
+  @@index([status])
+  @@index([email])
+}
+
+enum BookingPlatform {
+  GOOGLE_MEET
+  MS_TEAMS
+  PHONE
+  EITHER
+}
+
+enum BookingStatus {
+  REQUESTED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+// -----------------------------------------------------------------------------
+//  INBOUND MAIL
+// -----------------------------------------------------------------------------
+
+/// One message the inbox watcher saw.
+///
+/// We store a snippet and our classification, never the full message body.
+/// PIPEDA Principle 4 (limiting collection): keeping a complete copy of the
+/// mailbox in a second database doubles the blast radius of a breach for no
+/// operational gain — the mailbox itself remains the record.
+model InboundMail {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  /// RFC 5322 Message-ID. Unique so a re-run cannot double-process a message.
+  messageId String @unique
+
+  fromEmail String
+  fromName  String?
+  subject   String
+  /// First ~400 characters only. Never the whole body.
+  snippet   String
+  receivedAt DateTime
+
+  classification String   // customer-reply | new-enquiry | booking-response | ...
+  urgency        String   @default("normal")
+  reasons        String?
+
+  handled     Boolean   @default(false)
+  handledAt   DateTime?
+  handledNote String?
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  purgeAfter DateTime?
+
+  @@index([classification, handled])
+  @@index([receivedAt])
+  @@index([leadId])
+}
+
+// -----------------------------------------------------------------------------
+//  WORK LIST
+// -----------------------------------------------------------------------------
+
+/// A unit of work the delivery plane should pick up.
+///
+/// Created only from something a human approved. This is the join between the
+/// commercial side of the system and the Claude Code agents that do the work:
+/// nothing reaches the delivery plane that a person did not sign off.
+model WorkItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String
+  /// principal | architect | manager | team-lead | engineer
+  assignedRole String  @default("manager")
+  priority     Int     @default(3)   // 1 highest
+  status       WorkStatus @default(BACKLOG)
+
+  /// Where it came from, so a work item can always be traced to its origin.
+  sourceKind String    // approval | booking | followup | manual
+  sourceId   String?
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  estimateHours Int?
+  dueAt         DateTime?
+  completedAt   DateTime?
+  /// Set when the work package has been written to the agent inbox.
+  dispatchedAt  DateTime?
+
+  @@index([status, priority])
+  @@index([leadId])
+}
+
+enum WorkStatus {
+  BACKLOG
+  READY
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELLED
+}
+
+// -----------------------------------------------------------------------------
+//  CONTENT DRAFTS
+// -----------------------------------------------------------------------------
+
+/// A LinkedIn post, GitHub README or other public content an agent drafted.
+///
+/// Never published automatically. LinkedIn has no API that permits posting to
+/// a personal profile without partner access, and automating the site against
+/// its terms risks the account the business depends on. So these are drafts a
+/// person copies and posts.
+model ContentDraft {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  channel   String   // linkedin | github | website
+  kind      String   // post | comment | readme | issue
+  title     String
+  body      String
+  rationale String?  // why the agent thought this was worth saying
+
+  status      DraftStatus @default(DRAFT)
+  publishedAt DateTime?
+  publishedUrl String?
+
+  @@index([channel, status])
+}
+
+enum DraftStatus {
+  DRAFT
+  APPROVED
+  PUBLISHED
+  DISCARDED
+}
+
+// -----------------------------------------------------------------------------
+//  HR
+// -----------------------------------------------------------------------------
+
+model Applicant {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  name     String
+  email    String
+  phone    String?
+  role     String
+  linkedin String?
+  resumeUrl String?
+  notes    String?
+
+  // Ontario ESA / Human Rights Code: never collect or infer protected grounds.
+  // Work authorisation is asked as a yes/no eligibility question only.
+  eligibleToWorkInCanada Boolean?
+
+  stage     ApplicantStage @default(RECEIVED)
+  consentAt DateTime?
+  purgeAfter DateTime?
+
+  @@index([email])
+  @@index([stage])
+}
+
+enum ApplicantStage {
+  RECEIVED
+  SCREENING
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+// -----------------------------------------------------------------------------
+//  PRIVACY OPERATIONS (PIPEDA Principles 9 and 10)
+// -----------------------------------------------------------------------------
+
+model DataSubjectRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  email       String
+  kind        DsrKind
+  detail      String?
+  status      DsrStatus @default(RECEIVED)
+  /// PIPEDA s.8(3): an organisation must respond no later than 30 days
+  /// after receiving an access request.
+  dueBy       DateTime
+  completedAt DateTime?
+  handledBy   String?
+  notes       String?
+
+  @@index([status, dueBy])
+}
+
+enum DsrKind {
+  ACCESS
+  CORRECTION
+  DELETION
+  WITHDRAW_CONSENT
+  COMPLAINT
+}
+
+enum DsrStatus {
+  RECEIVED
+  IN_PROGRESS
+  COMPLETED
+  REFUSED
+}
+
+// -----------------------------------------------------------------------------
+//  AUDIT
+// -----------------------------------------------------------------------------
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  actor    String            // agent key, admin email, or "system"
+  action   String            // lead.created | approval.approved | email.sent | ...
+  subject  String?
+  detail   String?
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([action])
+}

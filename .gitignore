@@ -1,0 +1,70 @@
+# =============================================================================
+#  This repository is PUBLIC. Everything below is excluded because it either
+#  holds credentials, holds personal information about real people, or is
+#  build output that would only create noise in diffs.
+#
+#  Before adding anything here, ask the opposite question too: would this file
+#  embarrass or endanger us if a stranger read it? If yes, it belongs here.
+# =============================================================================
+
+# ---- Credentials. Never commit any of these. -------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+.netrc
+
+# ---- Databases -------------------------------------------------------------
+# These hold real Lead, Conversation and Booking rows — names, email addresses
+# and what people told us in confidence. Committing one is a PIPEDA breach,
+# not merely untidy.
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# ---- Dependencies and build output -----------------------------------------
+node_modules/
+.next/
+.next-build/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ---- Agent working directories ---------------------------------------------
+# Work packages reference real client engagements.
+.agent-inbox/
+.sandbox-inbox/
+.sandbox-vault/
+agent-inbox/
+obsidian-vault/
+
+# ---- Hosting ---------------------------------------------------------------
+.vercel/
+
+# ---- Logs and temporary files ----------------------------------------------
+*.log
+npm-debug.log*
+yarn-error.log*
+agents.log
+/tmp/
+.cache/
+
+# ---- Editors and operating systems -----------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---- Test artefacts --------------------------------------------------------
+playwright-report/
+test-results/
+coverage/

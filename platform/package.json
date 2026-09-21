@@ -1,0 +1,59 @@
+{
+  "name": "rrr-platform",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "prisma generate && next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc --noEmit",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts",
+    "mail:check": "tsx scripts/mail-check.ts",
+    "agents:tick": "tsx scripts/tick.ts",
+    "agents:run": "tsx scripts/tick.ts --loop",
+    "agents:status": "tsx scripts/tick.ts --status",
+    "test:agents": "tsx scripts/ops-test.ts",
+    "test": "tsx scripts/regression.ts",
+    "test:bot": "tsx scripts/bot-battery.ts",
+    "test:responsive": "tsx scripts/responsive-test.ts",
+    "test:load": "tsx scripts/load-test.ts",
+    "test:journey": "tsx scripts/journey-test.ts",
+    "test:delivery": "tsx scripts/bridge-test.ts",
+    "test:retrieval": "tsx scripts/retrieval-debug.ts",
+    "sandbox": "tsx scripts/sandbox.ts",
+    "sandbox:reset": "tsx scripts/sandbox.ts --reset",
+    "test:e2e": "tsx scripts/sandbox.ts --reset --e2e",
+    "test:attribution": "tsx scripts/attribution-test.ts",
+    "test:booking": "tsx scripts/booking-test.ts",
+    "test:chips": "tsx scripts/chip-test.ts",
+    "test:emails": "tsx scripts/email-template-test.ts",
+    "test:copy": "tsx scripts/copy-check.ts",
+    "test:contrast": "tsx scripts/contrast-test.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.2.1",
+    "imapflow": "^2.0.5",
+    "mailparser": "^3.9.28",
+    "next": "15.1.6",
+    "nodemailer": "^10.0.10",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^22.10.7",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "playwright": "^1.63.0",
+    "prisma": "^6.2.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

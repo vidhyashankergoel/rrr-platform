@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+build
+*.db
+*.db-journal
+.DS_Store
+next-env.d.ts
+.vercel
+.env
+.env.local
+.env.*.local
+.agent-inbox
+.sandbox-inbox
+.sandbox-vault
+prisma/sandbox.db*
+.next-build
