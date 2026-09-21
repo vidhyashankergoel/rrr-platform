@@ -287,6 +287,7 @@ Should do:
 | `docs/LEGAL-REVIEW.md` | What a lawyer must review before the legal agent is used |
 | `docs/DOMAIN-AND-DNS.md` | Domain candidates, registrar advice, DNS records, email auth |
 | `docs/TRADEMARK-AND-PRIOR-WORK.md` | CIPO search results for "RRR", and the Wipro attribution analysis |
+| `docs/DEPLOY.md` | The repository, why not GitHub Pages, and how to put this online |
 | `docs/AGENTS.md` | The eight operations agents, what each may do, and how to run them 24/7 |
 | `docs/EMAIL-SETUP.md` | Getting enquiries and bookings delivered to your inbox |
 | `docs/BOOKING.md` | How call booking works, why it says "requested", and what to change when you have a real calendar |

@@ -1,0 +1,126 @@
+name: CI
+
+# Runs on every push and pull request to main. The suites here are the ones
+# that need no server and no credentials, so they work on a fresh runner —
+# types, the agents, the auto-reply templates, the booking logic and the
+# delivery plane. The browser suites need a running server and are left to
+# `npm run test:e2e` locally.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel an in-flight run when a newer commit lands on the same branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Types and test suites
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform
+
+    env:
+      # A scratch SQLite file. No real data ever reaches CI.
+      DATABASE_URL: "file:./ci.db"
+      # Explicitly empty so nothing can attempt to send mail or call a model
+      # from a build. A test that quietly emails somebody is a bad test.
+      RESEND_API_KEY: ""
+      SMTP_HOST: ""
+      LLM_BASE_URL: ""
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate the Prisma client
+        run: npx prisma generate
+
+      - name: Create the scratch database
+        run: npx prisma db push --skip-generate
+
+      - name: Typecheck the application
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Typecheck the scripts
+        # The scripts are standalone programs with their own config and are
+        # excluded from the Next build, so they need a second pass. Missing
+        # this is how a type error in an agent reaches main.
+        run: npx tsc --noEmit -p tsconfig.scripts.json
+
+      - name: Operations agents
+        run: npx tsx scripts/ops-test.ts
+
+      - name: Auto-reply templates
+        run: npx tsx scripts/email-template-test.ts
+
+      - name: Call booking
+        run: npx tsx scripts/booking-test.ts
+
+      - name: Attribution modes
+        run: npx tsx scripts/attribution-test.ts
+
+      - name: Delivery plane
+        run: npx tsx scripts/bridge-test.ts
+
+      - name: Retrieval ranking
+        run: npx tsx scripts/retrieval-debug.ts
+
+      - name: Customer journey and consent handling
+        run: npx tsx scripts/journey-test.ts
+
+      - name: Production build
+        run: npm run build
+
+  secrets:
+    name: No credentials in the tree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for credential-shaped strings
+        # This repository is public. A key committed by accident is public the
+        # moment it is pushed, and rotating it is the only real remedy — so
+        # fail the build loudly rather than let one sit unnoticed.
+        run: |
+          set -euo pipefail
+          pattern='re_[A-Za-z0-9]{24,}|gh[pousr]_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9]{32,}|AKIA[0-9A-Z]{16}|BEGIN [A-Z ]*PRIVATE KEY'
+          if grep -rEn "$pattern" \
+              --include='*.ts' --include='*.tsx' --include='*.js' \
+              --include='*.json' --include='*.yml' --include='*.md' \
+              --exclude-dir=node_modules . ; then
+            echo "::error::A credential-shaped string is present. Remove it and rotate the credential."
+            exit 1
+          fi
+          echo "No credential-shaped strings found."
+
+      - name: Ensure no database was committed
+        # Lead, Conversation and Booking rows contain real names, email
+        # addresses and what people told us in confidence. A committed
+        # database is a PIPEDA breach, not untidiness.
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '\.(db|sqlite3?)$' ; then
+            echo "::error::A database file is tracked. Remove it from history and rotate anything it exposed."
+            exit 1
+          fi
+          echo "No database files tracked."
