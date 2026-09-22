@@ -288,6 +288,7 @@ Should do:
 | `docs/LEGAL-REVIEW.md` | What a lawyer must review before the legal agent is used |
 | `docs/DOMAIN-AND-DNS.md` | Domain candidates, registrar advice, DNS records, email auth |
 | `docs/TRADEMARK-AND-PRIOR-WORK.md` | CIPO search results for "RRR", and the Wipro attribution analysis |
+| `docs/YOUR-CHECKLIST.md` | **Start here** — everything still waiting on you, in order |
 | `docs/SECURITY.md` | What protects customer data, what does not yet, and what to do before launch |
 | `docs/DEPLOY.md` | The repository, why not GitHub Pages, and how to put this online |
 | `docs/AGENTS.md` | The eight operations agents, what each may do, and how to run them 24/7 |
