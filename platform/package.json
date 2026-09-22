@@ -6,6 +6,7 @@
     "node": ">=20.9.0"
   },
   "scripts": {
+    "setup": "tsx scripts/setup.ts",
     "dev": "next dev -p 3000",
     "build": "prisma generate && next build",
     "start": "next start -p 3000",
@@ -37,10 +38,11 @@
     "test:contrast": "tsx scripts/contrast-test.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.19.3",
+    "eslint-config-next": "^16.3.5",
     "imapflow": "^2.0.5",
     "mailparser": "^3.9.28",
-    "next": "15.1.6",
+    "next": "^16.3.5",
     "nodemailer": "^10.0.10",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -53,7 +55,7 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "playwright": "^1.63.0",
-    "prisma": "^6.2.1",
+    "prisma": "^6.19.3",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

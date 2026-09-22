@@ -62,45 +62,42 @@ app. It is *not* your Gmail password, and you can revoke it on its own.
 5. Google shows you 16 characters with spaces, like `abcd efgh ijkl mnop`.
    **Copy it now** — it is shown once.
 
-Now create the settings file. In Terminal:
+Now run the setup command. In Terminal:
 
 ```bash
 cd ~/Desktop/incorp/platform
-open -e .env.local
+npm run setup
 ```
 
-That opens an empty TextEdit window. Paste this in, replacing the password
-line with your 16 characters:
+It asks for the App Password, hides it as you type, and writes the settings
+file for you — correctly formatted, with the two secret keys generated
+automatically and file permissions set so only you can read it.
 
-```
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=rrrsolutionprovider@gmail.com
-SMTP_PASS=paste_your_16_characters_here
-MAIL_FROM=RRR Solution Providers <rrrsolutionprovider@gmail.com>
-MAIL_TO=vidhyashankargoel1996@gmail.com
-DATABASE_URL=file:./dev.db
-```
+That means **you do not need to edit any file by hand**, and you can skip
+step 3 below entirely — `npm run setup` does it.
 
-> `MAIL_TO` is where enquiry alerts land. It is set to your personal inbox so
-> you do not miss anything. Change it whenever you want.
-
-Save (⌘S) and close. Then test it:
+Then prove it works:
 
 ```bash
-cd ~/Desktop/incorp/platform
 npm run mail:check -- --send
 ```
 
 **Done when:** you see green ticks and a test email arrives. *Check your spam
 folder for the first one.*
 
+Your admin console password ends up in that file as `ADMIN_TOKEN` — you will
+need it to sign in at `/admin`.
+
 > This file is never uploaded to GitHub — it is excluded, and CI fails the
 > build if a password ever gets committed.
 
 ---
 
-## ☐ 3. Create two secret keys (2 min)
+## ☑ 3. Create two secret keys — DONE AUTOMATICALLY
+
+> `npm run setup` in step 2 generates both for you. Nothing to do here.
+
+<details><summary>If you ever need to do it by hand</summary>
 
 Two random values the app needs. Run this twice:
 
@@ -122,6 +119,8 @@ CONSENT_SALT=paste_the_second_one
 
 **Done when:** both lines are in the file. Keep them — treat them like
 passwords.
+
+</details>
 
 ---
 

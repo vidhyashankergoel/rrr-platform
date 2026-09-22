@@ -52,6 +52,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   /**
+   * Next's development overlay renders a `<nextjs-portal>` fixed above the
+   * page. In Next 16 it intercepts pointer events, so an automated browser
+   * cannot click anything beneath it — the end-to-end suite fails on controls
+   * that work perfectly well for a real person.
+   *
+   * It is a development-only affordance and is absent from production, so
+   * suppressing it for a test run changes nothing a visitor ever sees. Left
+   * on for ordinary `npm run dev`, where it is genuinely useful.
+   */
+  devIndicators: process.env.E2E === "1" ? false : undefined,
+
+  /**
    * Production builds go to their own directory.
    *
    * `next build` and `next dev` both write to `.next` by default. Running a

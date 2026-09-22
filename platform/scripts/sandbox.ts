@@ -35,6 +35,9 @@ const env = {
   DATABASE_URL: DB_URL,
   NEXT_PUBLIC_SITE_URL: BASE,
   ADMIN_TOKEN: "sandboxsandboxsandboxsandbox0001",
+  // Suppresses Next's development overlay, which otherwise sits above the page
+  // and swallows the clicks the browser suite needs to make.
+  E2E: "1",
   AGENT_INBOX: INBOX,
   OBSIDIAN_VAULT: VAULT,
   // No outbound anything from a sandbox, ever.
