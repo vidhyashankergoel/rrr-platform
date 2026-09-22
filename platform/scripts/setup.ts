@@ -28,8 +28,37 @@ function line(text = "") {
   console.log(text);
 }
 
+/**
+ * Throw away anything already sitting in the input buffer.
+ *
+ * People paste several commands at once. When they do, the *next* command is
+ * already queued in the terminal before this prompt appears, and a naive read
+ * swallows it as the answer — so `npm run mail:check` ends up submitted as an
+ * App Password. Discarding what arrived before we asked is the difference
+ * between a confusing failure and a working setup.
+ */
+async function drainPendingInput(): Promise<void> {
+  if (!stdin.isTTY) return;
+  stdin.setRawMode(true);
+  stdin.resume();
+  await new Promise((resolve) => setTimeout(resolve, 120));
+  let discarded: Buffer | string | null;
+  // eslint-disable-next-line no-cond-assign
+  while ((discarded = stdin.read()) !== null) {
+    /* deliberately dropped */
+  }
+  stdin.setRawMode(false);
+  stdin.pause();
+}
+
+/** Reject an answer that is obviously a shell command rather than a password. */
+function looksLikeACommand(value: string): boolean {
+  return /^(npm|npx|cd|ls|git|open|sudo|brew|node)\b/.test(value.trim()) || value.includes(" -- ");
+}
+
 /** Ask without echoing — an App Password should not end up in scrollback. */
 async function askSecret(prompt: string): Promise<string> {
+  await drainPendingInput();
   stdout.write(prompt);
 
   // Raw mode lets us swallow the keystrokes. Where it is unavailable (a piped
@@ -47,7 +76,7 @@ async function askSecret(prompt: string): Promise<string> {
     stdin.resume();
     const onData = (chunk: Buffer) => {
       const char = chunk.toString("utf8");
-      if (char === "\n" || char === "\r" || char === "") {
+      if (char === "\n" || char === "\r" || char === "\u0004") {
         stdin.setRawMode(false);
         stdin.pause();
         stdin.removeListener("data", onData);
@@ -55,11 +84,11 @@ async function askSecret(prompt: string): Promise<string> {
         resolve(value.trim());
         return;
       }
-      if (char === "") {
+      if (char === "\u0003") {
         stdout.write("\n");
         process.exit(130);
       }
-      if (char === "") {
+      if (char === "\u007f") {
         value = value.slice(0, -1);
         return;
       }
@@ -73,6 +102,9 @@ async function main() {
   line("\n========================================");
   line(" SETUP");
   line("========================================");
+  line("");
+  line("  Run this command on its own. If you paste several commands at once,");
+  line("  the next one gets read as your answer.");
 
   if (existsSync(FILE)) {
     line(`\n${FILE} already exists.`);
@@ -108,6 +140,21 @@ async function main() {
   line("");
 
   const raw = await askSecret("  App Password: ");
+
+  if (looksLikeACommand(raw)) {
+    line("\n  ⚠ That looked like a shell command, not a password.");
+    line("");
+    line("  This usually means several commands were pasted at once, and the");
+    line("  next one was read as the answer. Nothing has been written.");
+    line("");
+    line("  Run this on its own, wait for the prompt, then paste the password:");
+    line("");
+    line("      npm run setup");
+    line("");
+    rl.close();
+    process.exit(1);
+  }
+
   const appPassword = raw.replace(/\s+/g, "");
 
   if (!appPassword) {
