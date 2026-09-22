@@ -61,6 +61,7 @@ npm run test:booking      # call slots, DST arithmetic, calendar files
 npm run test:chips        # every suggested question gets a real answer
 npm run test:emails       # auto-reply templates: routing, honesty, figures
 npm run test:agents       # the operations agents: triage, composing, safety gates
+npm run test:security     # throttling, auth, PII exposure, consent, headers
 
 npm run agents:status     # which agents are ready, which need credentials
 npm run agents:run        # run the agents continuously
@@ -287,6 +288,7 @@ Should do:
 | `docs/LEGAL-REVIEW.md` | What a lawyer must review before the legal agent is used |
 | `docs/DOMAIN-AND-DNS.md` | Domain candidates, registrar advice, DNS records, email auth |
 | `docs/TRADEMARK-AND-PRIOR-WORK.md` | CIPO search results for "RRR", and the Wipro attribution analysis |
+| `docs/SECURITY.md` | What protects customer data, what does not yet, and what to do before launch |
 | `docs/DEPLOY.md` | The repository, why not GitHub Pages, and how to put this online |
 | `docs/AGENTS.md` | The eight operations agents, what each may do, and how to run them 24/7 |
 | `docs/EMAIL-SETUP.md` | Getting enquiries and bookings delivered to your inbox |

@@ -37,7 +37,28 @@ export async function audit(input: {
  */
 export async function hashIp(ip: string | null): Promise<string | null> {
   if (!ip) return null;
-  const salt = process.env.ADMIN_TOKEN ?? "northpath-static-salt";
+
+  // The salt must be secret. An IP address has only ~4 billion possibilities,
+  // so a publicly-known salt makes the digest trivially reversible by anyone
+  // who can read the database — the hash would then be storing the address
+  // rather than protecting it.
+  //
+  // This repository is public, so a hard-coded fallback salt is a *published*
+  // salt. Rather than pretend otherwise, fail closed: with no secret
+  // configured we record that consent came from an unidentifiable session
+  // instead of storing a reversible digest. Losing a weak signal is better
+  // than storing personal data we told people we were protecting.
+  const configured = process.env.CONSENT_SALT?.trim() || process.env.ADMIN_TOKEN?.trim();
+  if (!configured || configured.length < 16) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[privacy] No CONSENT_SALT configured — consent IP digests are not being stored. " +
+          "Set CONSENT_SALT to keep CASL s.13 proof-of-consent evidence.",
+      );
+    }
+    return null;
+  }
+  const salt = configured;
   const data = new TextEncoder().encode(`${salt}:${ip}`);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))

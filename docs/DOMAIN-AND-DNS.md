@@ -1,5 +1,21 @@
 # Domain name and DNS
 
+> ## ✅ PURCHASED — rrrsolutionproviders.ca
+> Registered through **GoDaddy Domains Canada** (CIRA registry), active
+> 2026-09-22, **auto-renews 2027-09-22 at C$21.99**. Paid C$4.51 for year one.
+>
+> Do these four things at the registrar today, before anything else:
+>
+> | Setting | Value | Why |
+> |---|---|---|
+> | WHOIS privacy | ON | CIRA masks individual registrants by default, but confirm it — otherwise your address is public and scraped |
+> | Domain lock | ON | Blocks unauthorized transfer |
+> | Auto-renew | ON (already) | Losing the domain is unrecoverable |
+> | Two-factor on the GoDaddy account | ON | The domain *is* the company |
+>
+> Registrant email should **not** be an address on this domain — if the domain
+> lapses you lose the recovery mailbox too. Keep it on Gmail.
+
 What to buy, what to avoid, and exactly how to point it at the site once you own it.
 
 ---
@@ -44,7 +60,7 @@ registrar before you rely on it.
 |---|---|---|
 | **rrrsolutionproviders.ca** | Free | Exact legal-name match. Unambiguous on an invoice. |
 | **rrrsolutionproviders.com** | Free | Buy alongside the `.ca` and redirect. |
-| **rrrcloud.ca** | Free | Short, memorable, says the category in one word. |
+| **rrrsolutionproviders.ca** | Free | Short, memorable, says the category in one word. |
 | **rrrplatform.ca / .com** | Both free | "Platform engineering" is the growth term. |
 | **rrrdevops.ca / .com** | Both free | Highest search intent; narrows you to DevOps. |
 | **rrrengineering.ca** | Free | Broader than "devops", still concrete. |
@@ -72,11 +88,11 @@ registrar before you rely on it.
 1. **`rrrsolutionproviders.ca`** — the legal name, for contracts, invoices and
    anywhere the registered entity must be unambiguous.
 2. **`rrrsolutionproviders.com`** — defensive, redirects to the `.ca`.
-3. **`rrrcloud.ca`** — the everyday brand. Short enough to say over the phone,
-   short enough for an email address (`you@rrrcloud.ca`), and it tells a
+3. **`rrrsolutionproviders.ca`** — the everyday brand. Short enough to say over the phone,
+   short enough for an email address (`you@rrrsolutionproviders.ca`), and it tells a
    stranger what you do.
 
-Make **`rrrcloud.ca` canonical** and 301 the other two to it. Your legal name
+Make **`rrrsolutionproviders.ca` canonical** and 301 the other two to it. Your legal name
 still appears on every page footer, invoice and contract, which is what the
 OBCA actually requires — the domain does not have to carry it.
 
@@ -155,8 +171,8 @@ time is miserable.
 
 ### Step 2 — add the domain in Vercel
 
-Vercel dashboard → Project → Settings → Domains → add `rrrcloud.ca` and
-`www.rrrcloud.ca`. Vercel then tells you which records to create.
+Vercel dashboard → Project → Settings → Domains → add `rrrsolutionproviders.ca` and
+`www.rrrsolutionproviders.ca`. Vercel then tells you which records to create.
 
 ### Step 3 — create the records at GoDaddy
 
@@ -190,7 +206,7 @@ email provider (Google Workspace, Microsoft 365, Zoho, Fastmail).
 Start DMARC in monitor mode and tighten once you see clean reports:
 
 ```
-v=DMARC1; p=none; rua=mailto:dmarc@rrrcloud.ca; fo=1
+v=DMARC1; p=none; rua=mailto:dmarc@rrrsolutionproviders.ca; fo=1
 ```
 
 After a few weeks of clean reports, move to `p=quarantine`, then `p=reject`.
@@ -203,18 +219,18 @@ promises clients you take this seriously.
 ### Step 5 — verify
 
 ```bash
-dig rrrcloud.ca A +short
-dig www.rrrcloud.ca CNAME +short
-dig rrrcloud.ca TXT +short
-dig _dmarc.rrrcloud.ca TXT +short
+dig rrrsolutionproviders.ca A +short
+dig www.rrrsolutionproviders.ca CNAME +short
+dig rrrsolutionproviders.ca TXT +short
+dig _dmarc.rrrsolutionproviders.ca TXT +short
 ```
 
 Then check the site actually loads over HTTPS and that the redirect works:
 
 ```bash
-curl -sI https://rrrcloud.ca | head -1
-curl -sI https://www.rrrcloud.ca | head -1
-curl -sI http://rrrcloud.ca | head -1     # should 301 to https
+curl -sI https://rrrsolutionproviders.ca | head -1
+curl -sI https://www.rrrsolutionproviders.ca | head -1
+curl -sI http://rrrsolutionproviders.ca | head -1     # should 301 to https
 ```
 
 DNS propagation is usually minutes, occasionally up to 48 hours. Check from
@@ -228,15 +244,15 @@ Two places, both one-line:
 
 **`platform/src/lib/company.ts`**
 ```ts
-email:  "hello@rrrcloud.ca",        // stop using the Gmail address
-siteUrl: "https://www.rrrcloud.ca",
+email:  "hello@rrrsolutionproviders.ca",        // stop using the Gmail address
+siteUrl: "https://www.rrrsolutionproviders.ca",
 ```
 
 **Environment variables** (Vercel → Settings → Environment Variables)
 ```
-NEXT_PUBLIC_SITE_URL   https://www.rrrcloud.ca
-MAIL_FROM              RRR Solution Providers <hello@rrrcloud.ca>
-CASL_UNSUBSCRIBE_BASE  https://www.rrrcloud.ca/unsubscribe
+NEXT_PUBLIC_SITE_URL   https://www.rrrsolutionproviders.ca
+MAIL_FROM              RRR Solution Providers <hello@rrrsolutionproviders.ca>
+CASL_UNSUBSCRIBE_BASE  https://www.rrrsolutionproviders.ca/unsubscribe
 CASL_MAILING_ADDRESS   RRR Solution Providers Inc., <street>, Toronto, ON <postal>, Canada
 DATABASE_URL           <your Postgres connection string>
 ADMIN_TOKEN            <openssl rand -hex 32>

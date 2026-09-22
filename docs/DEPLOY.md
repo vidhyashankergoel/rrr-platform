@@ -101,12 +101,12 @@ Vercel dashboard → Settings → Environment Variables. Every one of these is i
 
 ```
 DATABASE_URL            your Postgres connection string
-NEXT_PUBLIC_SITE_URL    https://www.rrrcloud.ca
+NEXT_PUBLIC_SITE_URL    https://www.rrrsolutionproviders.ca
 ADMIN_TOKEN             openssl rand -hex 32
 MAIL_TO                 where enquiry notifications land
-MAIL_FROM               RRR Solution Providers <hello@rrrcloud.ca>
+MAIL_FROM               RRR Solution Providers <hello@rrrsolutionproviders.ca>
 RESEND_API_KEY          or the SMTP_* set — see EMAIL-SETUP.md
-CASL_UNSUBSCRIBE_BASE   https://www.rrrcloud.ca/unsubscribe
+CASL_UNSUBSCRIBE_BASE   https://www.rrrsolutionproviders.ca/unsubscribe
 CASL_MAILING_ADDRESS    required before anything promotional
 ```
 

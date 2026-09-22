@@ -18,6 +18,7 @@
     "agents:run": "tsx scripts/tick.ts --loop",
     "agents:status": "tsx scripts/tick.ts --status",
     "test:agents": "tsx scripts/ops-test.ts",
+    "test:security": "tsx scripts/security-test.ts",
     "test": "tsx scripts/regression.ts",
     "test:bot": "tsx scripts/bot-battery.ts",
     "test:responsive": "tsx scripts/responsive-test.ts",

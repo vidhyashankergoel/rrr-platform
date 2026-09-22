@@ -198,7 +198,14 @@ export async function send(input: SendInput): Promise<SendResult> {
       error: (result.detail ?? result.reason ?? "unknown").slice(0, 500),
     },
   });
-  console.error(`[mailer] ${input.toEmail}: ${result.reason} — ${result.detail ?? ""}`);
+  // The recipient's address identifies a customer to anyone who can read the
+  // logs. In production, log the message id instead: it points at the row
+  // holding the address without duplicating it into a second store.
+  console.error(
+    process.env.NODE_ENV === "production"
+      ? `[mailer] message ${record.id} failed: ${result.reason}`
+      : `[mailer] ${input.toEmail}: ${result.reason} — ${result.detail ?? ""}`,
+  );
   return { ok: false, id: record.id, reason: result.reason };
 }
 
@@ -278,9 +285,23 @@ export async function notifyInternal(input: {
   }).catch(() => undefined);
 
   if (!result.ok) {
-    // Print the whole notification. If mail is not working, the log is the
-    // only place this enquiry exists outside the database, and a silent
-    // failure here means a lost customer.
+    // In development, print the whole notification: the log is the only
+    // visible copy, and a silent failure means a lost customer.
+    //
+    // In production, report the failure but NOT the contents. Hosting
+    // platforms retain logs, surface them in a dashboard, and often ship them
+    // to a third-party aggregator — so a log line becomes a second,
+    // longer-lived copy of a customer's name, address and whatever they told
+    // us in confidence. The enquiry is already safe in the database. The
+    // operator needs to know delivery failed, not to re-read the message here.
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        `[mailer] ${input.sequenceKey} could not be delivered (${result.reason}). ` +
+          "The record is in the database and visible in the console. Run: npm run mail:check",
+      );
+      return { ok: result.ok, reason: result.reason, detail: result.detail };
+    }
+
     const rule = "=".repeat(57);
     console.warn(
       [

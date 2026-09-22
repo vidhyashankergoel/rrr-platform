@@ -12,8 +12,21 @@ export const dynamic = "force-dynamic";
  * assistant actually said. That is how the catalogue and the agent copy get
  * better, and it costs nothing to collect.
  */
+/**
+ * A browser-generated session identifier.
+ *
+ * This is the only thing separating one visitor's conversation from another's,
+ * so it has to be unguessable. The client generates a UUID; 20 characters is
+ * the floor at which a token carries enough entropy to be safe. The previous
+ * floor of 8 characters would have accepted "aaaaaaaa", which every visitor
+ * sending it would have shared.
+ */
+const SESSION_ID = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{20,64}$/, "Invalid session identifier.");
+
 const Body = z.object({
-  sessionId: z.string().min(8).max(64),
+  sessionId: SESSION_ID,
   messageId: z.string().min(1).max(64),
   verdict: z.enum(["up", "down"]),
 });

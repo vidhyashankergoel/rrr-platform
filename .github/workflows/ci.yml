@@ -65,6 +65,12 @@ jobs:
         # this is how a type error in an agent reaches main.
         run: npx tsc --noEmit -p tsconfig.scripts.json
 
+      - name: Security
+        # Throttling, authentication, what leaves in a response, what reaches
+        # the logs, consent evidence and headers. The site is public and the
+        # database holds other people's personal information.
+        run: npx tsx scripts/security-test.ts
+
       - name: Operations agents
         run: npx tsx scripts/ops-test.ts
 

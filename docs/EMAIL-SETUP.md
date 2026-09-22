@@ -226,7 +226,7 @@ Once the domain is bought (`DOMAIN-AND-DNS.md`):
 2. Add the MX, SPF, DKIM and DMARC records. `DOMAIN-AND-DNS.md` §5 step 4.
 3. Change one line in `platform/src/lib/company.ts`:
    ```ts
-   email: "hello@rrrcloud.ca",
+   email: "hello@rrrsolutionproviders.ca",
    ```
 4. Update `MAIL_FROM` and `MAIL_TO` in `.env.local`.
 5. `npm run mail:check -- --send`.

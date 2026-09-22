@@ -23,6 +23,19 @@ export const dynamic = "force-dynamic";
  * CASL s.13 puts the burden of proving consent on the sender, so we record
  * when consent was given, from which page, and a hashed session identifier.
  */
+/**
+ * A browser-generated session identifier.
+ *
+ * This is the only thing separating one visitor's conversation from another's,
+ * so it has to be unguessable. The client generates a UUID; 20 characters is
+ * the floor at which a token carries enough entropy to be safe. The previous
+ * floor of 8 characters would have accepted "aaaaaaaa", which every visitor
+ * sending it would have shared.
+ */
+const SESSION_ID = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{20,64}$/, "Invalid session identifier.");
+
 const Body = z.object({
   name: z.string().min(2).max(120),
   email: z.string().email().max(200),
@@ -37,7 +50,7 @@ const Body = z.object({
     errorMap: () => ({ message: "We need your permission to reply to this enquiry." }),
   }),
   consentMarketing: z.boolean().optional().default(false),
-  sessionId: z.string().max(64).optional(),
+  sessionId: SESSION_ID.optional(),
   sourceUrl: z.string().max(500).optional(),
   // Honeypot — real people leave it empty.
   website: z.string().max(200).optional(),

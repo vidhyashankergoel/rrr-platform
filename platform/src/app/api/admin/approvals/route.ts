@@ -35,8 +35,25 @@ function authorized(req: Request): string | null {
 }
 
 export async function GET(req: Request) {
+  // Throttle BEFORE checking the token. This endpoint returns the customer
+  // list, and a shared bearer token is only as strong as the number of
+  // guesses an attacker gets. The POST path was throttled and this one was
+  // not, which left the console's only gate open to offline-speed guessing.
+  const limit = rateLimit(`admin-read:${clientKey(req)}`, 30, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests." },
+      { status: 429, headers: { "retry-after": String(limit.retryAfter) } },
+    );
+  }
+
   const who = authorized(req);
-  if (!who) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!who) {
+    // Record failures: repeated 401s from one address is what a credential
+    // attack looks like, and without this there is no way to notice one.
+    await audit({ actor: "unknown", action: "admin.auth.failed", subject: clientKey(req) });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const [pending, leads, stats] = await Promise.all([
     db.approval.findMany({
@@ -45,7 +62,21 @@ export async function GET(req: Request) {
       take: 50,
       include: { lead: { select: { id: true, name: true, email: true, company: true, stage: true } } },
     }),
-    db.lead.findMany({ orderBy: { createdAt: "desc" }, take: 25 }),
+    db.lead.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 25,
+      // Explicit column list, not the whole row. `unsubscribeToken` is a
+      // capability and `consentIpHash` is consent evidence; neither is used
+      // by the console, so neither should cross the wire where a browser
+      // extension, a proxy log or a screenshot can capture it.
+      select: {
+        id: true, createdAt: true, name: true, email: true, phone: true,
+        company: true, jobTitle: true, message: true, serviceIds: true,
+        budgetBand: true, timeline: true, stage: true, score: true,
+        consentContact: true, consentMarketing: true, consentAt: true,
+        unsubscribedAt: true, ownerEmail: true, purgeAfter: true,
+      },
+    }),
     Promise.all([
       db.lead.count(),
       db.approval.count({ where: { status: "PENDING" } }),

@@ -74,6 +74,13 @@ const SUITES: Suite[] = [
     description: "Slot generation, DST arithmetic, calendar files, refusals",
   },
   {
+    name: "Security",
+    script: "scripts/security-test.ts",
+    needsServer: false,
+    slow: false,
+    description: "Throttling, auth, PII exposure, consent evidence, headers",
+  },
+  {
     name: "Operations agents",
     script: "scripts/ops-test.ts",
     needsServer: false,
