@@ -18,7 +18,7 @@ Three steps need your own login and your own credentials, so they are yours:
 Everything else is built and tested. When you have done the steps below,
 `npm run mail:check` proves whether it works — you will not have to guess.
 
-> The company email is now **rrrsolutionprovider@gmail.com** throughout the
+> The company email is now **rrrsolutionproviders@gmail.com** throughout the
 > site, the footer, the contact page and every outgoing message. If that
 > mailbox does not exist yet, create it first — everything below assumes it.
 >
@@ -57,7 +57,7 @@ depends on the choice.
 ### 2.1 Create the account and key
 
 1. Go to **https://resend.com** and sign up **using
-   `rrrsolutionprovider@gmail.com`**. This matters: until you verify a domain,
+   `rrrsolutionproviders@gmail.com`**. This matters: until you verify a domain,
    Resend only delivers to the address on the account, so signing up with a
    different address sends your enquiries somewhere you are not reading.
 2. Verify the sign-up email.
@@ -72,7 +72,7 @@ committed) containing:
 
 ```bash
 RESEND_API_KEY=re_paste_your_key_here
-MAIL_TO=rrrsolutionprovider@gmail.com
+MAIL_TO=rrrsolutionproviders@gmail.com
 DATABASE_URL=file:./dev.db
 ```
 
@@ -119,7 +119,7 @@ message in your inbox within a minute. Check spam on the first one.
 A Google App Password is a 16-character password for one application. It is
 not your account password and can be revoked on its own.
 
-1. Sign in to **rrrsolutionprovider@gmail.com**.
+1. Sign in to **rrrsolutionproviders@gmail.com**.
 2. Turn on **2-Step Verification** if it is not already on:
    https://myaccount.google.com/signinoptions/twosv
    (App Passwords do not exist without it.)
@@ -135,10 +135,10 @@ Create `platform/.env.local`:
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=rrrsolutionprovider@gmail.com
+SMTP_USER=rrrsolutionproviders@gmail.com
 SMTP_PASS=your_16_character_app_password
-MAIL_FROM=RRR Solution Providers <rrrsolutionprovider@gmail.com>
-MAIL_TO=rrrsolutionprovider@gmail.com
+MAIL_FROM=RRR Solution Providers <rrrsolutionproviders@gmail.com>
+MAIL_TO=rrrsolutionproviders@gmail.com
 DATABASE_URL=file:./dev.db
 ```
 
@@ -176,7 +176,7 @@ Then on the site:
 1. Submit the contact form.
 2. Book a call from any "Book a free call" button.
 
-Both should appear in `rrrsolutionprovider@gmail.com` within a minute, and
+Both should appear in `rrrsolutionproviders@gmail.com` within a minute, and
 both appear in the approval queue at `/admin`.
 
 If mail is misconfigured, **nothing is lost**: the enquiry is already in the

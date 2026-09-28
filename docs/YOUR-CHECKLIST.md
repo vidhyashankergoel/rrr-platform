@@ -53,7 +53,7 @@ list matters as much.
 You need a **Google App Password**. That is a 16-character password for one
 app. It is *not* your Gmail password, and you can revoke it on its own.
 
-1. Sign in to **rrrsolutionprovider@gmail.com**.
+1. Sign in to **rrrsolutionproviders@gmail.com**.
 2. Go to **https://myaccount.google.com/signinoptions/twosv** and turn on
    **2-Step Verification** if it is not already on. *(App Passwords do not
    exist without this — it is not optional.)*
@@ -230,7 +230,7 @@ An hour now. Impossible to do calmly during an actual incident.
 
 ## ☐ A. The email spelling
 
-Your address is `rrrsolutionprovider@gmail.com` — **singular**. The company is
+Your address is `rrrsolutionproviders@gmail.com` — **singular**. The company is
 "RRR Solution Provider**s**" — **plural**. It will appear on every invoice,
 every proposal and every email signature.
 

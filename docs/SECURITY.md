@@ -182,7 +182,7 @@ In order:
 
 ## 5. Reporting a vulnerability
 
-Email **rrrsolutionprovider@gmail.com** with "Security" in the subject.
+Email **rrrsolutionproviders@gmail.com** with "Security" in the subject.
 
 We will acknowledge within two business days and tell you what we intend to do
 and when. We will not threaten you, and we will credit you if you want it.

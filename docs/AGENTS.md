@@ -126,7 +126,7 @@ the failure mode is "a person looks at it", not "it disappears".
 ```bash
 IMAP_HOST=imap.gmail.com
 IMAP_PORT=993
-IMAP_USER=rrrsolutionprovider@gmail.com
+IMAP_USER=rrrsolutionproviders@gmail.com
 IMAP_PASS=your_16_character_app_password
 ```
 

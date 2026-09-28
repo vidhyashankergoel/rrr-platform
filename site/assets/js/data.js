@@ -11,7 +11,7 @@ NP.company = {
   legalName : "Northpath Cloud Inc.",       // <-- change after NUANS + incorporation
   shortName : "Northpath Cloud",
   tagline   : "Cloud, Kubernetes and platform engineering for Canadian teams",
-  email     : "rrrsolutionprovider@gmail.com",
+  email     : "rrrsolutionproviders@gmail.com",
   phone     : "+1 (437) 366-4623",
   phoneHref : "+14373664623",
   city      : "Toronto",

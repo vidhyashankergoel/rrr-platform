@@ -24,7 +24,7 @@ export const company = {
   // this to hello@<domain> once the domain is bought — a free-mail address on
   // an invoice is the single most common reason a procurement team asks "are
   // these people real?". See docs/EMAIL-SETUP.md §6.
-  email: "rrrsolutionprovider@gmail.com",
+  email: "rrrsolutionproviders@gmail.com",
 
   /**
    * Where enquiry and booking notifications are delivered.
@@ -43,7 +43,7 @@ export const company = {
    * variables once deployed, to route notifications to wherever you really
    * read mail. The committed default is the public company address.
    */
-  notifyEmail: process.env.MAIL_TO ?? "rrrsolutionprovider@gmail.com",
+  notifyEmail: process.env.MAIL_TO ?? "rrrsolutionproviders@gmail.com",
   phone: "+1 (437) 366-4623",
   phoneHref: "+14373664623",
 

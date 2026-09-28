@@ -75,15 +75,15 @@ function main() {
 # ---- Email ------------------------------------------------------------------
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=rrrsolutionprovider@gmail.com
+SMTP_USER=rrrsolutionproviders@gmail.com
 
 # <<< REPLACE THE VALUE ON THIS LINE >>>
 SMTP_PASS=${PLACEHOLDER}
 
-MAIL_FROM=RRR Solution Providers <rrrsolutionprovider@gmail.com>
+MAIL_FROM=RRR Solution Providers <rrrsolutionproviders@gmail.com>
 
 # Where enquiry and booking alerts are delivered. Change freely.
-MAIL_TO=rrrsolutionprovider@gmail.com
+MAIL_TO=rrrsolutionproviders@gmail.com
 
 # ---- Secrets (generated for you — no action needed) --------------------------
 # ADMIN_TOKEN is the password for the admin console at /admin.

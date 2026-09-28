@@ -193,7 +193,7 @@ penalties. Ask the accountant.
 - Email on the domain immediately. A Gmail address on a proposal costs you
   enterprise credibility, and it is the single cheapest fix on this list.
 
-> The site currently ships `rrrsolutionprovider@gmail.com` as the contact
+> The site currently ships `rrrsolutionproviders@gmail.com` as the contact
 > address. Change it to `hello@<domain>` in
 > `platform/src/lib/company.ts` the day the domain resolves.
 

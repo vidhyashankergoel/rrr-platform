@@ -74,7 +74,7 @@ LinkedIn → grid icon (top right) → **Create a Company Page** → **Company**
 > Certified Kubernetes Administrator · Microsoft Certified Azure Developer Associate · Eligible for Canadian Reliability Status
 >
 > Toronto, Ontario 🇨🇦
-> rrrsolutionprovider@gmail.com · +1 (437) 366-4623
+> rrrsolutionproviders@gmail.com · +1 (437) 366-4623
 
 *(Replace the email once you have the domain address.)*
 

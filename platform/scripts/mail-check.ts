@@ -28,6 +28,9 @@ type Company = typeof import("../src/lib/company");
 
 const SEND = process.argv.includes("--send");
 
+/** Matches the placeholder `npm run setup` writes, so that case can be named. */
+const PLACEHOLDER_HINT = "PASTE_YOUR_16";
+
 /** Show enough to recognise a value, never enough to use it. */
 function mask(value: string | undefined): string {
   if (!value) return "(not set)";
@@ -65,7 +68,25 @@ async function main() {
     console.log(`  SMTP_HOST       ${process.env.SMTP_HOST ?? "(not set)"}`);
     console.log(`  SMTP_PORT       ${process.env.SMTP_PORT ?? "587 (default)"}`);
     console.log(`  SMTP_USER       ${process.env.SMTP_USER ?? "(not set)"}`);
-    console.log(`  SMTP_PASS       ${mask(process.env.SMTP_PASS)}`);
+    // The shape of the password is the single most useful diagnostic here.
+    // Gmail answers every credential problem with the same opaque
+    // "Username and Password not accepted", so checking the value's shape
+    // locally is the only way to distinguish "you pasted the spaces" from
+    // "this password belongs to a different account".
+    const rawPass = process.env.SMTP_PASS ?? "";
+    const stripped = rawPass.replace(/\s+/g, "");
+    console.log(`  SMTP_PASS       ${mask(stripped)}`);
+    console.log(`                  ${stripped.length} characters after removing spaces`);
+
+    if (stripped.includes(PLACEHOLDER_HINT)) {
+      console.log("                  ⚠ this is still the placeholder — paste your real App Password");
+    } else if (stripped.length !== 16) {
+      console.log(
+        `                  ⚠ a Google App Password is exactly 16 characters, not ${stripped.length}`,
+      );
+    } else if (rawPass !== stripped) {
+      console.log("                  (spaces removed automatically — that is fine)");
+    }
   }
 
   // ---- Blocking problems -------------------------------------------------
@@ -84,7 +105,32 @@ async function main() {
     console.log(`  ✓ ${cfg.provider} accepted the credentials${verified.detail ? ` — ${verified.detail}` : ""}`);
   } else {
     console.log(`  ✗ ${verified.reason}${verified.detail ? ` — ${verified.detail}` : ""}`);
-    console.log("\n  Setup instructions: docs/EMAIL-SETUP.md\n");
+
+    // Gmail answers every credential problem with the same opaque message,
+    // so spell out the causes in the order they actually occur. Without this
+    // the only guidance is Google's own page, which does not mention the
+    // account-mismatch case at all — and that is the most common one.
+    if (/BadCredentials|535/.test(verified.detail ?? "")) {
+      heading("What this usually means");
+      console.log("  Google returns the same error for several different problems.");
+      console.log("  In order of how often each is the actual cause:");
+      console.log("");
+      console.log("  1. The App Password was created on a DIFFERENT Google account.");
+      console.log("     It only authenticates the account that created it. Yours must");
+      console.log(`     be created while signed in as ${process.env.SMTP_USER?.trim() ?? "(not set)"}.`);
+      console.log("     Check the avatar in the top-right of that page before copying.");
+      console.log("");
+      console.log("  2. 2-Step Verification is off on that account, so what you made");
+      console.log("     is not really an App Password.");
+      console.log("     https://myaccount.google.com/signinoptions/twosv");
+      console.log("");
+      console.log("  3. The password was revoked, or an old one is still in the file.");
+      console.log("");
+      console.log("  4. It is the normal Gmail password rather than an App Password.");
+      console.log("");
+    }
+
+    console.log("  Setup instructions: docs/EMAIL-SETUP.md\n");
     process.exit(1);
   }
 

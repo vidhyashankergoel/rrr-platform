@@ -65,6 +65,21 @@ export interface DeliveryResult {
 
 const RESEND_TEST_SENDER = "onboarding@resend.dev";
 
+/**
+ * Domains nobody can ever verify as a sender, because nobody owns them.
+ *
+ * Setting MAIL_FROM to a free-mail address is the natural first guess — it is
+ * the address the business actually uses. But Resend (and every reputable
+ * sender) requires proof you control the sending domain, and you cannot prove
+ * control of gmail.com. The resulting 403 names the problem but not the fix,
+ * so this list lets us detect the case and fall back to something that works.
+ */
+const UNVERIFIABLE_SENDER_DOMAINS = [
+  "gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "live.com",
+  "yahoo.com", "yahoo.ca", "icloud.com", "me.com", "aol.com", "proton.me",
+  "protonmail.com", "gmx.com", "mail.com", "yandex.com", "zoho.com",
+];
+
 /** Pull the bare address out of `Name <addr@host>`. */
 export function bareAddress(value: string): string {
   const match = /<([^>]+)>/.exec(value);
@@ -99,11 +114,29 @@ export function mailConfig(): MailConfig {
 
   // Default the From to Resend's test sender, so a fresh API key with no
   // domain yet still delivers owner notifications rather than erroring.
-  const from = (
+  // Reassignable: an unverifiable sender domain is corrected below.
+  let from = (
     process.env.MAIL_FROM?.trim() ||
     (provider === "resend" ? `${company.shortName} <${RESEND_TEST_SENDER}>` : "") ||
     (provider === "smtp" ? `${company.shortName} <${process.env.SMTP_USER?.trim() ?? ""}>` : "")
   ).trim();
+
+  // Resend refuses to send from a domain you have not verified, and a
+  // free-mail domain can never be verified. Rather than let every message die
+  // with a 403, fall back to the shared test sender — which does work, just
+  // only to the account owner — and say plainly what happened and how to fix
+  // it properly.
+  const fromDomain = bareAddress(from).split("@")[1] ?? "";
+  if (provider === "resend" && UNVERIFIABLE_SENDER_DOMAINS.includes(fromDomain)) {
+    warnings.push(
+      `MAIL_FROM is ${bareAddress(from)}, and ${fromDomain} can never be verified as a sending ` +
+        `domain — nobody owns it. Falling back to ${RESEND_TEST_SENDER}, which delivers only to ` +
+        `the Resend account owner. To reach customers, verify your own domain at ` +
+        `resend.com/domains and set MAIL_FROM to an address on it, e.g. ` +
+        `"RRR Solution Providers <hello@rrrsolutionproviders.ca>".`,
+    );
+    from = `${company.shortName} <${RESEND_TEST_SENDER}>`;
+  }
 
   const ownerOnly = provider === "resend" && bareAddress(from).endsWith("@resend.dev");
 
@@ -160,13 +193,20 @@ function smtpTransport(): Transporter {
   if (cachedSmtp) return cachedSmtp;
 
   const port = Number(process.env.SMTP_PORT ?? 587);
+  // Google displays App Passwords in four space-separated groups
+  // ("abcd efgh ijkl mnop"). Pasted verbatim that is a 19-character string,
+  // and Gmail rejects it with a generic "Username and Password not accepted"
+  // that gives no hint the spaces are the cause. Strip all whitespace — an
+  // App Password never meaningfully contains any.
+  const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
+
   cachedSmtp = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
+    host: process.env.SMTP_HOST?.trim(),
     port,
     // Port 465 is implicit TLS; 587 upgrades with STARTTLS. Getting this
     // backwards produces a hang rather than an error, which is hard to debug.
     secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === "true" : port === 465,
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    auth: { user: process.env.SMTP_USER?.trim(), pass },
   });
   return cachedSmtp;
 }
