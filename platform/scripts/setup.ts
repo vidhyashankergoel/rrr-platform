@@ -3,200 +3,89 @@
  *
  *   npm run setup
  *
- * Writes platform/.env.local for you. You supply one value — the Google App
- * Password — and this generates everything else, writes the file in the right
- * shape, and then proves mail actually works.
+ * Writes platform/.env.local with everything filled in except the one value
+ * only you have — the Google App Password — then opens the file so you can
+ * paste it in.
  *
- * Why this exists: hand-editing a configuration file is where most first-time
- * setups fail, and the failure is silent. A missing quote or a stray space
- * produces a site that looks fine and never sends you an enquiry.
+ * WHY IT DOES NOT PROMPT FOR THE PASSWORD
+ * ---------------------------------------
+ * Earlier versions asked at a terminal prompt and tried to hide the
+ * keystrokes. That is genuinely hard to get right — readline redraws the
+ * whole line on every keypress, terminals differ — and when the hiding fails
+ * it fails *silently*: the secret is already on screen and in scrollback
+ * before anyone notices. That happened here, and a live App Password had to
+ * be revoked as a result.
  *
- * It never prints a secret back to the screen, and never overwrites an
- * existing file without asking.
+ * Pasting into an editor has none of those failure modes. The value never
+ * touches the terminal, never enters scrollback, and the file is created
+ * 0600 before anything is written into it. Less clever, and correct.
  */
 
-import { createInterface } from "node:readline/promises";
 import { randomBytes } from "node:crypto";
 import { existsSync, writeFileSync, readFileSync, chmodSync } from "node:fs";
-import { stdin, stdout } from "node:process";
+import { spawnSync } from "node:child_process";
+import { resolve } from "node:path";
 
 const FILE = ".env.local";
-
-const rl = createInterface({ input: stdin, output: stdout });
+const PLACEHOLDER = "PASTE_YOUR_16_CHARACTER_APP_PASSWORD_HERE";
 
 function line(text = "") {
   console.log(text);
 }
 
-/**
- * Throw away anything already sitting in the input buffer.
- *
- * People paste several commands at once. When they do, the *next* command is
- * already queued in the terminal before this prompt appears, and a naive read
- * swallows it as the answer — so `npm run mail:check` ends up submitted as an
- * App Password. Discarding what arrived before we asked is the difference
- * between a confusing failure and a working setup.
- */
-async function drainPendingInput(): Promise<void> {
-  if (!stdin.isTTY) return;
-  stdin.setRawMode(true);
-  stdin.resume();
-  await new Promise((resolve) => setTimeout(resolve, 120));
-  let discarded: Buffer | string | null;
-  // eslint-disable-next-line no-cond-assign
-  while ((discarded = stdin.read()) !== null) {
-    /* deliberately dropped */
-  }
-  stdin.setRawMode(false);
-  stdin.pause();
-}
-
-/** Reject an answer that is obviously a shell command rather than a password. */
-function looksLikeACommand(value: string): boolean {
-  return /^(npm|npx|cd|ls|git|open|sudo|brew|node)\b/.test(value.trim()) || value.includes(" -- ");
-}
-
-/** Ask without echoing — an App Password should not end up in scrollback. */
-async function askSecret(prompt: string): Promise<string> {
-  await drainPendingInput();
-  stdout.write(prompt);
-
-  // Raw mode lets us swallow the keystrokes. Where it is unavailable (a piped
-  // or non-interactive shell) fall back to a normal prompt and say so, rather
-  // than silently echoing something the user expected to be hidden.
-  if (!stdin.isTTY) {
-    stdout.write("\n  (this terminal cannot hide input — the value will be visible)\n> ");
-    const visible = await rl.question("");
-    return visible.trim();
-  }
-
-  return new Promise((resolve) => {
-    let value = "";
-    stdin.setRawMode(true);
-    stdin.resume();
-    const onData = (chunk: Buffer) => {
-      const char = chunk.toString("utf8");
-      if (char === "\n" || char === "\r" || char === "\u0004") {
-        stdin.setRawMode(false);
-        stdin.pause();
-        stdin.removeListener("data", onData);
-        stdout.write("\n");
-        resolve(value.trim());
-        return;
-      }
-      if (char === "\u0003") {
-        stdout.write("\n");
-        process.exit(130);
-      }
-      if (char === "\u007f") {
-        value = value.slice(0, -1);
-        return;
-      }
-      value += char;
-    };
-    stdin.on("data", onData);
-  });
-}
-
-async function main() {
+function main() {
   line("\n========================================");
   line(" SETUP");
   line("========================================");
-  line("");
-  line("  Run this command on its own. If you paste several commands at once,");
-  line("  the next one gets read as your answer.");
 
   if (existsSync(FILE)) {
-    line(`\n${FILE} already exists.`);
     const existing = readFileSync(FILE, "utf8");
-    const has = (key: string) => new RegExp(`^${key}=.+`, "m").test(existing);
-    line("  It currently sets: " +
-      ["SMTP_PASS", "RESEND_API_KEY", "ADMIN_TOKEN", "CONSENT_SALT", "DATABASE_URL"]
-        .filter(has)
-        .join(", ") || "  (nothing recognisable)");
-    const overwrite = await rl.question("\nReplace it? Your current one is backed up first. (y/N) ");
-    if (overwrite.trim().toLowerCase() !== "y") {
-      line("\nLeft alone. Nothing changed.\n");
-      rl.close();
-      return;
-    }
-    writeFileSync(`${FILE}.backup-${Date.now()}`, existing, { mode: 0o600 });
-    line("  Backed up.");
-  }
+    const stillPlaceholder = existing.includes(PLACEHOLDER);
 
-  // ---- The one thing only you can provide -------------------------------
-  line("\n----------------------------------------");
-  line(" Your Google App Password");
-  line("----------------------------------------");
-  line("");
-  line("  This is a 16-character password for this app alone. It is NOT your");
-  line("  Gmail password, and you can revoke it without affecting anything else.");
-  line("");
-  line("  1. Turn on 2-Step Verification (required, App Passwords need it):");
-  line("     https://myaccount.google.com/signinoptions/twosv");
-  line("  2. Create one named 'RRR site':");
-  line("     https://myaccount.google.com/apppasswords");
-  line("  3. Paste it below. Spaces are fine — they are stripped.");
-  line("");
-
-  const raw = await askSecret("  App Password: ");
-
-  if (looksLikeACommand(raw)) {
-    line("\n  ⚠ That looked like a shell command, not a password.");
+    line(`\n${FILE} already exists.`);
+    line(
+      stillPlaceholder
+        ? "  The password placeholder has not been replaced yet."
+        : "  It looks configured.",
+    );
     line("");
-    line("  This usually means several commands were pasted at once, and the");
-    line("  next one was read as the answer. Nothing has been written.");
+    line("  Nothing has been changed. To start fresh, delete it first:");
     line("");
-    line("  Run this on its own, wait for the prompt, then paste the password:");
+    line(`      rm ${FILE} && npm run setup`);
     line("");
-    line("      npm run setup");
-    line("");
-    rl.close();
-    process.exit(1);
-  }
-
-  const appPassword = raw.replace(/\s+/g, "");
-
-  if (!appPassword) {
-    line("\nNothing entered. Run `npm run setup` again when you have it.\n");
-    rl.close();
     return;
   }
-  if (appPassword.length !== 16) {
-    line(`\n  ⚠ That is ${appPassword.length} characters; a Google App Password is 16.`);
-    const carryOn = await rl.question("  Continue anyway? (y/N) ");
-    if (carryOn.trim().toLowerCase() !== "y") {
-      line("\nStopped. Nothing written.\n");
-      rl.close();
-      return;
-    }
-  }
 
-  // ---- Addresses ---------------------------------------------------------
-  const defaultFrom = "rrrsolutionprovider@gmail.com";
-  const from = (await rl.question(`\n  Gmail address to send from [${defaultFrom}]: `)).trim() || defaultFrom;
-  const to = (await rl.question(`  Inbox where enquiry alerts land [${from}]: `)).trim() || from;
-
-  // ---- Generated for you -------------------------------------------------
   // 32 random bytes each. These never need to be memorable, so there is no
-  // reason for them to be anything a person chose.
+  // reason for a person to choose them.
   const adminToken = randomBytes(32).toString("hex");
   const consentSalt = randomBytes(32).toString("hex");
 
-  const contents = `# Written by \`npm run setup\`. Never commit this file.
-# It is excluded by .gitignore, and CI fails the build if a secret is committed.
+  const contents = `# Local configuration. NEVER commit this file.
+# It is git-ignored, and CI fails the build if a secret is ever committed.
+#
+# ONE THING TO DO: replace the placeholder on the SMTP_PASS line below with
+# your Google App Password, then save and close this file.
+#
+#   Get one here (2-Step Verification must be on first):
+#   https://myaccount.google.com/apppasswords
+#
+# Then run:  npm run mail:check -- --send
 
-# ---- Email -----------------------------------------------------------------
+# ---- Email ------------------------------------------------------------------
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=${from}
-SMTP_PASS=${appPassword}
-MAIL_FROM=RRR Solution Providers <${from}>
+SMTP_USER=rrrsolutionprovider@gmail.com
 
-# Where enquiry and booking alerts are delivered. Change this freely.
-MAIL_TO=${to}
+# <<< REPLACE THE VALUE ON THIS LINE >>>
+SMTP_PASS=${PLACEHOLDER}
 
-# ---- Secrets ---------------------------------------------------------------
+MAIL_FROM=RRR Solution Providers <rrrsolutionprovider@gmail.com>
+
+# Where enquiry and booking alerts are delivered. Change freely.
+MAIL_TO=rrrsolutionprovider@gmail.com
+
+# ---- Secrets (generated for you — no action needed) --------------------------
 # ADMIN_TOKEN is the password for the admin console at /admin.
 ADMIN_TOKEN=${adminToken}
 
@@ -204,10 +93,10 @@ ADMIN_TOKEN=${adminToken}
 # deliberately stores nothing rather than store something reversible.
 CONSENT_SALT=${consentSalt}
 
-# ---- Database --------------------------------------------------------------
+# ---- Database ----------------------------------------------------------------
 DATABASE_URL=file:./dev.db
 
-# ---- Site ------------------------------------------------------------------
+# ---- Site --------------------------------------------------------------------
 NEXT_PUBLIC_SITE_URL=https://www.rrrsolutionproviders.ca
 CASL_UNSUBSCRIBE_BASE=https://www.rrrsolutionproviders.ca/unsubscribe
 
@@ -216,32 +105,60 @@ CASL_UNSUBSCRIBE_BASE=https://www.rrrsolutionproviders.ca/unsubscribe
 # CASL_MAILING_ADDRESS=RRR Solution Providers Inc., <street>, Toronto, ON <postal>, Canada
 `;
 
-  // 0600: readable only by you. A configuration file holding a live password
-  // should not be world-readable on a shared machine.
+  // Created restricted BEFORE anything is written, so there is never a window
+  // in which a world-readable file holds a credential.
   writeFileSync(FILE, contents, { mode: 0o600 });
   chmodSync(FILE, 0o600);
 
-  line("\n----------------------------------------");
-  line(` Written ${FILE}`);
-  line("----------------------------------------");
-  line("  ✓ Email configured");
+  line(`\n  ✓ Created ${FILE}`);
   line("  ✓ Admin console password generated");
   line("  ✓ Consent salt generated");
-  line("  ✓ File permissions set so only you can read it");
+  line("  ✓ Readable only by you (0600)");
   line("");
-  line("  Your admin console password is in the file as ADMIN_TOKEN.");
-  line("  You will need it to sign in at /admin.");
+  line("----------------------------------------");
+  line(" ONE thing left for you");
+  line("----------------------------------------");
   line("");
-  line("Now run this to prove mail works:");
+  line("  The file is opening now. Find this line:");
   line("");
-  line("    npm run mail:check -- --send");
+  line(`      SMTP_PASS=${PLACEHOLDER}`);
   line("");
-  line("An email should arrive within a minute. Check spam on the first one.\n");
+  line("  Replace the placeholder with your 16-character Google App Password.");
+  line("  Spaces are fine. Save and close.");
+  line("");
+  line("  No App Password yet? 2-Step Verification must be on first:");
+  line("      https://myaccount.google.com/signinoptions/twosv");
+  line("  Then create one named 'RRR site':");
+  line("      https://myaccount.google.com/apppasswords");
+  line("");
+  line("  Then run:");
+  line("");
+  line("      npm run mail:check -- --send");
+  line("");
 
-  rl.close();
+  // Open it in whatever the platform uses. If that fails — a headless shell,
+  // no configured editor — say so and print the path, rather than appearing
+  // to have done something that did not happen.
+  const path = resolve(FILE);
+  const opener =
+    process.platform === "darwin"
+      ? { cmd: "open", args: ["-e", path] }
+      : process.platform === "win32"
+        ? { cmd: "notepad", args: [path] }
+        : { cmd: "xdg-open", args: [path] };
+
+  const opened = spawnSync(opener.cmd, opener.args, { stdio: "ignore" });
+  if (opened.error || opened.status !== 0) {
+    line("  (Could not open an editor automatically. Open it yourself:)");
+    line("");
+    line(`      ${path}`);
+    line("");
+  }
 }
 
-void main().catch((err) => {
+try {
+  main();
+} catch (err) {
   console.error("\nSetup failed:", err instanceof Error ? err.message : err);
   process.exit(1);
-});
+}
