@@ -152,6 +152,32 @@ const leaky = sourceFiles.filter((f) => credentialShaped.test(read(f)));
 check("no credential-shaped string in source", leaky.length === 0, leaky.join(", "));
 
 // ===========================================================================
+heading("Production schema");
+// ===========================================================================
+// Two schema files exist because Prisma fixes the datasource provider at the
+// schema level. If a model is added to one and not the other, production
+// deploys a database missing a table — and that surfaces as a runtime error
+// in front of a customer rather than a build failure.
+{
+  const dev = read("prisma/schema.prisma");
+  const prod = read("prisma/schema.production.prisma");
+  const normalise = (schema: string) =>
+    schema
+      .slice(schema.indexOf("generator client {"))
+      .replace(/provider\s*=\s*"(sqlite|postgresql)"/g, 'provider = "DB"')
+      .trim();
+
+  check("development schema uses SQLite", /provider\s*=\s*"sqlite"/.test(dev));
+  check("production schema uses Postgres", /provider\s*=\s*"postgresql"/.test(prod));
+  check(
+    "the two schemas have not drifted",
+    normalise(dev) === normalise(prod),
+    "run: npm run db:sync-production",
+  );
+  check("the production schema is marked generated", /GENERATED — do not edit/.test(prod));
+}
+
+// ===========================================================================
 heading("Headers");
 // ===========================================================================
 const nextConfig = read("next.config.ts");

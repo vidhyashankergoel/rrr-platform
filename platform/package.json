@@ -12,6 +12,7 @@
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
     "db:push": "prisma db push",
+    "db:sync-production": "tsx scripts/sync-production-schema.ts",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "mail:check": "tsx scripts/mail-check.ts",
