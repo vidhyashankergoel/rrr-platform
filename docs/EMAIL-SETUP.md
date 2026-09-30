@@ -1,5 +1,22 @@
 # Email setup
 
+> ## ✅ WORKING — Resend, sending from rrrsolutionproviders.ca
+>
+> | | |
+> |---|---|
+> | Provider | Resend |
+> | Sends from | `hello@rrrsolutionproviders.ca` |
+> | Notifications land in | `rrrsolutionproviders@gmail.com` |
+> | Domain | **verified**, 4/4 DNS records |
+> | DKIM, SPF, return path | all present and resolving |
+>
+> Customers now receive acknowledgements from the company's own domain,
+> DKIM-signed and SPF-aligned — which is what keeps them out of spam.
+>
+> The sections below record how it was set up, including the Gmail App
+> Password route that was abandoned. `npm run mail:check` is the fastest way
+> to confirm it is still working.
+
 How to start receiving enquiries and bookings. Two options — read §1, pick one,
 then follow that section only.
 

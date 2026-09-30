@@ -17,6 +17,12 @@ Where the code lives, why it is not on GitHub Pages, and how it is hosted.
 > `package.json`, and fails — and a failed production deployment also blocks
 > domain changes, which is how it first showed up.
 >
+> **Deploy with `git push`.** Root Directory is `platform`, which means the
+> Vercel CLI must be run from the REPOSITORY ROOT, not from inside
+> `platform/` — from there it looks for `platform/platform` and fails in
+> three seconds with "The specified Root Directory does not exist". Pushing
+> is the intended path anyway: it builds and goes live in about 45 seconds.
+>
 > Nameservers stay at GoDaddy deliberately. Moving them to Vercel would pull
 > all DNS across and break the `_dmarc` record, and make the Resend records
 > harder to add later. Vercel marks the A-record route `[recommended]`.
