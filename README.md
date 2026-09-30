@@ -1,5 +1,10 @@
 # RRR Solution Providers
 
+**Live: https://www.rrrsolutionproviders.ca**
+
+Deployed on Vercel (Cleveland, co-located with the database), Postgres on
+Neon, mail through Resend. `docs/DEPLOY.md` covers the setup.
+
 Website, customer-facing AI assistant, agent system and database for a Canadian
 cloud and platform engineering firm.
 

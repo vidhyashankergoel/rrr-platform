@@ -1,6 +1,25 @@
 # Deploying
 
-Where the code lives, why it is not on GitHub Pages, and how to put it online.
+Where the code lives, why it is not on GitHub Pages, and how it is hosted.
+
+> ## ✅ LIVE — https://www.rrrsolutionproviders.ca
+>
+> | | |
+> |---|---|
+> | Hosting | Vercel, project `rrr-platform`, region `cle1` |
+> | Database | Neon Postgres, `us-east-2` — same region as the functions |
+> | Mail | Resend |
+> | DNS | GoDaddy: `A @` and `A www` both to `76.76.21.21` |
+> | TLS | Issued for both apex and www; `http` 308s to `https` |
+>
+> **Root Directory is set to `platform`** in the Vercel project. Without it a
+> Git-triggered build runs `npm ci` at the repository root, finds no
+> `package.json`, and fails — and a failed production deployment also blocks
+> domain changes, which is how it first showed up.
+>
+> Nameservers stay at GoDaddy deliberately. Moving them to Vercel would pull
+> all DNS across and break the `_dmarc` record, and make the Resend records
+> harder to add later. Vercel marks the A-record route `[recommended]`.
 
 ---
 

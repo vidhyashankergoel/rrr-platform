@@ -10,16 +10,21 @@ what "done" looks like.
 |---|---|
 | Domain `rrrsolutionproviders.ca` | ✅ bought, active to 2027-09-22 |
 | Code on GitHub, tests, CI | ✅ done and green |
-| Email — can you receive enquiries? | ❌ **no** |
-| Database ready for hosting | ❌ still SQLite |
-| Site live on the internet | ❌ not yet |
+| Email — can you receive enquiries? | ✅ **yes** — Resend, delivering |
+| Database | ✅ Postgres on Neon |
+| **Site live on your own domain** | ✅ **https://www.rrrsolutionproviders.ca** |
+| Customers receive acknowledgements | ❌ needs the domain verified in Resend |
 | Company legally incorporated | ❌ not yet |
+
+**Everything needed to take an enquiry now works.** Someone can find the site,
+read the prices, ask Ada a question, book a call or send an enquiry — and you
+are emailed about it.
 
 ---
 
-# TODAY — 30 minutes
+# DONE — no action needed
 
-These three are worth doing before anything else.
+Kept for reference. Everything in this section is finished.
 
 ## ☐ 1. Lock down the domain (5 min)
 
@@ -124,7 +129,7 @@ passwords.
 
 ---
 
-# THIS WEEK — getting the site live
+# DONE — the site is live
 
 ## ☐ 4. Create a free database (5 min)
 
