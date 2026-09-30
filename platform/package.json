@@ -13,6 +13,8 @@
     "typecheck": "tsc --noEmit",
     "db:push": "prisma db push",
     "db:sync-production": "tsx scripts/sync-production-schema.ts",
+    "db:production": "tsx scripts/db-production.ts",
+    "db:split-urls": "tsx scripts/split-database-urls.ts",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "mail:check": "tsx scripts/mail-check.ts",

@@ -73,8 +73,14 @@ const nextConfig: NextConfig = {
    * silently stops working. It looks exactly like a code bug and is not one.
    *
    * Separate directories make that impossible.
+   *
+   * That reasoning is entirely about a developer's laptop, where a dev server
+   * and a build can run at the same time. On Vercel nothing else is running,
+   * and the platform looks for `.next` by name — a custom directory there just
+   * fails the deploy with "output directory not found". So the split applies
+   * locally only.
    */
-  distDir: isDev ? ".next" : ".next-build",
+  distDir: isDev || process.env.VERCEL ? ".next" : ".next-build",
 
   reactStrictMode: true,
   poweredByHeader: false,

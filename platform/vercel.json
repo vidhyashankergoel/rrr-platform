@@ -4,7 +4,7 @@
   "buildCommand": "prisma generate --schema=prisma/schema.production.prisma && next build",
   "installCommand": "npm ci",
   "regions": [
-    "yyz1"
+    "cle1"
   ],
   "headers": [
     {

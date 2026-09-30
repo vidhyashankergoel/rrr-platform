@@ -16,3 +16,4 @@ next-env.d.ts
 prisma/sandbox.db*
 .next-build
 .env*
+.neon
