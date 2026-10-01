@@ -49,7 +49,11 @@ const structuredData = {
     addressCountry: "CA",
   },
   priceRange: "$$$",
-  sameAs: [company.linkedin, company.githubOrg, company.dockerHub].filter(Boolean),
+  // The company page leads: this is Organization structured data, so the
+  // organization's own profile is the one search engines should tie the
+  // entity to. The founder's profile stays because it is the longer-lived
+  // public presence and corroborates the same entity.
+  sameAs: [company.linkedinCompany, company.linkedin, company.githubOrg, company.dockerHub].filter(Boolean),
   knowsAbout: [
     "Amazon Web Services",
     "Microsoft Azure",

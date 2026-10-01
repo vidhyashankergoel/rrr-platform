@@ -55,7 +55,7 @@ export const company = {
   country: "Canada",
 
   linkedin: "https://www.linkedin.com/in/vidhyashankergoel/",
-  linkedinCompany: "", // fill in after creating the company page
+  linkedinCompany: "https://www.linkedin.com/company/rrr-solution-providers/",
   githubOrg: "https://github.com/vidhyashankergoel",
   githubPersonal: "https://github.com/vidhya101",
   dockerHub: "https://hub.docker.com/u/vidhya101",
@@ -69,6 +69,19 @@ export const company = {
   paymentTermsDays: 30,
   lateInterestAnnualPct: 18,
 } as const;
+
+/**
+ * Where a LinkedIn link on the site should point.
+ *
+ * The company page once it exists, the founder's profile until then. Without
+ * the fallback, clearing `linkedinCompany` would render an empty href rather
+ * than degrade to the profile — and a dead social link on a consultancy's
+ * footer is the kind of small broken thing a careful buyer notices.
+ *
+ * The founder's profile is still linked in its own right from the proof page,
+ * where it is the writing rather than the company that is being pointed at.
+ */
+export const linkedinUrl: string = company.linkedinCompany || company.linkedin;
 
 export const currencyFromDollars = (dollars: number) =>
   new Intl.NumberFormat("en-CA", {

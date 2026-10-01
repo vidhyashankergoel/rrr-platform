@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { company } from "@/lib/company";
+import { company, linkedinUrl } from "@/lib/company";
 import { PageHead } from "@/components/Bits";
 import ContactForm from "@/components/ContactForm";
 import BookCallButton from "@/components/BookCall";
@@ -72,7 +72,7 @@ export default function ContactPage() {
                 </span>
               </a>
 
-              <a className="contact-row" href={company.linkedin} target="_blank" rel="noopener noreferrer">
+              <a className="contact-row" href={linkedinUrl} target="_blank" rel="noopener noreferrer">
                 <span className="contact-row__ico">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5M3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.82-2.05 3.75-2.05C20.4 8.65 21 10.9 21 14v7h-4v-6.2c0-1.5 0-3.4-2.1-3.4s-2.4 1.6-2.4 3.3V21H9z" />
