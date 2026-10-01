@@ -57,6 +57,7 @@ exact dimensions, so there is nothing to export or resize:
 | `brand/linkedin/logo-300-square.png` | 300 × 300 | Only if the rounded corners look wrong against a card in some view. |
 | `brand/linkedin/cover-1128x376.png` | 1128 × 376 | **The banner. Use this one.** |
 | `brand/linkedin/cover-2256x752.png` | 2256 × 752 | Same banner at 2×, if the first looks soft on a retina display. |
+| `brand/linkedin/cover-1128x376.jpg` | 1128 × 376 | JPEG of the same banner. Try this if the PNG is rejected. |
 | `brand/linkedin/cover-1128x191.png` | 1128 × 191 | The dimension LinkedIn documents. Kept, but it failed to upload — see below. |
 
 > **Why the banner is 376 tall and not the documented 191.**
@@ -71,6 +72,18 @@ exact dimensions, so there is nothing to export or resize:
 > middle and every line survives. The design does not depend on which of the
 > two LinkedIn picks, which is the point — guessing the right number once is
 > luck; surviving either is a design decision.
+>
+> **What the network trace actually showed.** The image upload is not the
+> problem. The `PUT` to `company-background_sourceImage` returns **201**, and
+> the filename in the request decodes to the file that was picked — so the
+> bytes reach LinkedIn intact. What fails is the GraphQL mutation that attaches
+> the uploaded image to the Page, which returns HTTP 200 with the failure in
+> the response body, which is why the UI can only say "please try again".
+>
+> That rules out dimensions, file size and format as the cause, and points at
+> something on LinkedIn's side. If it is still failing later, the things worth
+> trying in order are: the JPEG, zooming in within the crop dialog until no
+> empty area is included in the crop, and simply waiting a day.
 
 Website: `https://www.rrrsolutionproviders.ca`
 
