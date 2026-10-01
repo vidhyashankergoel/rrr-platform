@@ -50,7 +50,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="table-scroll">
+          <div className="table-scroll table-scroll--cards">
             <table>
               <caption className="visually-hidden">
                 Fixed-scope engagements with price ranges and durations in Canadian dollars
@@ -65,23 +65,23 @@ export default function PricingPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td>
+                  <td data-label="Engagement">
                     <strong>{auditOffer.name}</strong>
                     <br />
-                    <span style={{ fontSize: ".85rem" }}>The low-risk way to start</span>
+                    <span className="cell-sub" style={{ fontSize: ".85rem" }}>The low-risk way to start</span>
                   </td>
-                  <td className="num">{money(auditOffer.price)}</td>
-                  <td className="num">{auditOffer.durationLabel}</td>
-                  <td>Short</td>
+                  <td className="num" data-label="Price (CAD)">{money(auditOffer.price)}</td>
+                  <td className="num" data-label="Duration">{auditOffer.durationLabel}</td>
+                  <td data-label="Term">Short</td>
                 </tr>
                 {services.map((s) => (
                   <tr key={s.id}>
-                    <td>
+                    <td data-label="Engagement">
                       <strong>{s.name}</strong>
                       <br />
-                      <span style={{ fontSize: ".85rem" }}>{s.blurb.slice(0, 110)}…</span>
+                      <span className="cell-sub" style={{ fontSize: ".85rem" }}>{s.blurb.slice(0, 110)}…</span>
                     </td>
-                    <td className="num">
+                    <td className="num" data-label="Price (CAD)">
                       {s.priceLow === s.priceHigh ? money(s.priceLow) : `${money(s.priceLow)} – ${money(s.priceHigh)}`}
                       {s.priceNote && (
                         <>
@@ -92,8 +92,8 @@ export default function PricingPage() {
                         </>
                       )}
                     </td>
-                    <td className="num">{s.durationLabel}</td>
-                    <td>{s.term === "short" ? "Short" : "Long"}</td>
+                    <td className="num" data-label="Duration">{s.durationLabel}</td>
+                    <td data-label="Term">{s.term === "short" ? "Short" : "Long"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -155,7 +155,7 @@ export default function PricingPage() {
               up front — we stop at it rather than sailing past.
             </p>
           </div>
-          <div className="table-scroll">
+          <div className="table-scroll table-scroll--cards">
             <table>
               <caption className="visually-hidden">Hourly rates by role in Canadian dollars</caption>
               <thead>
@@ -168,9 +168,9 @@ export default function PricingPage() {
               <tbody>
                 {rateCard.map((r) => (
                   <tr key={r.role}>
-                    <td><strong>{r.role}</strong></td>
-                    <td className="num">{r.rate}</td>
-                    <td>{r.note}</td>
+                    <td data-label="Role"><strong>{r.role}</strong></td>
+                    <td className="num" data-label="Rate (CAD/hr)">{r.rate}</td>
+                    <td data-label="Typically used for">{r.note}</td>
                   </tr>
                 ))}
               </tbody>

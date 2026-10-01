@@ -949,6 +949,77 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .section-head { margin-bottom: var(--sp-5); }
 }
 
+/* ---------- Tables as cards on a phone ------------------------------------
+   `table` carries `min-width: 680px` inside an `overflow-x: auto` wrapper, so
+   on a 375px screen a reader had to swipe sideways to see the price — on the
+   pricing page, where the price is the entire reason they came.
+
+   A horizontal scroller inside a vertical scroller is also the worst
+   interaction on a touch screen: the gesture is ambiguous, and whichever axis
+   the browser guesses is the one the reader did not want.
+
+   So below 720px each row becomes its own card and each cell prints its
+   column name beside the value, taken from `data-label`. The header row is
+   hidden visually but kept in the DOM, so the table remains a table to a
+   screen reader and the semantics are untouched — this is presentation only.
+   ------------------------------------------------------------------------ */
+@media (max-width: 720px) {
+  .table-scroll--cards { overflow-x: visible; border: 0; background: transparent; }
+  .table-scroll--cards table { min-width: 0; width: 100%; display: block; font-size: .9rem; }
+  .table-scroll--cards thead { display: none; }
+  .table-scroll--cards tbody { display: block; }
+
+  .table-scroll--cards tr {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: var(--sp-4);
+    margin-bottom: var(--sp-3);
+  }
+  .table-scroll--cards tr:last-child { margin-bottom: 0; }
+
+  .table-scroll--cards td {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 38%) 1fr;
+    gap: var(--sp-3);
+    align-items: baseline;
+    padding: .4rem 0;
+    border: 0;
+    text-align: left;
+  }
+  .table-scroll--cards td + td { border-top: 1px solid var(--line-soft); }
+
+  .table-scroll--cards td::before {
+    content: attr(data-label);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  /* A cell with no label spans both columns rather than leaving a gap. */
+  .table-scroll--cards td:not([data-label])::before { content: none; }
+  .table-scroll--cards td:not([data-label]) { grid-template-columns: 1fr; }
+
+  /* `.num` right-aligns for column scanning, which is meaningless once the
+     value sits beside its own label. */
+  .table-scroll--cards td.num { text-align: left; }
+
+  /* The truncated blurb under each engagement name is dropped here. It is a
+     110-character slice ending in an ellipsis — tolerable as a hint in a wide
+     table cell, just noise in a card, and it was costing four screens across
+     seventeen rows. The full text is on /services, which this table links a
+     reader to anyway. */
+  .table-scroll--cards .cell-sub { display: none; }
+
+  /* "Term" reads Short or Long, which the Duration directly above it already
+     tells you — it exists so the wide table can be sorted, and a card cannot
+     be sorted. Seventeen rows of it was most of a screen spent restating the
+     previous line. It stays in the DOM and returns on wider screens. */
+  .table-scroll--cards td[data-label="Term"] { display: none; }
+}
+
 /* ---------- Print ---------- */
 @media print {
   .site-header, .site-footer, .cta-band, .nav__actions { display: none; }
