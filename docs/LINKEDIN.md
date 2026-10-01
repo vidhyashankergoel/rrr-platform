@@ -114,62 +114,50 @@ Tick it, then **Create page**.
 
 ---
 
-## About section — paste verbatim
+## Overview — paste verbatim
 
-> We build, migrate and operate cloud platforms for Canadian organizations —
-> AWS, Azure and GCP, Kubernetes, Terraform, CI/CD and observability.
+**Edit Page → Details → Overview.** The field is capped at **2,000
+characters** and the text below is 1996, which is the reason it is
+shorter than the website's version of the same copy. The earlier draft here
+was 2,473 and LinkedIn would have silently cut it off mid-sentence.
+
+Two things were dropped rather than compressed, because LinkedIn already has
+dedicated fields for them and repeating them wastes the budget:
+
+- the service list — that is the **Specialties** field below
+- the contact block — those are the **Website URL** and **Phone** fields on
+  the same Details tab
+
+The field is plain text. Markdown does not render, which is why the section
+headings are in capitals rather than bold.
+
+> We build, migrate and operate cloud platforms for Canadian organizations — AWS, Azure and GCP, Kubernetes, Terraform, CI/CD and observability.
 >
-> **What makes us different**
+> WHAT MAKES US DIFFERENT
 >
-> **We publish our prices.** Every service on our site carries a price range in
-> Canadian dollars and a realistic duration. You can build a budget before you
-> speak to anyone.
+> We publish our prices. Every service on our site carries a price range in Canadian dollars and a realistic duration, so you can budget before you speak to anyone.
 >
-> **You own everything.** All work lands in your repositories and your cloud
-> accounts, with runbooks and recorded handover sessions. No proprietary
-> wrapper, no component only we can renew. The test we hold ourselves to: your
-> team can run the platform the day we leave.
+> You own everything. All work lands in your repositories and your cloud accounts, with runbooks and recorded handover sessions. No proprietary wrapper, no component only we can renew. The test we hold ourselves to: your team can run the platform the day we leave.
 >
-> **We tell you when you don't need us.** If a two-day fix solves it, we say so
-> on the call rather than shaping it into a six-week engagement.
+> We tell you when you don't need us. If a two-day fix solves it, we say so on the call rather than shaping it into a six-week engagement.
 >
-> **Experience behind the work**
+> EXPERIENCE BEHIND THE WORK
 >
-> • 180+ microservices moved from on-premises to AWS with zero service
-> disruption — a major Canadian international airport authority
-> • 14 fragmented network connections consolidated into a single Azure Virtual
-> WAN hub, 40% cost reduction — a multinational general insurance group
-> • 10 TB+ of Oracle financial data automated for backup, patching and recovery
-> under regulated change control — a global retail and investment bank
-> • Detection and resolution time cut from hours to minutes, and a churn model
-> put into production on Kubernetes — Rugby Canada
-> • Undocumented AWS production infrastructure reverse-engineered into
-> version-controlled Terraform — Digitalogy LLC
+> • 180+ microservices moved from on-premises to AWS with zero service disruption — a major Canadian international airport authority
+> • 14 fragmented network connections consolidated into a single Azure Virtual WAN hub, 40% cost reduction — a multinational general insurance group
+> • 10 TB+ of Oracle financial data automated for backup, patching and recovery under regulated change control — a global retail and investment bank
+> • Detection and resolution time cut from hours to minutes, and a churn model put into production on Kubernetes — Rugby Canada
+> • Undocumented AWS production infrastructure reverse-engineered into version-controlled Terraform — Digitalogy LLC
 >
-> The first three were delivered by our founder in the course of employment
-> with a global IT services firm. They are evidence of hands-on capability, not
-> a claim of endorsement or of this company's corporate track record.
+> The first three were delivered by our founder in the course of employment with a global IT services firm. They are evidence of hands-on capability, not a claim of endorsement or of this company's corporate track record.
 >
-> **What we do**
+> HOW WE START
 >
-> Cloud landing zones · On-premises to cloud migration · Kubernetes platforms
-> (EKS, AKS, GKE, OpenShift, kubeadm) · Service mesh · Terraform and Ansible ·
-> CI/CD and GitOps · Observability (Prometheus, Grafana, Loki, Mimir, Datadog)
-> · Database setup and migration · MLOps · Security and compliance hardening ·
-> Cloud cost optimization
+> A free 30-minute scoping call, or a fixed-price infrastructure audit at $4,500 over five business days. Read-only access, a written report, and you keep the report whatever happens next.
 >
-> **How we start**
+> Certified Kubernetes Administrator · Microsoft Certified Azure Developer Associate · Eligible for Canadian Reliability Status
 >
-> A free 30-minute scoping call, or a fixed-price infrastructure audit at
-> $4,500 over five business days. Read-only access, a written report, and you
-> keep the report regardless of what happens next.
->
-> Certified Kubernetes Administrator · Microsoft Certified Azure Developer
-> Associate · Eligible for Canadian Reliability Status
->
-> Toronto, Ontario 🇨🇦
-> rrrsolutionproviders@gmail.com · +1 (437) 366-4623
-> https://www.rrrsolutionproviders.ca
+> Toronto, Ontario
 
 ---
 
