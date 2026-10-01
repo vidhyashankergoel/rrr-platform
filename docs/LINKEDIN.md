@@ -55,7 +55,22 @@ exact dimensions, so there is nothing to export or resize:
 |---|---|---|
 | `brand/linkedin/logo-300.png` | 300 × 300 | The logo. Use this one. |
 | `brand/linkedin/logo-300-square.png` | 300 × 300 | Only if the rounded corners look wrong against a card in some view. |
-| `brand/linkedin/cover-1128x191.png` | 1128 × 191 | The banner. |
+| `brand/linkedin/cover-1128x376.png` | 1128 × 376 | **The banner. Use this one.** |
+| `brand/linkedin/cover-2256x752.png` | 2256 × 752 | Same banner at 2×, if the first looks soft on a retina display. |
+| `brand/linkedin/cover-1128x191.png` | 1128 × 191 | The dimension LinkedIn documents. Kept, but it failed to upload — see below. |
+
+> **Why the banner is 376 tall and not the documented 191.**
+>
+> LinkedIn's own guidance says 1128 × 191, and a 191-tall image is what the
+> first version of this produced. Uploading it returned *"Cover image upload
+> failed. Please try again."* — the crop dialog frames a much taller area, and
+> the image sat letterboxed inside it with black bars above and below.
+>
+> 1128 × 376 fills that frame. The content is centred vertically with margin
+> on both sides, so if LinkedIn does crop back to a 191-tall band it takes the
+> middle and every line survives. The design does not depend on which of the
+> two LinkedIn picks, which is the point — guessing the right number once is
+> luck; surviving either is a design decision.
 
 Website: `https://www.rrrsolutionproviders.ca`
 
