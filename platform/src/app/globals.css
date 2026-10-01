@@ -856,6 +856,47 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .reviews__proof { gap: var(--sp-3); }
 }
 
+/* ---------- Founder card --------------------------------------------------- */
+.founder { display: flex; flex-direction: column; gap: var(--sp-4); }
+.founder__head { display: flex; align-items: center; gap: var(--sp-4); }
+
+.founder__photo {
+  width: 92px; height: 92px; flex: none; border-radius: 50%;
+  object-fit: cover; object-position: center top;
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 2px var(--accent-500), var(--shadow-2);
+}
+.founder__photo--initials {
+  display: grid; place-items: center;
+  background: var(--brand-700); color: #fff;
+  font-weight: 800; font-size: 1.6rem; letter-spacing: .02em;
+}
+
+.founder__id { min-width: 0; }
+.founder__name { margin: 0 0 .1rem; font-size: var(--step-1); }
+.founder__role { margin: 0 0 .15rem; color: var(--accent-500); font-weight: 650; font-size: .92rem; }
+.founder__loc { margin: 0; font-size: .8rem; color: var(--text-3); }
+.founder__bio { margin: 0; font-size: .92rem; }
+.founder__certs { margin: 0; }
+
+.founder__contact {
+  list-style: none; margin: 0; padding: var(--sp-4) 0 0;
+  border-top: 1px solid var(--line-soft);
+  display: flex; flex-direction: column; gap: .55rem;
+}
+.founder__contact li { display: flex; align-items: center; gap: .6rem; }
+.founder__contact svg { width: 16px; height: 16px; flex: none; color: var(--accent-500); }
+.founder__contact a {
+  font-size: .88rem; color: var(--text-2); text-decoration: none;
+  overflow-wrap: anywhere; transition: color .15s;
+}
+.founder__contact a:hover { color: var(--accent-500); text-decoration: underline; }
+
+@media (max-width: 480px) {
+  .founder__head { gap: var(--sp-3); }
+  .founder__photo { width: 72px; height: 72px; }
+}
+
 /* ---------- Print ---------- */
 @media print {
   .site-header, .site-footer, .cta-band, .nav__actions { display: none; }

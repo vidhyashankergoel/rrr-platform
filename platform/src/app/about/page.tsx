@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { company } from "@/lib/company";
 import { DELIVERY_ORG } from "@/lib/agents/delivery-org";
 import { PageHead, CtaBand } from "@/components/Bits";
+import FounderCard from "@/components/FounderCard";
 
 export const metadata: Metadata = {
   title: "About",
@@ -18,10 +19,20 @@ export const metadata: Metadata = {
 const people = [
   {
     name: "Vidhya Shanker Goel",
-    role: "Founder & Principal Platform Engineer",
-    location: "Toronto, ON",
-    bio: "Eight-plus years of production infrastructure across banking, aviation, insurance and AI research. Led the migration of 180+ microservices to AWS for the Greater Toronto Airports Authority with zero service disruption, and has led engineering teams of four and eight.",
-    certs: ["CKA", "AZ-203", "AZ-900", "Oracle OCP"],
+    // Matches the LinkedIn profile exactly. A buyer who checks both and finds
+    // two different titles has learned something they should not have to.
+    role: "Founder & Principal Cloud Engineer",
+    location: "Toronto, Ontario",
+    // The client was named here while ATTRIBUTION_MODE is "descriptive" and
+    // every other surface describes them generically. One page naming what the
+    // rest of the site withholds is worse than either choice made consistently.
+    bio: "Eight-plus years of production infrastructure across banking, aviation, insurance and AI research. Led the migration of 180+ microservices to AWS for a major Canadian international airport authority with zero service disruption, and has led engineering teams of four and eight.",
+    // AZ-203 was retired in 2020 and replaced by AZ-204. A dead exam number is
+    // the kind of detail a diligent buyer checks — and it is the diligent one
+    // you want to win.
+    certs: ["CKA", "Azure Developer Associate", "AZ-900", "Oracle OCP"],
+    photo: "/founder.jpg",
+    linkedin: company.linkedin,
   },
 ];
 
@@ -52,33 +63,7 @@ export default function AboutPage() {
           </div>
           <div className="grid grid-3">
             {people.map((p) => (
-              <article className="card" key={p.name}>
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: "50%",
-                    display: "grid",
-                    placeItems: "center",
-                    background: "var(--brand-700)",
-                    color: "#fff",
-                    fontWeight: 800,
-                    fontSize: "1.3rem",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                </div>
-                <h3 style={{ marginBottom: ".15rem" }}>{p.name}</h3>
-                <p style={{ color: "var(--accent-500)", fontWeight: 650, marginBottom: ".15rem" }}>{p.role}</p>
-                <p style={{ fontSize: ".82rem", color: "var(--text-3)" }}>{p.location}</p>
-                <p>{p.bio}</p>
-                <div className="tags">
-                  {p.certs.map((c) => (
-                    <span className="tag tag--accent" key={c}>{c}</span>
-                  ))}
-                </div>
-              </article>
+              <FounderCard person={p} key={p.name} />
             ))}
 
             <article className="card" style={{ background: "var(--bg-alt)", border: 0 }}>
