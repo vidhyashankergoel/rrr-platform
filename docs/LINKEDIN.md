@@ -73,18 +73,40 @@ re-running the export described in `brand/linkedin/cover.svg`'s source.
 
 **linkedin.com/company/setup/new** → **Company**
 
-| Field | Value |
-|---|---|
-| Name | `RRR Solution Providers` |
-| Public URL | `linkedin.com/company/rrr-solution-providers` |
-| Website | `https://www.rrrsolutionproviders.ca` |
-| Industry | `IT Services and IT Consulting` |
-| Company size | `1-10 employees` |
-| Company type | `Privately Held` |
-| Logo | the 300 × 300 PNG |
-| Tagline | `Cloud, Kubernetes and platform engineering for Canadian teams` |
+Field labels below are the ones the form actually shows, checked against the
+live form rather than from memory — LinkedIn says "Organization size", not
+"Company size", and the public-URL field is labelled with the prefix itself.
 
-Tick the verification box, **Create page**.
+In form order, top to bottom:
+
+| # | Field | Value |
+|---|---|---|
+| 1 | Name* | `RRR Solution Providers` |
+| 2 | linkedin.com/company/* | `rrr-solution-providers` |
+| 3 | Website | `https://www.rrrsolutionproviders.ca` |
+| 4 | Industry* | `IT Services and IT Consulting` |
+| 5 | Organization size* | `1-10 employees` |
+| 6 | Organization type* | `Privately Held` |
+| 7 | Logo | `brand/linkedin/logo-300.png` |
+| 8 | Tagline | `Cloud, Kubernetes and platform engineering for Canadian teams` |
+
+Field 2 takes only the slug — the `linkedin.com/company/` part is already
+printed beside the box, so pasting the whole URL gives you a doubled one.
+
+Field 4 is a typeahead. Start typing `IT Services` and pick
+**IT Services and IT Consulting** from the list; a value you type but do not
+select is not accepted.
+
+Field 8 has a 120-character limit. The tagline above is 61.
+
+Then the verification checkbox:
+
+> *I verify that I am an authorized representative of this organization and
+> have the right to act on its behalf in the creation and management of this
+> page.*
+
+That is a personal attestation, which is exactly why this step is yours.
+Tick it, then **Create page**.
 
 > Add `Inc.` to the name only once incorporation is complete. Claiming a
 > corporate form you do not yet hold is the kind of small inaccuracy that
