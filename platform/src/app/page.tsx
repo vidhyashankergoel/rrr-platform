@@ -10,6 +10,7 @@ import WhyUs from "@/components/WhyUs";
 import WhatYouGet from "@/components/WhatYouGet";
 import HowWeWork from "@/components/HowWeWork";
 import BookCallButton from "@/components/BookCall";
+import { RevealGroup, Marquee } from "@/components/Enhancements";
 
 const ACHIEVEMENTS = [
   {
@@ -52,11 +53,26 @@ const ACHIEVEMENTS = [
   },
 ];
 
+// Two entries are dropped rather than shown. "Shell" reads as the oil company
+// out of context, and "Container infrastructure" is a category rather than a
+// technology — neither earns its place in a band whose only job is to be
+// recognised at a glance. Both still appear on the case studies themselves.
+const STACK_OMIT = new Set(["Shell", "Container infrastructure"]);
+
+const STACK = Array.from(new Set(caseStudies.flatMap((c) => c.stack)))
+  .filter((t) => !STACK_OMIT.has(t))
+  .sort((a, b) => a.localeCompare(b));
+
 export default function Home() {
   return (
     <>
       {/* ---------------- HERO ---------------- */}
       <section className="hero">
+        <div className="hero__aurora" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </div>
         <div className="wrap split">
           <div>
             <span className="pill pill--ok" style={{ marginBottom: "1.25rem" }}>
@@ -65,6 +81,10 @@ export default function Home() {
             <h1>
               Your infrastructure should be <em>boring</em>.
             </h1>
+            <p className="hero__gloss">
+              Boring means nothing pages you at 3&nbsp;a.m., nothing depends on one person&apos;s
+              memory, and a deploy is uneventful. That is the whole job.
+            </p>
             <p className="hero__lede">
               We build, migrate and operate cloud platforms for Canadian teams — AWS, Azure and GCP,
               Kubernetes, Terraform, CI/CD and observability. Published prices, fixed scope where it
@@ -78,7 +98,7 @@ export default function Home() {
             </div>
             <div className="hero__badges">
               <span className="pill">CKA certified</span>
-              <span className="pill">Azure AZ-203 / AZ-900</span>
+              <span className="pill">Azure Developer Associate</span>
               <span className="pill">8+ years production infrastructure</span>
               <span className="pill">Eligible for Reliability Status</span>
             </div>
@@ -87,6 +107,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------------- STACK MARQUEE ---------------- */}
+      <Marquee items={STACK} />
+
       {/* ---------------- ACHIEVEMENTS ---------------- */}
       <section className="section section--tight section--alt">
         <div className="wrap">
@@ -94,12 +117,12 @@ export default function Home() {
             <span className="eyebrow">What we have actually delivered</span>
             <h2>Numbers we can substantiate</h2>
             <p className="lede">
-              Every figure below comes from a named engagement in banking, insurance, aviation or
+              Every figure below comes from a real engagement in banking, insurance, aviation or
               sport. Ask us to walk you through any of them on the call.
             </p>
           </div>
 
-          <div className="achievements">
+          <RevealGroup className="achievements">
             {ACHIEVEMENTS.map((a) => (
               <div className="achieve" key={a.label}>
                 <div className="achieve__n">
@@ -109,7 +132,7 @@ export default function Home() {
                 <p className="achieve__c">{a.context}</p>
               </div>
             ))}
-          </div>
+          </RevealGroup>
 
           <p
             className="center"
@@ -276,7 +299,7 @@ export default function Home() {
       <section className="section">
         <div className="wrap">
           <div className="center" style={{ marginBottom: "3rem" }}>
-            <span className="eyebrow">Our clients</span>
+            <span className="eyebrow">Where the work was done</span>
             <h2>Production systems, under real constraints</h2>
             <p className="lede">
               Aviation, banking, insurance, sport and AI research — including estates under regulated
@@ -284,7 +307,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-2">
+          <RevealGroup className="grid grid-2">
             {caseStudies.slice(0, 4).map((c) => (
               <article className="card card--hover" key={c.slug}>
                 <div className="tags" style={{ marginBottom: "1rem" }}>
@@ -305,7 +328,7 @@ export default function Home() {
                 </div>
               </article>
             ))}
-          </div>
+          </RevealGroup>
 
           <div className="center" style={{ marginTop: "2.5rem" }}>
             <Link className="btn btn--ghost" href="/work">

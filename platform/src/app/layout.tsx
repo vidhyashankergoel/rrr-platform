@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Header, Footer } from "@/components/Chrome";
 import Assistant from "@/components/Assistant";
-import { ScrollProgress, BackToTop } from "@/components/Enhancements";
+import { ScrollProgress, BackToTop, CardGlow } from "@/components/Enhancements";
 import { company } from "@/lib/company";
 
 export const metadata: Metadata = {
@@ -91,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <BackToTop />
+        <CardGlow />
         <Assistant />
       </body>
     </html>
