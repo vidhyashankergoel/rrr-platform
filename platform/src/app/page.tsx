@@ -11,6 +11,8 @@ import WhatYouGet from "@/components/WhatYouGet";
 import HowWeWork from "@/components/HowWeWork";
 import BookCallButton from "@/components/BookCall";
 import { RevealGroup, Marquee } from "@/components/Enhancements";
+import { CaseCard } from "@/components/Expand";
+import Reviews from "@/components/Reviews";
 
 const ACHIEVEMENTS = [
   {
@@ -117,8 +119,8 @@ export default function Home() {
             <span className="eyebrow">What we have actually delivered</span>
             <h2>Numbers we can substantiate</h2>
             <p className="lede">
-              Every figure below comes from a real engagement in banking, insurance, aviation or
-              sport. Ask us to walk you through any of them on the call.
+              Every figure comes from a real engagement. Ask us to walk you through any of
+              them on the call.
             </p>
           </div>
 
@@ -161,8 +163,7 @@ export default function Home() {
                 over so completely that they never have to call us again.
               </p>
               <p className="mv__note">
-                Every word is a commitment we can be held to: Canadian, senior, published price, and
-                a handover that ends the dependency rather than creating one.
+                Every word there is a commitment we can be held to.
               </p>
             </article>
 
@@ -174,8 +175,7 @@ export default function Home() {
                 demonstrate has become the one the market expects.
               </p>
               <p className="mv__note">
-                Aspirational by design. We will not get there alone, and we would count it a success
-                if competitors made it true before we did.
+                We would count it a success if competitors got there first.
               </p>
             </article>
           </div>
@@ -195,8 +195,7 @@ export default function Home() {
             <span className="eyebrow">What we do</span>
             <h2>Three things, {services.length} ways to buy them</h2>
             <p className="lede">
-              Every service carries a published price range and a realistic duration, so you can
-              build a budget before you speak to anyone.
+              Every service carries a published price and a realistic duration.
             </p>
           </div>
 
@@ -217,8 +216,8 @@ export default function Home() {
             <span className="eyebrow">How we work</span>
             <h2>Five steps, and a human at every gate</h2>
             <p className="lede">
-              We use AI heavily — for reading, drafting, decomposition and documentation. It makes us
-              faster. It never touches your environment, and it never commits us to anything.
+              We use AI heavily, and it makes us faster. It never touches your environment and
+              never commits us to anything.
             </p>
           </div>
 
@@ -239,8 +238,8 @@ export default function Home() {
             <span className="eyebrow">What you get</span>
             <h2>The deliverables, named</h2>
             <p className="lede">
-              Most consultancies describe activity. This is the list of artefacts that actually land
-              in your hands — the one worth sending to your CTO.
+              Most consultancies describe activity. These are the artefacts that land in your
+              hands.
             </p>
           </div>
 
@@ -255,8 +254,7 @@ export default function Home() {
             <span className="eyebrow">Why us</span>
             <h2>Compared honestly with the alternatives</h2>
             <p className="lede">
-              Including the three cases where somebody else is the better answer. A comparison that
-              only flatters its author is worth nothing.
+              Including three cases where somebody else is the better answer.
             </p>
           </div>
 
@@ -272,8 +270,7 @@ export default function Home() {
             <h2>{auditOffer.name}</h2>
             <p className="lede">{auditOffer.blurb}</p>
             <p style={{ color: "#fff", fontWeight: 600 }}>
-              Read-only access is all we need. You keep the report whether or not you ever engage us
-              again.
+              Read-only access. You keep the report either way.
             </p>
             <div className="btn-row" style={{ marginTop: "2rem" }}>
               <Link className="btn btn--primary" href="/contact?service=Infrastructure%20Audit">
@@ -302,39 +299,33 @@ export default function Home() {
             <span className="eyebrow">Where the work was done</span>
             <h2>Production systems, under real constraints</h2>
             <p className="lede">
-              Aviation, banking, insurance, sport and AI research — including estates under regulated
-              change control where a failed deployment is a reportable event.
+              Aviation, banking, insurance, sport and AI research — including estates under
+              regulated change control.
             </p>
           </div>
 
-          <RevealGroup className="grid grid-2">
-            {caseStudies.slice(0, 4).map((c) => (
-              <article className="card card--hover" key={c.slug}>
-                <div className="tags" style={{ marginBottom: "1rem" }}>
-                  <span className="tag tag--accent">{c.sector}</span>
-                  <span className="tag">{c.period}</span>
-                </div>
-                <h3>{displayClient(c)}</h3>
-                <p style={{ fontSize: "var(--step-1)", color: "var(--text)", fontWeight: 600, lineHeight: 1.4 }}>
-                  {c.headline}
-                </p>
-                <div className="stats" style={{ gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1.25rem" }}>
-                  {c.results.slice(0, 4).map(([v, l]) => (
-                    <div key={l}>
-                      <div className="stat__num" style={{ fontSize: "1.4rem" }}>{v}</div>
-                      <div className="stat__label">{l}</div>
-                    </div>
-                  ))}
-                </div>
-              </article>
+          <RevealGroup className="grid grid-3">
+            {caseStudies.map((c) => (
+              <CaseCard study={c} key={c.slug} />
             ))}
           </RevealGroup>
 
           <div className="center" style={{ marginTop: "2.5rem" }}>
             <Link className="btn btn--ghost" href="/work">
-              Read all {caseStudies.length} case studies
+              Case studies in full
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ---------------- REVIEWS ---------------- */}
+      <section className="section section--alt">
+        <div className="wrap">
+          <div className="center" style={{ marginBottom: "2.5rem" }}>
+            <span className="eyebrow">What you can check</span>
+            <h2>Proof you can verify yourself</h2>
+          </div>
+          <Reviews />
         </div>
       </section>
 

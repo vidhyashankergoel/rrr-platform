@@ -655,6 +655,207 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .reveal-group.is-in > * { transition-delay: 0s !important; }
 }
 
+/* ==========================================================================
+   PROGRESSIVE DISCLOSURE AND DENSITY
+   --------------------------------------------------------------------------
+   The homepage measured 22.9 screens on a 375px phone. Everything here exists
+   to bring that down without deleting content a buyer actually wants.
+   ========================================================================== */
+
+/* ---------- Disclosure (native <details>) --------------------------------- */
+.disc {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--surface); overflow: hidden;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.disc + .disc { margin-top: var(--sp-3); }
+.disc[open] { border-color: var(--accent-500); box-shadow: var(--shadow-2); }
+.disc--amber[open] { border-color: var(--amber-500); }
+
+.disc__sum {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5); cursor: pointer;
+  font-weight: 650; color: var(--text); list-style: none;
+  transition: background-color .15s;
+}
+.disc__sum::-webkit-details-marker { display: none; }
+.disc__sum:hover { background: var(--surface-2); }
+.disc__sum:focus-visible { outline: 2px solid var(--accent-500); outline-offset: -2px; }
+.disc__title { flex: 1; min-width: 0; }
+
+.disc__count {
+  flex: none; display: inline-grid; place-items: center;
+  min-width: 1.6rem; height: 1.6rem; padding-inline: .4rem;
+  border-radius: var(--r-pill); font-size: .72rem; font-weight: 700;
+  background: color-mix(in srgb, var(--accent-500) 14%, transparent);
+  color: var(--accent-500);
+}
+.disc--amber .disc__count {
+  background: color-mix(in srgb, var(--amber-500) 16%, transparent);
+  color: var(--warn);
+}
+
+.disc__chev {
+  flex: none; width: 18px; height: 18px; color: var(--text-3);
+  transition: transform .22s var(--ease);
+}
+.disc[open] .disc__chev { transform: rotate(180deg); }
+
+.disc__body { padding: 0 var(--sp-5) var(--sp-5); }
+.disc__body > :first-child { margin-top: 0; }
+.disc__body > :last-child { margin-bottom: 0; }
+
+/* ---------- Case card (compact, opens a dialog) --------------------------- */
+.case-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-3);
+  width: 100%; text-align: left; cursor: pointer;
+  font: inherit; color: inherit;
+}
+.case-card__client {
+  font-size: .82rem; font-weight: 700; letter-spacing: .02em; color: var(--text-3);
+}
+.case-card__headline {
+  font-size: var(--step-1); font-weight: 650; line-height: 1.32; color: var(--text);
+}
+.case-card__metric { display: flex; align-items: baseline; gap: .5rem; margin-top: auto; }
+.case-card__metric-n {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em;
+  background: linear-gradient(135deg, var(--accent-500), var(--accent-300));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.case-card__metric-l { font-size: .8rem; color: var(--text-2); }
+.case-card__more {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .82rem; font-weight: 650; color: var(--accent-500);
+}
+.case-card__more svg { width: 15px; height: 15px; transition: transform .2s var(--ease); }
+.case-card:hover .case-card__more svg { transform: translateX(3px); }
+
+/* ---------- Case dialog --------------------------------------------------- */
+.case-dlg { max-width: 680px; max-height: 88vh; overflow-y: auto; }
+.case-dlg:focus { outline: none; }
+.case-dlg__client { font-size: .82rem; font-weight: 700; color: var(--text-3); margin: 0 0 .3rem; }
+.case-dlg__headline { font-size: var(--step-2); line-height: 1.25; margin: 0 0 var(--sp-5); }
+.case-dlg__label {
+  font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-500); margin: var(--sp-5) 0 var(--sp-2);
+}
+.case-dlg__problem { color: var(--text-2); margin: 0; }
+.case-dlg__results {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-4); margin-top: var(--sp-2);
+}
+.case-dlg__attr {
+  margin: var(--sp-5) 0 0; padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+  font-size: .78rem; color: var(--text-3);
+}
+
+/* ---------- Reviews ------------------------------------------------------- */
+.reviews__none {
+  max-width: 62ch; margin: 0 auto var(--sp-7); text-align: center; color: var(--text-2);
+}
+.reviews__none strong { color: var(--text); }
+
+.proof-card { display: flex; flex-direction: column; gap: var(--sp-3); }
+.proof-card__h { font-size: var(--step-1); margin: 0; }
+.proof-card__p { color: var(--text-2); font-size: .92rem; margin: 0; flex: 1; }
+.proof-card__cta {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .85rem; font-weight: 650; color: var(--accent-500); text-decoration: none;
+}
+.proof-card__cta svg { width: 15px; height: 15px; transition: transform .2s var(--ease); }
+.proof-card__cta:hover svg { transform: translate(2px, -2px); }
+
+.quote { position: relative; padding-top: var(--sp-6); }
+.quote__mark { position: absolute; top: var(--sp-4); left: var(--sp-5); width: 26px; height: 26px; color: var(--accent-300); }
+.quote blockquote { margin: 0 0 var(--sp-4); font-size: var(--step-1); line-height: 1.5; color: var(--text); }
+.quote figcaption { display: flex; flex-direction: column; gap: .15rem; }
+.quote__name { font-weight: 700; font-size: .9rem; }
+.quote__role { font-size: .82rem; color: var(--text-3); }
+
+/* ==========================================================================
+   MOBILE DENSITY
+   --------------------------------------------------------------------------
+   A phone is not a narrow desktop. The same vertical rhythm that reads as
+   generous at 1440px reads as an endless scroll at 375px, and the reader who
+   gives up at screen six never reaches the pricing.
+   ========================================================================== */
+@media (max-width: 720px) {
+  .section { padding-block: var(--sp-7); }
+  .section--tight { padding-block: var(--sp-6); }
+
+  /* Headroom between a section heading and its content, halved. */
+  .section .center { margin-bottom: var(--sp-5) !important; }
+
+  /* Ledes are the single biggest consumer of phone height: a 70ch paragraph
+     is four lines on a laptop and eleven here. */
+  .lede { font-size: var(--step-0); }
+
+  .hero { padding-block: var(--sp-7) var(--sp-8); }
+  .hero__lede { font-size: var(--step-0); }
+
+  /* Figures two-up rather than stacked — six full-width cards is six screens
+     for six numbers. */
+  .achievements { grid-template-columns: 1fr 1fr !important; gap: var(--sp-3) !important; }
+  .achieve { padding: var(--sp-4) !important; }
+  .achieve__n { font-size: 1.6rem !important; }
+  .achieve__l { font-size: .78rem; }
+  /* The third line of each figure is context, not the point. It stays in the
+     markup for search engines and for anyone on a wider screen. */
+  .achieve__c { display: none; }
+
+  .case-dlg { max-height: 92vh; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+}
+
+/* ---------- Disclosure stacks --------------------------------------------- */
+.deliver-stack { max-width: 760px; margin-inline: auto; }
+
+/* The honesty cards sit below the comparison and carry the part of the
+   argument that is actually persuasive, so they stay open. */
+.why-honest .card { background: var(--bg-alt); border: 0; }
+
+@media (max-width: 720px) {
+  /* Pillars: the body is a full paragraph on a laptop and nine lines here.
+     Clamped rather than deleted — the whole sentence is still in the DOM, and
+     the service list beneath it says the same thing more concretely. */
+  .pillar { padding: var(--sp-5) !important; }
+  .pillar__body {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; font-size: .9rem;
+  }
+  .pillar__list { columns: 2; column-gap: var(--sp-4); font-size: .86rem; }
+  .pillar__list li { break-inside: avoid; }
+  .pillar__icon { width: 36px !important; height: 36px !important; }
+
+  /* Case cards stay one-up but get genuinely compact.
+     Two-up was tried and is worse: at 161px the headline wraps to six lines
+     and each card grows to 422px, so the two-column layout was taller than
+     one column would have been. Width that forces a wrap is not a saving. */
+  .section .grid-3:has(.case-card) { grid-template-columns: 1fr; gap: var(--sp-3); }
+  .case-card { padding: var(--sp-4) var(--sp-5) !important; gap: .4rem !important; }
+  .case-card__headline {
+    font-size: .95rem; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .case-card__client { font-size: .74rem; }
+  /* Metric and the call to action share a row rather than stacking. */
+  .case-card__metric { margin-top: .35rem; }
+  .case-card__metric-n { font-size: 1.2rem; }
+  .case-card__metric-l { font-size: .72rem; }
+  .case-card__more { font-size: .78rem; }
+  .case-card .tags { gap: .3rem; }
+  .case-card .tag { font-size: .64rem; padding: .2rem .5rem; }
+
+  /* Mission and vision: the statement is the commitment, the note was a
+     remark about our own wording. */
+  .mv__statement { font-size: var(--step-0) !important; }
+  .mv__card { padding: var(--sp-5) !important; }
+
+  /* The proof cards are the reviews section; three stacked is enough. */
+  .reviews__proof { gap: var(--sp-3); }
+}
+
 /* ---------- Print ---------- */
 @media print {
   .site-header, .site-footer, .cta-band, .nav__actions { display: none; }

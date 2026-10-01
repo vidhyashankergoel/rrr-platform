@@ -1,3 +1,7 @@
+"use client";
+
+import { Disclosure } from "./Expand";
+
 /**
  * WHAT YOU GET
  *
@@ -54,32 +58,37 @@ const NEVER = [
 export default function WhatYouGet() {
   return (
     <>
-      <div className="grid grid-3">
+      <div className="deliver-stack">
         {GROUPS.map((g) => (
-          <article className="card deliver" key={g.stage}>
-            <span className={`tag tag--${g.tone}`}>{g.stage}</span>
-            <ul className="check-list" style={{ marginTop: "1.1rem", marginBottom: 0 }}>
+          <Disclosure
+            key={g.stage}
+            summary={g.stage}
+            count={g.items.length}
+            tone={g.tone === "amber" ? "amber" : "accent"}
+          >
+            <ul className="check-list" style={{ marginBottom: 0 }}>
               {g.items.map((i) => (
                 <li key={i}>{i}</li>
               ))}
             </ul>
-          </article>
+          </Disclosure>
         ))}
+
+        <Disclosure summary="What you will never get from us" count={NEVER.length}>
+          <ul className="cross-list">
+            {NEVER.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+          <p style={{ fontSize: ".88rem", marginBottom: 0, color: "var(--text-2)" }}>
+            The test we hold ourselves to:{" "}
+            <strong style={{ color: "var(--text)" }}>
+              your team should be able to run the platform the day we leave.
+            </strong>
+          </p>
+        </Disclosure>
       </div>
 
-      <div className="card deliver--never">
-        <h3 style={{ fontSize: "1rem", color: "var(--crit)" }}>What you will never get from us</h3>
-        <ul className="cross-list">
-          {NEVER.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
-        <p style={{ fontSize: ".88rem", marginBottom: 0, color: "var(--text-2)" }}>
-          The test we hold ourselves to: <strong style={{ color: "var(--text)" }}>your team
-          should be able to run the platform the day we leave.</strong> If that is not true, the
-          handover is not finished, and we have not been paid for a finished job.
-        </p>
-      </div>
     </>
   );
 }

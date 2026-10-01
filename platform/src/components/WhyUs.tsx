@@ -1,3 +1,7 @@
+"use client";
+
+import { Disclosure } from "./Expand";
+
 import { currencyFromDollars as money } from "@/lib/company";
 import { auditOffer } from "@/lib/catalogue";
 
@@ -93,6 +97,7 @@ const HONEST = [
 export default function WhyUs() {
   return (
     <>
+      <Disclosure summary="Us against the three real alternatives" count={ROWS.length} tone="accent">
       <div className="compare">
         <table>
           <caption className="visually-hidden">
@@ -123,8 +128,9 @@ export default function WhyUs() {
           </tbody>
         </table>
       </div>
+      </Disclosure>
 
-      <div className="grid grid-3" style={{ marginTop: "2.5rem" }}>
+      <div className="grid grid-3 why-honest" style={{ marginTop: "1.5rem" }}>
         {HONEST.map((h) => (
           <div className="card" key={h.title} style={{ background: "var(--bg-alt)", border: 0 }}>
             <h3 style={{ fontSize: "1rem" }}>{h.title}</h3>
