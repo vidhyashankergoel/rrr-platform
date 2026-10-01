@@ -83,23 +83,51 @@ export function ServiceCard({ service, detailed = false }: { service: Service; d
       <h3>{service.name}</h3>
       <p>{service.blurb}</p>
 
-      <ul className="check-list">
-        {(detailed ? service.includes : service.includes.slice(0, 3)).map((i) => (
-          <li key={i}>{i}</li>
-        ))}
-      </ul>
+      {/*
+        On the services page every one of the sixteen cards used to render its
+        full includes and outcomes lists inline: 112 bullets, and a page 36.8
+        screens long on a 375px phone. The lists are the detail a buyer wants
+        AFTER they have decided this is the right service, not while they are
+        still scanning for it — so in detailed mode they go behind a summary
+        and the card keeps the three things used to choose: what it is, what it
+        costs, how long it takes.
 
-      {detailed && (
-        <>
-          <h4 style={{ fontSize: ".82rem", letterSpacing: ".09em", textTransform: "uppercase", color: "var(--text-3)", marginTop: "1.25rem" }}>
-            What changes afterwards
-          </h4>
-          <ul>
-            {service.outcomes.map((o) => (
-              <li key={o}>{o}</li>
-            ))}
-          </ul>
-        </>
+        A native <details>, not the client Disclosure component. This file is a
+        server component, and importing a client one here would pull sixteen
+        instances of it across a hydration boundary to do what the browser
+        already does for free.
+      */}
+      {detailed ? (
+        <details className="disc disc--service">
+          <summary className="disc__sum">
+            <span className="disc__title">What&apos;s included</span>
+            <span className="disc__count">{service.includes.length}</span>
+            <svg className="disc__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </summary>
+          <div className="disc__body">
+            <ul className="check-list">
+              {service.includes.map((i) => (
+                <li key={i}>{i}</li>
+              ))}
+            </ul>
+            <h4 style={{ fontSize: ".78rem", letterSpacing: ".09em", textTransform: "uppercase", color: "var(--text-3)", marginTop: "1.1rem" }}>
+              What changes afterwards
+            </h4>
+            <ul style={{ marginBottom: 0 }}>
+              {service.outcomes.map((o) => (
+                <li key={o}>{o}</li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      ) : (
+        <ul className="check-list">
+          {service.includes.slice(0, 3).map((i) => (
+            <li key={i}>{i}</li>
+          ))}
+        </ul>
       )}
 
       <div className="tags" style={{ marginBottom: "1rem" }}>

@@ -115,7 +115,7 @@ export default function Home() {
       {/* ---------------- ACHIEVEMENTS ---------------- */}
       <section className="section section--tight section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">What we have actually delivered</span>
             <h2>Numbers we can substantiate</h2>
             <p className="lede">
@@ -149,7 +149,7 @@ export default function Home() {
       {/* ---------------- MISSION / VISION ---------------- */}
       <section className="section section--dark">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">What we are here to do</span>
             <h2>Our mission and where it leads</h2>
           </div>
@@ -191,7 +191,7 @@ export default function Home() {
       {/* ---------------- THREE PILLARS ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">What we do</span>
             <h2>Three things, {services.length} ways to buy them</h2>
             <p className="lede">
@@ -212,7 +212,7 @@ export default function Home() {
       {/* ---------------- HOW WE WORK ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">How we work</span>
             <h2>Five steps, and a human at every gate</h2>
             <p className="lede">
@@ -234,7 +234,7 @@ export default function Home() {
       {/* ---------------- WHAT YOU GET ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">What you get</span>
             <h2>The deliverables, named</h2>
             <p className="lede">
@@ -250,7 +250,7 @@ export default function Home() {
       {/* ---------------- WHY US ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Why us</span>
             <h2>Compared honestly with the alternatives</h2>
             <p className="lede">
@@ -295,7 +295,7 @@ export default function Home() {
       {/* ---------------- CLIENTS / WORK ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Where the work was done</span>
             <h2>Production systems, under real constraints</h2>
             <p className="lede">
@@ -321,7 +321,7 @@ export default function Home() {
       {/* ---------------- REVIEWS ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">What you can check</span>
             <h2>Proof you can verify yourself</h2>
           </div>
@@ -332,7 +332,7 @@ export default function Home() {
       {/* ---------------- FAQ ---------------- */}
       <section className="section section--alt">
         <div className="wrap-tight">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Straight answers</span>
             <h2>Questions we get asked before signing</h2>
           </div>

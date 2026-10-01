@@ -185,7 +185,7 @@ export default function SecurityPage() {
       {/* ---------------- BUILD CONTROLS ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Part one</span>
             <h2>The controls we build in</h2>
             <p className="lede">
@@ -224,7 +224,7 @@ export default function SecurityPage() {
       {/* ---------------- OUR CONDUCT ---------------- */}
       <section className="section section--dark">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Part two</span>
             <h2>How we behave while we have access</h2>
             <p className="lede">
@@ -310,7 +310,7 @@ export default function SecurityPage() {
       {/* ---------------- COMPLIANCE ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Evidence</span>
             <h2>Compliance as a by-product, not a scramble</h2>
             <p className="lede">

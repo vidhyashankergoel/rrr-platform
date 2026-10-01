@@ -26,7 +26,7 @@ export default function PricingPage() {
       {/* ---------------- ESTIMATOR ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Estimate first</span>
             <h2>Build an indicative estimate</h2>
             <p className="lede">
@@ -41,7 +41,7 @@ export default function PricingPage() {
       {/* ---------------- FIXED SCOPE ---------------- */}
       <section className="section section--alt" id="fixed">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Fixed scope</span>
             <h2>Defined outcome, fixed price</h2>
             <p className="lede">
@@ -110,7 +110,7 @@ export default function PricingPage() {
       {/* ---------------- RETAINERS ---------------- */}
       <section className="section" id="retainers">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Ongoing</span>
             <h2>Retainers</h2>
             <p className="lede">
@@ -147,7 +147,7 @@ export default function PricingPage() {
       {/* ---------------- RATE CARD ---------------- */}
       <section className="section section--alt" id="rates">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Time and materials</span>
             <h2>Hourly rate card</h2>
             <p className="lede">
@@ -182,7 +182,7 @@ export default function PricingPage() {
       {/* ---------------- BILLING TERMS ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Commercial terms</span>
             <h2>How billing works</h2>
           </div>
@@ -242,7 +242,7 @@ export default function PricingPage() {
 
       <section className="section section--alt">
         <div className="wrap-tight">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Common questions</span>
             <h2>About pricing and terms</h2>
           </div>

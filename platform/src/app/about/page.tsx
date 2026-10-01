@@ -57,7 +57,7 @@ export default function AboutPage() {
       {/* ---------------- FOUNDER ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Who you deal with</span>
             <h2>The people, not the logo</h2>
           </div>
@@ -98,7 +98,7 @@ export default function AboutPage() {
       {/* ---------------- AI-ASSISTED ENGINEERING ---------------- */}
       <section className="section section--dark">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">How we work</span>
             <h2>AI-assisted engineering, with a human on every gate</h2>
             <p className="lede">
@@ -148,7 +148,7 @@ export default function AboutPage() {
       {/* ---------------- DELIVERY ORG ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Delivery structure</span>
             <h2>Who reviews what</h2>
             <p className="lede">
@@ -183,7 +183,7 @@ export default function AboutPage() {
       {/* ---------------- PRINCIPLES ---------------- */}
       <section className="section">
         <div className="wrap-tight">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">How we behave</span>
             <h2>Five things we hold to</h2>
           </div>
@@ -245,7 +245,7 @@ export default function AboutPage() {
                   </tr>
                   <tr>
                     <td><strong>Corporation number</strong></td>
-                    <td>{company.corporationNumber || "Pending incorporation"}</td>
+                    <td>{company.corporationNumber || "Issued — published here once received"}</td>
                   </tr>
                   <tr>
                     <td><strong>Business number (CRA)</strong></td>

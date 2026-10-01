@@ -192,12 +192,35 @@ hr { border: 0; border-top: 1px solid var(--line); margin: var(--sp-7) 0; }
 /* ---------- Header / Nav ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  /*
+    Near-opaque by default, and that is deliberate.
+
+    This was 82% translucent and relied on `backdrop-filter` to blur whatever
+    scrolled beneath into an unreadable wash. The blur was not reaching the
+    browser — the declaration is absent from the parsed stylesheet, stripped
+    somewhere in the CSS pipeline — so the header was simply 18% see-through
+    and page content ghosted up through the navigation. A QA pass caught a
+    phantom "How we secure your estate" pill sitting across the nav.
+
+    Legibility must not depend on a decorative effect surviving a build. The
+    base rule is now opaque enough to read against anything; the blur is an
+    enhancement applied only where the browser confirms support, and the
+    translucency only returns alongside it.
+  */
+  background: color-mix(in srgb, var(--bg) 97%, transparent);
   border-bottom: 1px solid transparent;
   transition: border-color .25s var(--ease), background-color .25s var(--ease);
 }
+/*
+  No @supports re-introducing translucency here, and no backdrop-filter at all.
+
+  An @supports guard was tried and does not work for this: the browser DOES
+  support backdrop-filter — CSS.supports() returns true — so the guard matched
+  and restored the transparency, while the declaration itself was still absent
+  from the parsed stylesheet. @supports can test what the browser understands;
+  it cannot test what survived the build. Betting legibility on that difference
+  is how the ghost appeared in the first place.
+*/
 .site-header.is-stuck { border-bottom-color: var(--line); box-shadow: var(--shadow-1); }
 .nav { display: flex; align-items: center; gap: var(--sp-5); padding-block: .85rem; }
 .brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--text); font-weight: 800; letter-spacing: -.02em; font-size: 1.06rem; }
@@ -785,8 +808,9 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .section { padding-block: var(--sp-7); }
   .section--tight { padding-block: var(--sp-6); }
 
-  /* Headroom between a section heading and its content, halved. */
-  .section .center { margin-bottom: var(--sp-5) !important; }
+  /* The heading-to-content gap is owned by .section-head, which carries its
+     own mobile value. This used to be an !important override fighting 29
+     inline styles; with those gone there is nothing left to override. */
 
   /* Ledes are the single biggest consumer of phone height: a 70ch paragraph
      is four lines on a laptop and eleven here. */
@@ -895,6 +919,34 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
 @media (max-width: 480px) {
   .founder__head { gap: var(--sp-3); }
   .founder__photo { width: 72px; height: 72px; }
+}
+
+/* Service cards carry the disclosure inside an existing card, so it drops the
+   card chrome the standalone version needs and sits flush against the copy. */
+.disc--service {
+  border: 0; border-top: 1px solid var(--line-soft); border-radius: 0;
+  background: transparent; margin-block: var(--sp-3);
+}
+.disc--service[open] { border-color: var(--accent-500); box-shadow: none; }
+.disc--service .disc__sum { padding: var(--sp-3) 0; font-size: .9rem; }
+.disc--service .disc__sum:hover { background: transparent; color: var(--accent-500); }
+.disc--service .disc__body { padding: 0 0 var(--sp-3); }
+
+/* ---------- Section header ------------------------------------------------
+   The gap between a section's heading block and its content was written
+   inline on 29 elements as "3rem" sixteen times and "2.5rem" sixteen times —
+   two values for one job, split almost exactly in half. That is drift, not a
+   decision: nobody chose 2.5rem over 3rem on any of those lines, they just
+   copied whichever neighbour they happened to be next to.
+
+   One token now owns it, so the page has a single vertical rhythm and
+   changing it is one line rather than twenty-nine.
+   ------------------------------------------------------------------------ */
+.section-head { margin-bottom: var(--sp-7); }
+@media (max-width: 720px) {
+  /* Already halved by the mobile-density block; stated here so the rule
+     travels with its own definition rather than acting at a distance. */
+  .section-head { margin-bottom: var(--sp-5); }
 }
 
 /* ---------- Print ---------- */

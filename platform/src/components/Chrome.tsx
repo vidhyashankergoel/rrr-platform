@@ -184,7 +184,12 @@ export function Footer() {
 
         <div className="footer-bottom">
           <div>
-            &copy; {new Date().getFullYear()} {company.legalName}. All rights reserved.
+            {/*
+              No period after the name: `legalName` is "RRR Solution Providers
+              Inc." and already ends in one, so appending another rendered
+              "Inc.. All rights reserved." in the footer of every page.
+            */}
+            &copy; {new Date().getFullYear()} {company.legalName} All rights reserved.
             {company.businessNumber ? ` · BN ${company.businessNumber}` : ""}
           </div>
           <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>

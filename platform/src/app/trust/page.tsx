@@ -134,7 +134,7 @@ export default function TrustPage() {
       {/* ---------------- THE LADDER ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">The ladder</span>
             <h2>Five rungs, each one cheap to step off</h2>
             <p className="lede">
@@ -226,7 +226,7 @@ export default function TrustPage() {
       {/* ---------------- VERIFIABLE ---------------- */}
       <section className="section section--dark">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Verify it yourself</span>
             <h2>Do not take our word for any of this</h2>
             <p className="lede">
@@ -247,7 +247,7 @@ export default function TrustPage() {
       {/* ---------------- PROJECTS ---------------- */}
       <section className="section" id="projects">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Open work</span>
             <h2>Read the code</h2>
             <p className="lede">
@@ -309,7 +309,7 @@ export default function TrustPage() {
       {liveposts.length > 0 && (
         <section className="section section--alt">
           <div className="wrap">
-            <div className="center" style={{ marginBottom: "3rem" }}>
+            <div className="section-head center">
               <span className="eyebrow">Published writing</span>
               <h2>How we think, in public</h2>
               <p className="lede">
@@ -343,7 +343,7 @@ export default function TrustPage() {
       {/* ---------------- PROFILES ---------------- */}
       <section className="section">
         <div className="wrap-tight">
-          <div className="center" style={{ marginBottom: "2.5rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Everywhere else</span>
             <h2>Check us anywhere you like</h2>
           </div>

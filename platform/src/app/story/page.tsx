@@ -228,7 +228,7 @@ export default function StoryPage() {
       {/* ---------------- VALUES ---------------- */}
       <section className="section">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Values · timeless</span>
             <h2>What we stand for</h2>
             <p className="lede">
@@ -276,7 +276,7 @@ export default function StoryPage() {
       {/* ---------------- STRATEGY ---------------- */}
       <section className="section section--alt">
         <div className="wrap">
-          <div className="center" style={{ marginBottom: "3rem" }}>
+          <div className="section-head center">
             <span className="eyebrow">Strategy · the plan</span>
             <h2>How we intend to get there</h2>
             <p className="lede">

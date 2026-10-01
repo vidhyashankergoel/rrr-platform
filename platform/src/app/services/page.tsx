@@ -61,20 +61,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="section section--alt">
-        <div className="wrap">
-          <div className="center" style={{ marginBottom: "2rem" }}>
-            <span className="eyebrow">Detail</span>
-            <h2>Full service detail</h2>
-          </div>
-          <div className="grid grid-2">
-            {services.map((s) => (
-              <ServiceCard key={s.id} service={s} detailed />
-            ))}
-          </div>
-        </div>
-      </section>
-
       <CtaBand />
     </>
   );

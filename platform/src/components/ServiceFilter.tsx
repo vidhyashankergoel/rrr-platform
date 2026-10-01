@@ -48,9 +48,16 @@ export default function ServiceFilter() {
         {shown.length} {shown.length === 1 ? "service" : "services"} shown.
       </p>
 
+      {/*
+        `detailed` so these are now the only rendering of each service. The
+        page used to show all sixteen here AND all sixteen again in a "Full
+        service detail" section below — 33 cards for 16 services, half the
+        page a duplicate, and sixteen repeated HTML ids, which made every
+        /services#<id> anchor ambiguous.
+      */}
       <div className="grid grid-3">
         {shown.map((s) => (
-          <ServiceCard key={s.id} service={s} />
+          <ServiceCard key={s.id} service={s} detailed />
         ))}
       </div>
     </>
