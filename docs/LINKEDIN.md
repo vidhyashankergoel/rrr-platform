@@ -1,5 +1,42 @@
 # LinkedIn company page — content to paste
 
+> ## ✅ The page is live and complete
+>
+> **linkedin.com/company/rrr-solution-providers** — created 30 September 2026.
+>
+> | Done | |
+> |---|---|
+> | Logo, banner, name, tagline, public URL | |
+> | Overview | 1,996 / 2,000 characters |
+> | Website, industry, size, type, phone, year founded | |
+> | Specialties | all 20 |
+> | Location | Toronto, Ontario — street address deliberately blank |
+> | Custom button | Visit website |
+> | Services page | 8 services, published, **starting at CA$155/hr** |
+> | Email domain | rrrsolutionproviders.ca, for job-posting access |
+> | First page post | the published dashboards, and featured |
+>
+> **Deliberately NOT filled, and why.**
+>
+> *Workplace* and *Commitments* are employer-brand modules for attracting
+> candidates. LinkedIn's own guidance on Commitments says it requires
+> "public-facing reports" and "accurate credentials to demonstrate the
+> authenticity of your commitments", and says explicitly **not** to use it to
+> restate a mission statement or promote services. A pre-incorporation firm of
+> one has no such reports. Filling it would be unverifiable claims on the page
+> of a company whose entire argument is that it tells the truth.
+>
+> Turn both on when there are employees and something real to point at.
+>
+> *Languages* adds a second-language version of the whole page. Worth doing for
+> a French version eventually — it is a translation project, not a checkbox.
+>
+> **Still to do by hand:** add the Founder position to the personal profile.
+> The launch post announces a firm that the profile does not yet mention, so
+> anyone who clicks through from it finds no evidence the company exists.
+
+---
+
 Everything below is written to be pasted directly. Nothing here needs editing
 before it goes live.
 
