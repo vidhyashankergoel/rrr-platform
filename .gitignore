@@ -27,6 +27,12 @@
 *.sqlite
 *.sqlite3
 
+# ---- Outreach target lists -------------------------------------------------
+# Names, roles and employers of real people — personal information under
+# PIPEDA, in a public repository. The example file is committed; the real one
+# never is. CI fails if this is ever tracked.
+platform/data/outreach-targets.json
+
 # ---- Dependencies and build output -----------------------------------------
 node_modules/
 .next/

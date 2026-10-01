@@ -16,6 +16,7 @@ import { replyComposer } from "./reply-composer";
 import { followupRunner } from "./followup";
 import { worklist } from "./worklist";
 import { linkedinAgent, githubAgent } from "./presence";
+import { outreachAgent } from "./outreach";
 import { watchdog } from "./watchdog";
 
 /**
@@ -29,6 +30,7 @@ export const OPS_AGENTS: OpsAgent[] = [
   followupRunner,
   worklist,
   linkedinAgent,
+  outreachAgent,
   githubAgent,
   watchdog,
 ];

@@ -27,7 +27,8 @@
 
 import { company } from "../../company";
 import { projects, publishedPosts } from "../../proof";
-import { services, auditOffer } from "../../catalogue";
+import { services, auditOffer, caseStudies } from "../../catalogue";
+import { displayClient, attributionLine } from "../../attribution";
 import { currencyFromDollars as money } from "../../company";
 import type { OpsAgent, OpsContext, OpsResult } from "./types";
 
@@ -43,6 +44,67 @@ interface PostIdea {
 }
 
 /**
+ * Posts built from the engagement record.
+ *
+ * These are the ones that actually show the work, so they are the ones most
+ * likely to name a client by accident. They do not: the client label comes
+ * from `displayClient()`, which reads ATTRIBUTION_MODE. While that is
+ * "descriptive", a post says "a major Canadian international airport
+ * authority" and there is no code path that can make it say otherwise.
+ *
+ * That matters more here than on the website. A page can be edited after the
+ * fact; a LinkedIn post that named a former employer's client has been in
+ * other people's feeds, and screenshots do not get recalled.
+ *
+ * The shape of each post is deliberate: the problem, the thing that was
+ * genuinely hard, the number, and what a reader should take away even if they
+ * never hire us. A post that is only the number reads as a brag and teaches
+ * nobody.
+ */
+function caseStudyIdeas(): PostIdea[] {
+  return caseStudies.map((study) => {
+    const client = displayClient(study);
+    const headline = study.results[0];
+
+    // The second and third work items, not the first. The first is almost
+    // always the provisioning step, which every migration has and nobody
+    // learns anything from.
+    const interesting = study.work.slice(1, 4);
+
+    const body = [
+      study.headline,
+      "",
+      `The situation: ${study.problem}`,
+      "",
+      "What the work actually involved:",
+      ...interesting.map((w) => `— ${w}`),
+      "",
+      headline ? `Result: ${headline[0]} ${headline[1]}.` : "",
+      "",
+      `Context: ${client}, ${study.period}.`,
+      study.employer ? attributionLine(study) + "." : "",
+      "",
+      "Happy to go into any part of this in more detail — the failure modes",
+      "are more useful than the success, and I will talk about those too.",
+    ]
+      .join("\n")
+      // The conditional lines above contribute an empty string when they do
+      // not apply, which would otherwise leave a double blank line.
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+    return {
+      kind: "case-study",
+      title: `How it went: ${study.headline}`,
+      body,
+      rationale:
+        `Concrete delivered work, which is the hardest kind of credibility to fake. Client rendered as "${client}" ` +
+        `by ATTRIBUTION_MODE — never edit this draft to insert a real client name without checking attribution.ts first.`,
+    };
+  });
+}
+
+/**
  * What is actually worth posting.
  *
  * The rule behind every one of these: post the thing you learned, not the
@@ -50,6 +112,10 @@ interface PostIdea {
  * nobody and costs reputation. A specific, useful, slightly opinionated post
  * about a real problem is what makes a stranger click the profile.
  */
+export function allPostIdeas(): PostIdea[] {
+  return ideas();
+}
+
 function ideas(): PostIdea[] {
   const out: PostIdea[] = [];
 
@@ -112,6 +178,11 @@ function ideas(): PostIdea[] {
     ].join("\n"),
     rationale: "A concrete, low-risk entry point. Posted sparingly — at most one offer post per several lesson posts.",
   });
+
+  // Case studies go in the middle of the rotation rather than the front.
+  // Opening a new company page with five "look what I did" posts reads as a
+  // CV; opening it with a lesson and then the evidence reads as an engineer.
+  out.push(...caseStudyIdeas());
 
   const written = publishedPosts();
   if (written.length) {

@@ -52,10 +52,11 @@ until you have read fifty drafts and agreed with all fifty.
 | **Follow-up runner** | 15m | — | Chases quiet enquiries, then stops |
 | **Work list** | 10m | — | Turns approved deals into work for the delivery plane |
 | **LinkedIn** | 1d | — | Drafts posts for a person to publish |
+| **Outreach** | 1d | — | Drafts a personalised connection note per target, for a person to send |
 | **GitHub** | 1d | token | Audits public repositories, proposes fixes |
 | **Watchdog** | 30m | — | Finds what is failing silently and escalates |
 
-Five of the eight work with no configuration at all.
+Six of the nine work with no configuration at all.
 
 ---
 
@@ -182,6 +183,85 @@ and it stops writing once three are waiting — a backlog of twenty drafts
 nobody posts is just another guilt queue.
 
 Posts follow one rule: **post the thing you learned, not the thing you sell.**
+
+### Case-study posts cannot name a client by accident
+
+The agent generates posts from the engagement record in `catalogue.ts`. Those
+are the ones most likely to leak a name, so the client label is never written
+into the post text — it comes from `displayClient()`, which reads
+`ATTRIBUTION_MODE`. While that is `"descriptive"`, a draft says "a major
+Canadian international airport authority" and there is no code path that makes
+it say otherwise.
+
+`ops-test.ts` asserts this against **every idea the agent can produce**, not
+just the one it drafted today, so a name cannot sit undetected in an idea that
+comes up next month. The test is written to fail if the label stops being
+substituted, and it was checked against the real output rather than assumed.
+
+This matters more on LinkedIn than on the website. A page can be corrected. A
+post that named a former employer's client has already been in other people's
+feeds, and screenshots are not recalled.
+
+---
+
+## 7a. Outreach — connection notes, not connection requests
+
+**What was asked for:** an agent that sends LinkedIn connection and follow
+requests automatically.
+
+**What this is:** an agent that writes the note, and leaves the sending to you.
+
+Three reasons, and none of them is squeamishness:
+
+1. LinkedIn's User Agreement prohibits software, bots and automated methods of
+   accessing the service. Automated connection requests are the most reliably
+   detected of those — the request pattern of a script does not resemble a
+   person, and the detection was built around this case because it is the most
+   common abuse.
+2. The penalty lands on the account, and a company page is administered by
+   personal profiles. Losing the profile loses the page it administers, and
+   both are linked from every page of the live site.
+3. A connection request carrying a pitch is an unsolicited commercial message
+   to a real person. CASL's definition is not limited to email, and s.13 puts
+   the burden of proving a message was lawful on the sender — a hard thing to
+   do several hundred times over.
+
+### How it works
+
+Targets live in `platform/data/outreach-targets.json`, which you maintain by
+hand. For each one the agent writes:
+
+- an **invitation note** inside LinkedIn's 300-character limit, which it
+  shortens by dropping clauses rather than truncating mid-sentence, and which
+  never drops the signature
+- a **follow-up message** to send after they accept — a separate message and a
+  separate decision, because auto-messaging on acceptance is the other half of
+  the behaviour that gets accounts restricted
+
+It hands you **five at a time**. Somebody who sends forty invitations in ten
+minutes looks like a script whether or not one was used.
+
+### The target file holds other people's personal information
+
+Names, roles and employers of real people, in a repository that is public. So:
+
+- it is listed in `.gitignore`
+- **CI fails the build if it is ever tracked**, as a second line of defence,
+  because publishing somebody's details without their knowledge cannot be
+  undone by deleting the file afterwards
+- the schema has nowhere to put a phone number or an inferred email address.
+  That is PIPEDA Principle 4 — limiting collection — expressed as a type rather
+  than as a policy nobody reads
+
+`name` and `why` are both required and neither has a default. `why` is the
+specific public reason you are contacting *that* person. The agent rejects the
+whole file rather than write a note without one, because a note without one is
+a template and the recipient can tell — and templates sent at volume are
+precisely what gets accounts restricted.
+
+```
+npm run agents:tick -- --only=outreach --force
+```
 
 ---
 

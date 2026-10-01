@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Jane Doe",
+    "role": "Director of Engineering",
+    "organization": "Example Logistics Inc.",
+    "why": "I read your write-up on moving off the monolith without a big-bang cutover.",
+    "profileUrl": "https://www.linkedin.com/in/example/"
+  },
+  {
+    "name": "Sam Example",
+    "role": "VP Technology",
+    "organization": "Example Health",
+    "why": "You spoke at the Toronto Kubernetes meetup about running clusters with a team of three.",
+    "profileUrl": "https://www.linkedin.com/in/example-two/"
+  }
+]

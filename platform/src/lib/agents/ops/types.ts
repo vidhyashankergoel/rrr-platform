@@ -33,6 +33,7 @@ export type OpsAgentKey =
   | "followup-runner"
   | "worklist"
   | "linkedin"
+  | "outreach"
   | "github"
   | "watchdog";
 

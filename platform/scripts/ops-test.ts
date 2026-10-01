@@ -14,7 +14,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { rmSync } from "node:fs";
+import { rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const DB_FILE = path.resolve("prisma/ops-test.db");
@@ -54,6 +54,10 @@ async function main() {
   const { disposition } = await import("../src/lib/agents/ops/email-handler");
   const { composeReply, buildBrief, validateDraft } = await import("../src/lib/agents/ops/reply-composer");
   const { inspect } = await import("../src/lib/agents/ops/watchdog");
+  const outreach = await import("../src/lib/agents/ops/outreach");
+  const presence = await import("../src/lib/agents/ops/presence");
+  const { ATTRIBUTION_MODE } = await import("../src/lib/attribution");
+  const { caseStudies } = await import("../src/lib/catalogue");
   const ops = await import("../src/lib/agents/ops");
   const { autoSendPolicy } = await import("../src/lib/agents/ops/types");
 
@@ -272,6 +276,88 @@ async function main() {
   });
   const withBooking = await inspect({ ...ctx, now });
   check("notices an unconfirmed call today", withBooking.some((f) => /unconfirmed/i.test(f.what)));
+
+  // =========================================================================
+  heading("LinkedIn drafts — attribution");
+  // =========================================================================
+  // The failure that matters here is a post naming a former employer's client
+  // while the site describes them generically. The site can be corrected; a
+  // post that has been in other people's feeds cannot.
+  {
+    await ops.tick({ db, now, only: ["linkedin"], force: true });
+    const drafts = await db.contentDraft.findMany({ where: { channel: "linkedin" } });
+    check("the LinkedIn agent writes a draft", drafts.length > 0, `${drafts.length}`);
+    check("drafts are never auto-published", drafts.every((d) => d.status === "DRAFT"));
+    check("every draft says to publish it by hand",
+      drafts.every((d) => /by hand|PUBLISH BY HAND/i.test(d.rationale ?? "")));
+
+    // Check every idea the agent can produce, not just the one it happened to
+    // pick, so a name cannot hide in an idea that gets drafted next month.
+    const everyIdea = JSON.stringify(presence.allPostIdeas());
+    const restricted = caseStudies.filter((c) => c.employer !== null);
+    check("there are prior-employment case studies to protect", restricted.length > 0);
+
+    if (ATTRIBUTION_MODE !== "named") {
+      for (const study of restricted) {
+        check(`no draft names ${study.client}`, !everyIdea.includes(study.client));
+      }
+      check("drafts use the descriptive label instead",
+        restricted.every((c) => everyIdea.includes(c.clientDescriptive)));
+    }
+    check("case-study drafts carry the employment attribution",
+      everyIdea.includes("in the course of employment"));
+  }
+
+  // =========================================================================
+  heading("Outreach — drafts only, never sends");
+  // =========================================================================
+  {
+    const target = {
+      name: "Jane Doe",
+      role: "Director of Engineering",
+      organization: "Example Logistics",
+      why: "I read your write-up on moving off the monolith without a big-bang cutover.",
+    };
+
+    const note = outreach.composeNote(target);
+    check("the note fits LinkedIn's invitation limit",
+      note.length <= outreach.NOTE_LIMIT, `${note.length} chars`);
+    check("the note addresses them by first name", note.startsWith("Hi Jane,"));
+    check("the note uses the specific reason given", note.includes("big-bang cutover"));
+    check("the note is signed", /RRR Solution Providers/.test(note));
+
+    // A very long reason must still produce a sendable note rather than one
+    // LinkedIn silently truncates mid-sentence.
+    const verbose = outreach.composeNote({
+      ...target,
+      why: "I read your write-up on moving off the monolith without a big-bang cutover, and the part about keeping both write paths live for a full quarter was the detail I had not seen anybody write down before, so thank you for that.",
+    });
+    check("a long reason still produces a note within the limit",
+      verbose.length <= outreach.NOTE_LIMIT, `${verbose.length} chars`);
+
+    // Both required fields are genuinely required — a blank one must fail the
+    // whole file rather than yield a generic note addressed to nobody.
+    const scratch = path.resolve("prisma/ops-test-targets.json");
+    writeFileSync(scratch, JSON.stringify([{ name: "No Reason Given" }]));
+    check("a target with no reason is rejected", outreach.readTargets(scratch).error !== undefined);
+    writeFileSync(scratch, "{ not json");
+    check("a malformed file is reported, not thrown", outreach.readTargets(scratch).error !== undefined);
+    rmSync(scratch, { force: true });
+
+    check("a missing target file is not an error",
+      outreach.readTargets(path.resolve("prisma/does-not-exist.json")).error === undefined);
+
+    const run = await ops.tick({ db, now, only: ["outreach"], force: true });
+    const result = run.ran.find((r) => r.key === "outreach")?.result;
+    check("outreach skips cleanly with no target list", result?.status === "skipped", result?.status);
+
+    const notes = await db.contentDraft.findMany({ where: { kind: "connection-note" } });
+    check("no connection note is created without targets", notes.length === 0, `${notes.length}`);
+
+    check("outreach runs with nothing configured", outreach.outreachAgent.requires.length === 0);
+    check("its purpose states that it sends nothing",
+      /[Ss]ends nothing|never sends/.test(outreach.outreachAgent.purpose));
+  }
 
   // =========================================================================
   heading("Scheduler");

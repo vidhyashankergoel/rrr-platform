@@ -24,11 +24,22 @@ before it goes live.
 
 ---
 
-## What I cannot do for you
+## What I cannot do for you, including by driving your browser
 
-Creating the page needs your LinkedIn login, and LinkedIn's API does not allow
-a company page to be created programmatically. So: you create it, you paste
-this in. Ten minutes.
+Creating the page needs your LinkedIn login, so it needs you. That does not
+change if I drive Chrome instead of telling you where to click — it is still
+an account being created by an automated session on a site whose User
+Agreement prohibits exactly that, and the account it would put at risk is the
+one every page of the site links to.
+
+So: you create it, you paste this in. Everything else is already done — the
+logo, the banner, the About section, the specialties, nine posts. Ten minutes
+of clicking and typing, and I have tried to make sure none of it is thinking.
+
+The same answer applies to sending connection requests automatically. See
+[The agents behind this page](#the-agents-behind-this-page) at the bottom for
+what the outreach agent does instead, and why that split is deliberate rather
+than unfinished.
 
 ---
 
@@ -37,12 +48,24 @@ this in. Ten minutes.
 You need a personal LinkedIn profile with a current position listed — LinkedIn
 refuses to let you create a company page otherwise. Yours qualifies.
 
-Have ready:
+Have ready — all three are already in this repository, rendered to LinkedIn's
+exact dimensions, so there is nothing to export or resize:
 
-- **Logo** — `brand/logo-mark.svg` in this repository, exported to PNG at
-  **300 × 300**
-- **Cover image** — 1128 × 191
-- **Website** — `https://www.rrrsolutionproviders.ca`
+| File | Size | Use |
+|---|---|---|
+| `brand/linkedin/logo-300.png` | 300 × 300 | The logo. Use this one. |
+| `brand/linkedin/logo-300-square.png` | 300 × 300 | Only if the rounded corners look wrong against a card in some view. |
+| `brand/linkedin/cover-1128x191.png` | 1128 × 191 | The banner. |
+
+Website: `https://www.rrrsolutionproviders.ca`
+
+> The banner's left third is deliberately empty. LinkedIn composites the logo
+> over the lower-left of the cover, so anything placed there is covered at
+> render time rather than at design time — which is why it is easy to miss
+> until the page is already public.
+
+Regenerate either image from `brand/logo-mark.svg` after a brand change by
+re-running the export described in `brand/linkedin/cover.svg`'s source.
 
 ---
 
@@ -304,6 +327,144 @@ you sell.** A feed of "we can help with Kubernetes!" converts nobody.
 
 ---
 
+## Four posts that show the work
+
+The five posts above introduce the firm. These four show it. Post them after
+the launch post, roughly one a week, interleaved with the others.
+
+Every one of them follows the same rule and it is worth stating once: **the
+interesting part is the thing that was harder than expected, not the number at
+the end.** The number is why somebody keeps reading. The difficulty is why they
+believe you.
+
+None of them names a former employer's client. See the warning at the top of
+this file before you change that.
+
+### W1 — Rolling out a service mesh without an outage
+
+> Putting Istio across 180+ services sounds like a platform project. In
+> practice it is a negotiation with every team that owns a service.
+>
+> The diagrams show a sidecar next to each pod and mTLS between them. What the
+> diagrams do not show:
+>
+> **mTLS has to go on namespace by namespace, in permissive mode first.** Flip
+> a namespace to STRICT while one caller is still outside the mesh and you have
+> taken that path down. Permissive mode accepts both, so you can move callers
+> at their own pace and only tighten once the traffic is actually all mTLS.
+>
+> **You find out what talks to what by watching, not by asking.** Every team
+> we spoke to gave us an accurate list of what their service calls. Almost
+> nobody could tell us what calls *them*. Kiali's topology view answered in an
+> afternoon what three weeks of meetings had not.
+>
+> **Sidecars change your latency budget.** Not much per hop — but on a request
+> that crosses six services it is six hops, and if your p99 alert was tuned
+> with no headroom it will fire on the day you roll out. Re-baseline before,
+> not after.
+>
+> The outcome was 180+ services migrated from on-premises to AWS with zero
+> service disruption, and 99.9% uptime sustained across the following year. The
+> mesh was the part that made the rest safe to move.
+>
+> Context: a major Canadian international airport authority. Delivered by me in
+> the course of employment with a global IT services firm — evidence of what I
+> have done, not a claim that anyone endorses my company.
+>
+> If you are planning a mesh rollout, the permissive-mode sequencing is the
+> part I would most want somebody to tell me in advance. Happy to go into it.
+
+### W2 — 25 dashboards and 150 queries, published
+
+> Observability engagements are judged on dashboards. So here are ours, in
+> full, before you hire anybody.
+>
+> **25 production Grafana dashboards** that drop into any Prometheus and Loki
+> stack:
+> https://github.com/vidhya101/grafana-observability-toolkit
+>
+> **150+ classified PromQL and LogQL queries** — one self-contained HTML page,
+> no dependencies, no sign-up:
+> https://github.com/vidhya101/promql-logql-query-reference
+>
+> These are not the tutorial queries. They are the ones you actually want at
+> 03:00 when something is on fire and you need to know which service, which
+> pod, and since when.
+>
+> I am publishing them for a straightforward reason. A new consultancy asks you
+> to believe a claim about quality. Nobody should. Open the repository instead
+> and judge the work — the naming, the structure, whether the queries would
+> survive contact with your cluster.
+>
+> If you take them and never speak to me, that is a completely fine outcome.
+> If you have a query that has saved you, send it and I will add it.
+
+### W3 — Mimir: the choice is about tenancy, not scale
+
+> The question people ask about Grafana Mimir is "are we big enough for the
+> distributed mode?"
+>
+> It is usually the wrong question. We have run Mimir both ways in production,
+> and the thing that actually decides it is **tenancy**, not volume.
+>
+> **Monolithic** runs every component in one binary. One thing to deploy, one
+> thing to debug, and it will take far more load than most people assume. If
+> you have one team and one set of metrics, this is almost certainly correct —
+> and it stays correct for longer than the sizing guides imply.
+>
+> **Distributed** splits ingesters, queriers, compactors and store-gateways so
+> you can scale and fail them independently. The reason to want that is rarely
+> raw throughput. It is that a tenant running an expensive query should not be
+> able to affect another tenant's ingestion — so you need the query path and
+> the write path to fail separately.
+>
+> If you have one tenant, you do not have that problem, and the distributed
+> mode is four more things to operate in exchange for solving it.
+>
+> We deployed both for Rugby Canada, who went from no enterprise monitoring at
+> all to four data sources unified in Grafana, mean time to detect and resolve
+> down from hours to minutes, and zero data loss on long-term retention.
+>
+> We also talk people out of the distributed mode regularly. Those two things
+> are not in conflict.
+
+### W4 — The infrastructure nobody wrote down
+
+> A client asked us to reduce their AWS cost. We could not start, because
+> nobody could tell us what was running.
+>
+> Not out of carelessness — the normal way. The people who built it had moved
+> on, changes had been made in the console under time pressure, and the
+> documentation described an architecture from two years earlier.
+>
+> What we actually did:
+>
+> **Imported the live estate into Terraform rather than rebuilding it.**
+> `terraform import` against what exists, then closing the gap between the
+> plan and reality one resource at a time until the plan came back clean. It is
+> unglamorous and it is the only version that does not risk an outage.
+>
+> **Kept the review gates while doing it.** Modular Terraform behind GitHub
+> Actions with the existing IAM controls and peer review intact. A migration
+> that quietly weakens the controls has not improved anything.
+>
+> **Gave them a throwaway environment.** KIND and ArgoCD, so a change could be
+> validated before it reached production. Developer environment setup went from
+> days to under an hour.
+>
+> The result: 100% of production infrastructure under version control, and
+> about 30% off the early-stage cloud bill — most of which was simply visible
+> once everything was written down.
+>
+> Client: Digitalogy LLC.
+>
+> The general lesson, which applies well beyond that engagement: **the most
+> expensive thing in a cloud estate is the part nobody wrote down.** If you are
+> scoping a migration, budget discovery properly. The estimate that goes wrong
+> is always the one that assumed the current setup was documented.
+
+---
+
 ## Settings to change immediately after creating the page
 
 | Setting | Why |
@@ -328,13 +489,60 @@ in about 45 seconds.
 
 ---
 
-## A note on the posts
+## The agents behind this page
 
-The LinkedIn agent (`docs/AGENTS.md` §7) drafts posts like these on an ongoing
-basis and stores them in the `ContentDraft` table. It writes them; you publish
-them.
+Two of them, and both stop short of touching LinkedIn.
 
-That split is not a limitation of the implementation. LinkedIn's API does not
-permit posting to a personal profile without partner access, and automating the
-site breaches the User Agreement — the penalty is losing the account your
-company page depends on. Thirty seconds of pasting is the better trade.
+### The LinkedIn agent — writes posts
+
+`docs/AGENTS.md` §7. Drafts posts on an ongoing basis into the `ContentDraft`
+table, including case-study posts built from the engagement record in
+`catalogue.ts`. The client label in those comes from `displayClient()`, so
+while `ATTRIBUTION_MODE` is `"descriptive"` there is no code path that can
+produce a draft naming a former employer's client. A test asserts it against
+every idea the agent can generate, not just the one it drafted today.
+
+```
+npm run agents:tick -- --only=linkedin --force
+```
+
+### The outreach agent — writes connection notes
+
+`platform/src/lib/agents/ops/outreach.ts`. For each person on your target list
+it writes a personalised invitation note that fits LinkedIn's 300-character
+limit, plus a longer message to send once they accept.
+
+Maintain the list in `platform/data/outreach-targets.json` — copy
+`outreach-targets.example.json` for the shape. `name` and `why` are both
+required. `why` is the specific public reason you are contacting *that* person,
+and the agent refuses the whole file rather than write a note without one,
+because a note without one is a template and the recipient can tell.
+
+The file is git-ignored and CI fails if it is ever tracked: it holds the names,
+roles and employers of real people, and this repository is public.
+
+```
+npm run agents:tick -- --only=outreach --force
+```
+
+### Why neither of them sends anything
+
+Both write drafts. You press the button. That is not an unfinished feature:
+
+- LinkedIn's User Agreement prohibits using software, bots or automated methods
+  to access the service. Automated connection requests are the most reliably
+  detected of those, because LinkedIn built its detection around that exact
+  case.
+- The account at risk is the one every page of the site links to — and a
+  company page is administered by personal profiles, so losing the profile
+  loses the page with it.
+- A connection request carrying a pitch is an unsolicited commercial message to
+  a real person. CASL s.13 puts the burden of proving a message was lawful on
+  the sender, which is a hard thing to do several hundred times.
+
+The agent does the part that is hard — writing something specific enough that a
+stranger replies. Sending was never the bottleneck.
+
+**Send a few a day, not forty in a sitting.** A person who fires off forty
+invitations in ten minutes looks like a script whether or not one was used,
+which is why the agent hands you five at a time.

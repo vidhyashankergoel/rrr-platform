@@ -119,6 +119,19 @@ jobs:
           fi
           echo "No credential-shaped strings found."
 
+      - name: Ensure no outreach target list was committed
+        # data/outreach-targets.json holds the names, roles and employers of
+        # real people. In a public repository that is their personal
+        # information published without their knowledge — a PIPEDA problem
+        # and a straightforwardly bad thing to do to somebody.
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)outreach-targets\.json$' ; then
+            echo "::error::An outreach target list is tracked. It contains other people's personal information — remove it from the index and from history."
+            exit 1
+          fi
+          echo "No outreach target lists tracked."
+
       - name: Ensure no database was committed
         # Lead, Conversation and Booking rows contain real names, email
         # addresses and what people told us in confidence. A committed
