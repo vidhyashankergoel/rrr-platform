@@ -24,6 +24,19 @@ export const metadata: Metadata = {
       "We build, migrate and operate cloud platforms for Canadian teams. Fixed-price engagements with published CAD pricing.",
   },
   robots: { index: true, follow: true },
+
+  // Google Search Console ownership, for https://www.rrrsolutionproviders.ca/
+  //
+  // This token is not a secret. It is designed to be served in the public HTML
+  // of the page it verifies — that is the entire mechanism — so it belongs in
+  // the repository rather than in an environment variable, where it would be
+  // invisible to anyone wondering why the tag is there.
+  //
+  // It must keep being served. Search Console re-checks ownership periodically
+  // and silently unverifies the property if the tag disappears, which costs the
+  // sitemap, the coverage reports and the search-performance data with no
+  // notification worth the name.
+  verification: { google: "uhtZPBCwrgs8inf8OZPIoI1IA-ksdIljpkL-HAzVwIA" },
 };
 
 export const viewport: Viewport = {

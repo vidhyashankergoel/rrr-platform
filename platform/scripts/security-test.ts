@@ -253,6 +253,15 @@ check("robots disallows the admin console", robotsSrc.includes('"/admin"'));
 check("robots disallows the API surface", robotsSrc.includes('"/api/"'));
 check("robots points at the sitemap", robotsSrc.includes("sitemap.xml"));
 
+// Search Console re-checks ownership and silently unverifies the property if
+// the tag stops being served — taking the sitemap, coverage reports and search
+// data with it, with no notification worth the name. A deleted line in a
+// metadata refactor is exactly how that happens.
+const layoutSrc = read("src/app/layout.tsx");
+check("the site claims Search Console ownership",
+  /verification:\s*\{\s*google:/.test(layoutSrc),
+  "metadata.verification.google is gone — the property will silently unverify");
+
 // ===========================================================================
 //  Live checks
 // ===========================================================================
@@ -271,6 +280,11 @@ async function live() {
   // A crawler must be able to find the sitemap, and must not be pointed at
   // the console. These are served by generated routes, so a build that drops
   // them fails here rather than silently going unnoticed for a month.
+  const homeBody = await res.clone().text();
+  check("the Search Console verification tag is served",
+    /name="google-site-verification"/.test(homeBody),
+    "absent from the live homepage — the property will unverify");
+
   const robotsRes = await fetch(`${BASE}/robots.txt`);
   check("robots.txt is served", robotsRes.status === 200, `${robotsRes.status}`);
   const robotsBody = await robotsRes.text();
