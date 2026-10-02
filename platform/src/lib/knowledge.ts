@@ -346,7 +346,7 @@ export const knowledge: KnowledgeEntry[] = [
       "",
       "• **Read the code.** Public repositories covering CI/CD reference architectures, Grafana dashboards, Terraform modules and Kubernetes operators. Original work, not course projects.",
       "• **Verify the certifications.** CKA, AZ-203 and AZ-900 are independently checkable — ask for the credential IDs.",
-      "• **Check the track record.** Greater Toronto Airports Authority, Citibank, RSA Insurance, Rugby Canada. References arranged once we are past a first call.",
+      "• **Check the track record.** A major Canadian international airport authority, a global retail and investment bank, a multinational general insurance group, and Rugby Canada. References arranged once we are past a first call.",
       "• **Test us cheaply.** The $4,500 audit needs read-only access and five business days. You keep the report whether or not you continue.",
       "",
       "We are a new firm with experienced people, and we would rather say that plainly than pretend to be ten years old.",

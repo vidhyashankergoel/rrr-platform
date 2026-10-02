@@ -11,7 +11,12 @@
  */
 
 import { caseStudies } from "../src/lib/catalogue";
-import { displayClient, attributionLine, type AttributionMode } from "../src/lib/attribution";
+import {
+  displayClient,
+  attributionLine,
+  ATTRIBUTION_MODE,
+  type AttributionMode,
+} from "../src/lib/attribution";
 
 let pass = 0;
 let fail = 0;
@@ -83,6 +88,85 @@ async function main() {
       check(
         `${c.slug}: attribution says "course of employment"`,
         attributionLine(c, mode).includes("course of employment"),
+      );
+    }
+  }
+
+  // =========================================================================
+  //  The two ways a real client name has actually escaped
+  // =========================================================================
+  //
+  // displayClient() was always correct. Both leaks went around it rather than
+  // through it, which is why neither showed up in the tests above.
+  //
+  //  1. Hardcoded in prose. /story described the airport authority, the
+  //     insurer, the bank AND the former employer by name in body copy that
+  //     never called displayClient() at all. knowledge.ts listed all three in
+  //     the answer Ada gives when a visitor asks about the track record — a
+  //     chatbot volunteering them to anyone who asked.
+  //
+  //  2. Serialised into a client component's props. <CaseCard study={c} />
+  //     took the whole CaseStudy, and Next ships every prop of a client
+  //     component to the browser, so the raw name sat in view-source on a page
+  //     that rendered only the descriptive label.
+  //
+  // These two checks are the regression guard for both.
+
+  const SOURCE_ROOTS = ["src/app", "src/lib", "src/components"];
+
+  // The real names may appear ONLY where they are data or are explained.
+  const ALLOWED = new Set([
+    "src/lib/catalogue.ts",   // the record itself; displayClient reads from it
+    "src/lib/attribution.ts", // the module that decides how they are shown
+  ]);
+
+  const realNames = caseStudies.filter((c) => c.employer).map((c) => c.client);
+  const employers = [...new Set(caseStudies.map((c) => c.employer).filter(Boolean))] as string[];
+
+  const { readdirSync, readFileSync, statSync } = await import("node:fs");
+  const { join, relative } = await import("node:path");
+
+  const walk = (dir: string): string[] => {
+    const out: string[] = [];
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry);
+      if (statSync(full).isDirectory()) out.push(...walk(full));
+      else if (/\.(ts|tsx)$/.test(entry)) out.push(full);
+    }
+    return out;
+  };
+
+  const files = SOURCE_ROOTS.flatMap((r) => {
+    try { return walk(r); } catch { return []; }
+  });
+
+  if (ATTRIBUTION_MODE !== "named") {
+    for (const name of [...realNames, ...employers]) {
+      const offenders = files.filter((f) => {
+        if (ALLOWED.has(relative(".", f))) return false;
+        return readFileSync(f, "utf8").includes(name);
+      });
+      check(
+        `"${name}" appears in no page, component or data file outside the catalogue`,
+        offenders.length === 0,
+        offenders.map((f) => relative(".", f)).join(", "),
+      );
+    }
+  }
+
+  // The view model handed to the CaseCard client component must not carry the
+  // raw name in ANY field — it is serialised wholesale into the page payload.
+  {
+    const { toCaseView } = await import("../src/lib/case-view");
+    for (const study of caseStudies.filter((c) => c.employer)) {
+      const serialised = JSON.stringify(toCaseView(study));
+      check(
+        `${study.slug}: the client view model does not carry the real name`,
+        !serialised.includes(study.client),
+      );
+      check(
+        `${study.slug}: the client view model does not carry the employer`,
+        !study.employer || !serialised.includes(study.employer),
       );
     }
   }

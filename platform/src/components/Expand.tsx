@@ -25,8 +25,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { CaseStudy } from "@/lib/catalogue";
-import { displayClient, attributionLine } from "@/lib/attribution";
+/**
+ * `CaseCard` takes a resolved `CaseView`, not a `CaseStudy`.
+ *
+ * Next serialises every prop of a client component into the page payload, so
+ * passing the whole study shipped the real client name to every visitor in
+ * view-source while the page rendered only the descriptive label. The
+ * conversion lives in `lib/case-view.ts` — outside this "use client" boundary,
+ * which is both where the build requires it and where it belongs.
+ */
+import type { CaseView } from "@/lib/case-view";
 
 // ---------------------------------------------------------------------------
 //  Disclosure — native, no JavaScript required
@@ -73,7 +81,7 @@ export function Disclosure({
 //  CaseCard — compact card, full study in a dialog
 // ---------------------------------------------------------------------------
 
-export function CaseCard({ study }: { study: CaseStudy }) {
+export function CaseCard({ study }: { study: CaseView }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -144,7 +152,7 @@ export function CaseCard({ study }: { study: CaseStudy }) {
     };
   }, [open, close]);
 
-  const client = displayClient(study);
+  const client = study.client;
   const headline = study.results[0];
   const titleId = `case-${study.slug}`;
 
@@ -235,7 +243,7 @@ export function CaseCard({ study }: { study: CaseStudy }) {
               ))}
             </div>
 
-            <p className="case-dlg__attr">{attributionLine(study)}.</p>
+            <p className="case-dlg__attr">{study.attribution}.</p>
           </div>
         </div>,
         document.body,

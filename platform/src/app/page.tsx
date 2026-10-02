@@ -12,6 +12,7 @@ import HowWeWork from "@/components/HowWeWork";
 import BookCallButton from "@/components/BookCall";
 import { RevealGroup, Marquee } from "@/components/Enhancements";
 import { CaseCard } from "@/components/Expand";
+import { toCaseView } from "@/lib/case-view";
 import Reviews from "@/components/Reviews";
 
 const ACHIEVEMENTS = [
@@ -306,7 +307,7 @@ export default function Home() {
 
           <RevealGroup className="grid grid-3">
             {caseStudies.map((c) => (
-              <CaseCard study={c} key={c.slug} />
+              <CaseCard study={toCaseView(c)} key={c.slug} />
             ))}
           </RevealGroup>
 

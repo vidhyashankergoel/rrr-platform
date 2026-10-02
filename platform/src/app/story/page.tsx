@@ -111,18 +111,19 @@ export default function StoryPage() {
 
           <p>
             Between 2020 and 2023, our founder led the migration of more than 180 microservices from
-            on-premises infrastructure to AWS for the Greater Toronto Airports Authority, on the Wipro
-            client account. Zero service disruption. 99.9% uptime sustained across twelve months.
+            on-premises infrastructure to AWS for a major Canadian international airport authority, in
+            the course of employment with a global IT services firm. Zero service disruption. 99.9%
+            uptime sustained across twelve months.
             Roughly forty percent off the infrastructure bill. Four junior engineers taken through it
             who could run it afterwards.
           </p>
 
           <p>
             That work followed two years doing the same kind of thing under different constraints —
-            consolidating fourteen fragmented network connections into a single Azure hub for RSA
-            Insurance, and automating backup, patching and recovery for over ten terabytes of Oracle
-            financial data at Citibank, inside regulated change windows where a mistake is a reportable
-            event.
+            consolidating fourteen fragmented network connections into a single Azure hub for a
+            multinational general insurance group, and automating backup, patching and recovery for
+            over ten terabytes of Oracle financial data at a global retail and investment bank, inside
+            regulated change windows where a mistake is a reportable event.
           </p>
 
           <h3 style={{ marginTop: "2.5rem" }}>The pattern that kept repeating</h3>
