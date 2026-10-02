@@ -38,7 +38,13 @@
     "test:chips": "tsx scripts/chip-test.ts",
     "test:emails": "tsx scripts/email-template-test.ts",
     "test:copy": "tsx scripts/copy-check.ts",
-    "test:contrast": "tsx scripts/contrast-test.ts"
+    "test:contrast": "tsx scripts/contrast-test.ts",
+    "marketing": "tsx scripts/marketing.ts",
+    "marketing:plan": "tsx scripts/marketing.ts plan",
+    "marketing:team": "tsx scripts/marketing.ts team",
+    "marketing:og": "tsx scripts/marketing.ts og",
+    "marketing:analytics": "tsx scripts/marketing.ts analytics",
+    "test:marketing": "tsx scripts/marketing-test.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

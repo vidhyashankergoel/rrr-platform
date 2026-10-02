@@ -1,0 +1,111 @@
+name: Weekly LinkedIn drafts
+
+# Monday 13:00 UTC — 09:00 Eastern, which puts the week's three drafts in
+# front of a person on Monday morning for posts that go out Tuesday,
+# Wednesday and Thursday. Early enough to rewrite one that is wrong, late
+# enough that it is still the current week's news.
+#
+# THIS JOB DOES NOT PUBLISH ANYTHING.
+#
+# It opens a pull request containing the drafts, and that is the whole point.
+# A cron holding a LinkedIn token is one bad loop away from posting a backlog
+# nobody read, under the company name, to the exact audience the firm is
+# trying to earn — and deleting a post afterwards does not unsend the
+# notification. The review happens as a diff, where the text that will be
+# published is the text being approved.
+#
+# No LinkedIn credentials are referenced here, deliberately, and
+# `marketing-test.ts` asserts that they never are.
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: marketing-drafts
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    name: Draft the week
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate the Prisma client
+        # The marketing modules import the catalogue, which pulls in types
+        # that expect a generated client. Nothing here touches a database.
+        run: npx prisma generate
+
+      - name: Check the gate still works before trusting it
+        # If the compliance tests are failing, the drafts this job produces
+        # cannot be trusted either — so it stops rather than opening a pull
+        # request full of posts nothing has checked.
+        run: npm run test:marketing
+
+      - name: Compose the week
+        run: npm run marketing:plan
+
+      - name: Open a pull request if there is anything new
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: .
+        run: |
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain platform/marketing/queue)" ]; then
+            echo "No new drafts — the rotation produced nothing this week."
+            exit 0
+          fi
+
+          week="$(date -u +%Y-%m-%d)"
+          branch="marketing/drafts-${week}"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add platform/marketing/queue
+          git commit -m "LinkedIn drafts for the week of ${week}
+
+          Written by the marketing agents and checked by the compliance gate.
+          Nothing is published by opening this: merging approves the text,
+          and a person posts it."
+
+          git push --set-upstream origin "$branch"
+
+          gh pr create \
+            --title "LinkedIn drafts — week of ${week}" \
+            --body "$(cat <<'BODY'
+          Three drafts for this week, one per posting day.
+
+          Each has been through the full line: strategist, writer, editor,
+          designer, compliance officer, reviewer. The compliance gate ran
+          before these were written and the job would have stopped if it were
+          failing.
+
+          **Review the post text itself**, not just the diff shape — what is
+          between the rules in each file is exactly what goes out.
+
+          Merging this approves the wording. It does not publish anything; a
+          person still posts it.
+          BODY
+          )" \
+            || echo "Could not open a PR — the branch is pushed, open one by hand."

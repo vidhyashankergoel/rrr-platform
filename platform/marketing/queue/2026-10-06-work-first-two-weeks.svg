@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200" role="img">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2AD3BF"/><stop offset="1" stop-color="#0E8C9B"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="#05121F"/>
+  <rect x="0" y="0" width="1200" height="8" fill="url(#g)"/>
+
+  <text x="64" y="136" font-size="27" font-weight="650" fill="#2AD3BF"
+        letter-spacing="2.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">HOW IT WORKS</text>
+  <text font-size="54" font-weight="680" fill="#F4F7FA" letter-spacing="-0.8"
+        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+    <tspan x="64" y="214">What actually happens in the first two</tspan>
+    <tspan x="64" y="279">weeks?</tspan>
+  </text>
+  <g>
+    <rect x="64" y="427" width="1072" height="108" rx="16" fill="#0C1E2E" stroke="#0E8C9B" stroke-opacity="0.45"/>
+    <circle cx="108" cy="481" r="15" fill="#2AD3BF"/>
+    <text x="108" y="489" font-size="22" font-weight="700" fill="#05121F"
+          text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">1</text>
+    <text x="148" y="492" font-size="34" fill="#F4F7FA"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Assessment</text>
+  </g>
+  <path d="M108 539 L108 559"
+          stroke="#0E8C9B" stroke-width="3" stroke-linecap="round"/>
+  <g>
+    <rect x="64" y="563" width="1072" height="108" rx="16" fill="#0C1E2E" stroke="#0E8C9B" stroke-opacity="0.45"/>
+    <circle cx="108" cy="617" r="15" fill="#2AD3BF"/>
+    <text x="108" y="625" font-size="22" font-weight="700" fill="#05121F"
+          text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">2</text>
+    <text x="148" y="628" font-size="34" fill="#F4F7FA"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Written findings</text>
+  </g>
+  <path d="M108 675 L108 695"
+          stroke="#0E8C9B" stroke-width="3" stroke-linecap="round"/>
+  <g>
+    <rect x="64" y="699" width="1072" height="108" rx="16" fill="#0C1E2E" stroke="#0E8C9B" stroke-opacity="0.45"/>
+    <circle cx="108" cy="753" r="15" fill="#2AD3BF"/>
+    <text x="108" y="761" font-size="22" font-weight="700" fill="#05121F"
+          text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">3</text>
+    <text x="148" y="764" font-size="34" fill="#F4F7FA"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Costed plan</text>
+  </g>
+  <path d="M108 811 L108 831"
+          stroke="#0E8C9B" stroke-width="3" stroke-linecap="round"/>
+  <g>
+    <rect x="64" y="835" width="1072" height="108" rx="16" fill="#0C1E2E" stroke="#0E8C9B" stroke-opacity="0.45"/>
+    <circle cx="108" cy="889" r="15" fill="#2AD3BF"/>
+    <text x="108" y="897" font-size="22" font-weight="700" fill="#05121F"
+          text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">4</text>
+    <text x="148" y="900" font-size="34" fill="#F4F7FA"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">You decide</text>
+  </g>
+
+
+  <g transform="translate(64 1080)">
+    <rect width="56" height="56" rx="13" fill="#0C1E2E"/>
+    <!--
+      A nested <svg> with a viewBox tight to the mark's own bounding box. The
+      earlier translate+scale left it cramped and off-centre in the tile,
+      because the mark does not fill its 96-unit canvas - it occupies roughly
+      x 22-74, y 21-73, and scaling the canvas scales the empty margin too.
+      Letting the viewBox do the fitting removes the arithmetic entirely.
+    -->
+    <svg x="9" y="9" width="38" height="38" viewBox="22 21 52 52" overflow="visible">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M27 67V47h7.5a6 6 0 0 1 0 12H27l9 8" stroke="#FFC25C" stroke-width="5" opacity="0.55"/>
+        <path d="M41 62V38h9a7 7 0 0 1 0 14h-9l11 10" stroke="#0E8C9B" stroke-width="5.5" opacity="0.9"/>
+        <path d="M56 56V26h10.5a8 8 0 0 1 0 16H56l13 14" stroke="#2AD3BF" stroke-width="6.5"/>
+      </g>
+    </svg>
+    <text x="74" y="24" font-size="27" font-weight="650" fill="#F4F7FA"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">RRR Solution Providers</text>
+    <text x="74" y="50" font-size="22" fill="#8FA8BE"
+          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">www.rrrsolutionproviders.ca &#183; Toronto, ON</text>
+  </g>
+</svg>

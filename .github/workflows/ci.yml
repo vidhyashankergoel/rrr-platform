@@ -89,6 +89,14 @@ jobs:
       - name: Attribution modes
         run: npx tsx scripts/attribution-test.ts
 
+      - name: Marketing — the compliance gate and the post pipeline
+        # The gate that stops a client name, an invented metric or somebody's
+        # phone number going out under the company name on LinkedIn. It is
+        # adversarial by design: most of it asserts that bad posts are
+        # refused, so a regression here is a regression in what the firm can
+        # publish by accident.
+        run: npx tsx scripts/marketing-test.ts
+
       - name: Delivery plane
         run: npx tsx scripts/bridge-test.ts
 
