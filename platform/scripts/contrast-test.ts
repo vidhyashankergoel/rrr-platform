@@ -17,7 +17,7 @@
 const BASE = process.env.TEST_BASE ?? "http://localhost:3111";
 
 const PAGES = [
-  "/", "/services", "/pricing", "/work", "/security", "/trust",
+  "/", "/audit", "/services", "/pricing", "/work", "/security", "/trust",
   "/story", "/about", "/contact", "/brand",
   "/legal/privacy", "/legal/terms", "/legal/accessibility",
 ];

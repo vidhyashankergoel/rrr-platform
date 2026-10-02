@@ -74,7 +74,7 @@ export const PILLARS: Pillar[] = [
         id: "work-first-two-weeks",
         question: "What actually happens in the first two weeks?",
         takeaway: "An engagement opens with an assessment that produces a written plan, not a kickoff deck.",
-        source: "/services",
+        source: "/audit",
         evidence:
           "Week one is reading: the repositories, the pipelines, the last three incidents. Week two is writing it down. What you get at the end is a document with options and prices in it, which you are free to take to someone else.",
         visual: "diagram",
@@ -87,6 +87,16 @@ export const PILLARS: Pillar[] = [
         source: "/pricing",
         evidence:
           "Publishing a price means the scope has to be pinned down before anyone signs, because we carry the overrun rather than you. It is a harder way to sell and a much easier way to be trusted.",
+        visual: "card",
+      },
+      {
+        id: "work-audit-deliverables",
+        question: "What do you actually get for a fixed-price audit?",
+        takeaway:
+          "Three documents you keep: the findings, a prioritized remediation plan, and a costed proposal you are free to ignore.",
+        source: "/audit",
+        evidence:
+          "The plan is written so your own team or another firm can execute it without us, which is the test of whether it was worth paying for. Read-only access throughout, nothing installed, and about three hours of your team's time across the week.",
         visual: "card",
       },
       {

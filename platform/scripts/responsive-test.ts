@@ -30,6 +30,7 @@ const VIEWPORTS = [
 
 const PAGES = [
   "/",
+  "/audit",
   "/services",
   "/pricing",
   "/work",

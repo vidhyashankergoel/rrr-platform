@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { services, auditOffer } from "@/lib/catalogue";
 import { currencyFromDollars as money } from "@/lib/company";
 import { PageHead, ServiceCard, CtaBand } from "@/components/Bits";
@@ -48,6 +49,11 @@ export default function ServicesPage() {
                   <span style={{ fontSize: ".85rem", color: "var(--text-3)" }}>
                     CAD · {auditOffer.durationLabel}
                   </span>
+                </p>
+                <p style={{ marginTop: "1rem", marginBottom: 0 }}>
+                  <Link className="btn btn--primary" href="/audit">
+                    What the audit covers
+                  </Link>
                 </p>
               </div>
               <ul className="check-list">

@@ -307,8 +307,8 @@ export default function Home() {
               Read-only access. You keep the report either way.
             </p>
             <div className="btn-row" style={{ marginTop: "2rem" }}>
-              <Link className="btn btn--primary" href="/contact?service=Infrastructure%20Audit">
-                Book an audit — {money(auditOffer.price)}
+              <Link className="btn btn--primary" href="/audit">
+                What the audit covers — {money(auditOffer.price)}
               </Link>
               <Link className="btn btn--ghost" href="/trust">
                 Other ways to test us
