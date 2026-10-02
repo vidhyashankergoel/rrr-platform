@@ -154,6 +154,31 @@ async function main() {
     }
   }
 
+  // A retired exam number is a small inaccuracy with an outsized cost: it is
+  // the kind of detail a diligent buyer checks, and the diligent buyer is the
+  // one worth winning. AZ-203 was retired in 2020 and replaced by AZ-204.
+  //
+  // This is guarded as a class rather than fixed as instances because it had
+  // already been fixed three times — homepage, about page, trust page — and
+  // turned up a fourth time in the answer Ada gives about certifications.
+  {
+    const RETIRED = ["AZ-203"];
+    for (const exam of RETIRED) {
+      const offenders = files.filter((f) => {
+        const body = readFileSync(f, "utf8");
+        // A line explaining why the code is retired is not a claim to hold it.
+        return body
+          .split("\n")
+          .some((line) => line.includes(exam) && !line.trimStart().startsWith("//"));
+      });
+      check(
+        `retired exam "${exam}" is not claimed anywhere`,
+        offenders.length === 0,
+        offenders.map((f) => relative(".", f)).join(", "),
+      );
+    }
+  }
+
   // The view model handed to the CaseCard client component must not carry the
   // raw name in ANY field — it is serialised wholesale into the page payload.
   {

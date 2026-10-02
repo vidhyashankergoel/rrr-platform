@@ -62,11 +62,11 @@ const VERIFIABLE = [
   },
   {
     claim: "The certifications are real",
-    how: "CKA, AZ-203 and AZ-900 are all independently verifiable. Ask for the credential IDs and check them with the Linux Foundation and Microsoft directly.",
+    how: "CKA, Azure Developer Associate and AZ-900 are all independently verifiable. Ask for the credential IDs and check them with the Linux Foundation and Microsoft directly.",
   },
   {
     claim: "The employment history is real",
-    how: "The LinkedIn profile carries the Wipro tenure and the client accounts. Ask for references and we will arrange them once we are past a first call.",
+    how: "The LinkedIn profile carries the Wipro tenure and the dates. Ask for references and we will arrange them once we are past a first call.",
   },
   {
     claim: "The insurance is real",
