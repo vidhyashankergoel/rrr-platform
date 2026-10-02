@@ -322,7 +322,7 @@ export default function Home() {
       </section>
 
       {/* ---------------- CLIENTS / WORK ---------------- */}
-      <section className="section">
+      <section className="section section--systems">
         <div className="wrap">
           <div className="section-head center">
             <span className="eyebrow">Where the work was done</span>

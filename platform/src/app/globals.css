@@ -1129,6 +1129,86 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .delivery { scroll-snap-align: start; }
 }
 
+/* ==========================================================================
+   SYSTEMS SECTION — dark, technical treatment for the case studies
+   --------------------------------------------------------------------------
+   Taken from the reference portfolio: dark ground, a monospace sector label
+   above the title, a corner arrow as the affordance, and a constellation
+   field behind it. What is NOT taken is its information density — those cards
+   carry a title and one line of problem. These keep the headline metric,
+   because a buyer comparing consultancies is comparing numbers, and a card
+   that makes them click to find one has spent its moment.
+   ========================================================================== */
+.section--systems {
+  position: relative; overflow: hidden;
+  background: var(--brand-900); color: #dbe7f0;
+}
+.section--systems h2 { color: #fff; }
+.section--systems .lede { color: #a9c2d4; }
+.section--systems .eyebrow { color: var(--accent-300); }
+
+/* Constellation field: two tiled radial-gradient layers at different sizes
+   drifting against each other, which reads as depth without a canvas or a
+   single byte of JavaScript. */
+.section--systems::before {
+  content: ""; position: absolute; inset: -50%; pointer-events: none; opacity: .5;
+  background-image:
+    radial-gradient(1.4px 1.4px at 20% 30%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.2px 1.2px at 70% 60%, rgba(42,211,191,.55), transparent),
+    radial-gradient(1.6px 1.6px at 45% 80%, rgba(255,255,255,.35), transparent),
+    radial-gradient(1.2px 1.2px at 85% 20%, rgba(240,168,48,.45), transparent);
+  background-size: 180px 180px, 240px 240px, 300px 300px, 210px 210px;
+  animation: stars 90s linear infinite;
+}
+@keyframes stars { to { transform: translate3d(-180px, -240px, 0); } }
+
+.section--systems::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(900px 420px at 50% -10%, rgba(22,184,166,.16), transparent 70%);
+}
+.section--systems > * { position: relative; z-index: 1; }
+
+/* ---- the card, restyled for the dark ground ---- */
+.section--systems .case-card {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: none;
+}
+.section--systems .case-card:hover {
+  background: rgba(255,255,255,.06);
+  border-color: var(--accent-500);
+  box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(42,211,191,.3);
+}
+.section--systems .case-card__client { color: #8fa9bd; }
+.section--systems .case-card__headline { color: #fff; }
+.section--systems .case-card__metric-l { color: #a9c2d4; }
+
+/* The sector label becomes a monospace marker rather than a pill — it reads
+   as a system identifier, which is the register this section is in. */
+.section--systems .case-card .tags { gap: .75rem; align-items: baseline; }
+.section--systems .case-card .tag {
+  background: none; border: 0; padding: 0;
+  font-family: var(--font-mono); font-size: .68rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.section--systems .case-card .tag--accent { color: var(--amber-400); }
+.section--systems .case-card .tag:not(.tag--accent) { color: #6f8498; }
+
+/* Corner arrow: the affordance moves out of the text flow, so the card reads
+   as a whole target rather than as a paragraph with a link stuck underneath. */
+.section--systems .case-card__more {
+  position: absolute; top: var(--sp-4); right: var(--sp-4);
+  font-size: 0; color: var(--accent-400); opacity: .55;
+  transition: opacity .2s var(--ease), transform .2s var(--ease);
+}
+.section--systems .case-card__more svg { width: 17px; height: 17px; }
+.section--systems .case-card:hover .case-card__more { opacity: 1; transform: translate(2px, -2px); }
+.section--systems .case-card:hover .case-card__more svg { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .section--systems::before { animation: none; }
+}
+
 /* ---------- Print ---------- */
 @media print {
   .site-header, .site-footer, .cta-band, .nav__actions { display: none; }
