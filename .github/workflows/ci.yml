@@ -71,6 +71,12 @@ jobs:
         # database holds other people's personal information.
         run: npx tsx scripts/security-test.ts
 
+      - name: Assistant chips
+        # 84 tests that existed and had never run on a push. They need no
+        # server and no credentials, so there was no reason for the gap —
+        # it was simply missed when the job was written.
+        run: npx tsx scripts/chip-test.ts
+
       - name: Operations agents
         run: npx tsx scripts/ops-test.ts
 
