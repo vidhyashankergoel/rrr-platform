@@ -338,7 +338,7 @@ you sell.** A feed of "we can help with Kubernetes!" converts nobody.
 >
 > It is the infrastructure nobody wrote down.
 >
-> On one migration — 180+ microservices off on-premises — the estate had 27
+> On one migration (180+ microservices off on-premises) the estate had 27
 > separate load balancers, manual deployments across 500+ production hosts, and
 > no consistent way to see service-to-service traffic.
 >
@@ -458,7 +458,7 @@ this file before you change that.
 > stack:
 > https://github.com/vidhya101/grafana-observability-toolkit
 >
-> **150+ classified PromQL and LogQL queries** — one self-contained HTML page,
+> **150+ classified PromQL and LogQL queries**: one self-contained HTML page,
 > no dependencies, no sign-up:
 > https://github.com/vidhya101/promql-logql-query-reference
 >
@@ -561,6 +561,74 @@ linkedinCompany: "https://www.linkedin.com/company/rrr-solution-providers",
 The footer, the contact page and the structured data all read from that
 constant, so one line makes the link appear everywhere. Push, and it deploys
 in about 45 seconds.
+
+---
+
+## Asking for a testimonial
+
+`platform/src/lib/testimonials.ts` is empty on purpose and points here for the
+wording. This is that wording.
+
+**Ask only Rugby Canada and Digitalogy LLC.** They are this company's own
+clients. The other three engagements were delivered under employment with a
+prior employer, on that employer's accounts — they are not ours to solicit on,
+and asking would be the kind of thing that gets noticed.
+
+Send it from the company address, not a personal one. Keep the ask small: one
+specific question is answerable in two minutes, and "could you write us a
+testimonial?" sits in an inbox for three weeks.
+
+---
+
+**Subject:** Two minutes, if you have them
+
+> Hi [name],
+>
+> We have put up a website for the firm, and the one thing on it we cannot
+> write ourselves is what it was actually like to work with us.
+>
+> Would you be willing to answer one question in a sentence or two?
+>
+> **What was different about working with us compared with what you expected,
+> or with how it had gone before?**
+>
+> Whatever you write is what goes on the site, word for word. We will not
+> edit it, tighten it or merge it with anything else. If the honest answer is
+> mixed, that is more useful to us than a compliment, and we would still
+> publish it.
+>
+> A few practical things:
+>
+> • We would quote you by name, title and organization. If you would rather be
+> quoted as "Director of Technology at a Canadian national sports
+> organization", that works too — say which you prefer.
+> • It helps if you reply with "yes, you can publish that with my name", because
+> under PIPEDA we need your consent on record before putting your name on a
+> public page, and we keep the email.
+> • If you would rather not, that is a completely fine answer and will not come
+> up again.
+>
+> Thank you either way.
+>
+> Vidhya
+
+---
+
+### When the reply arrives
+
+1. **Paste it verbatim** into `testimonials.ts`. Do not improve their English,
+   tighten the phrasing, or stitch two sentences they wrote separately into
+   one. An edited quote attributed to a named person is a fabrication, however
+   small the edit.
+2. **Record where the consent lives** in `consentNote` — "email, 14 Oct 2026".
+   That field is never rendered; it exists so that if anyone ever asks whether
+   permission was given, the answer is a file path and not a memory.
+3. **If they only agreed anonymously**, leave `name` empty and use the role and
+   sector. An honest anonymous quote is worth more than a named one they did
+   not write.
+
+The section on the site switches from the "no testimonials yet" state to the
+quotes automatically as soon as the array has an entry. Nothing else to change.
 
 ---
 

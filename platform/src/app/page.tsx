@@ -91,7 +91,7 @@ export default function Home() {
               engineers, handed over as code you own, and operable by your team the day we leave.
             </p>
             <p className="hero__lede">
-              We build, migrate and operate cloud platforms for Canadian teams — AWS, Azure and GCP,
+              We build, migrate and operate cloud platforms for Canadian teams: AWS, Azure and GCP,
               Kubernetes, Terraform, CI/CD and observability. Published prices, fixed scope where it
               can be pinned down, and everything handed back in your own repositories.
             </p>
@@ -174,7 +174,7 @@ export default function Home() {
               <p className="mv__when">Vision · 2031</p>
               <p className="mv__statement">
                 That no Canadian organization has to discover its own outage from a customer, or
-                inherit infrastructure nobody can explain — because the standard of practice we
+                inherit infrastructure nobody can explain, because the standard of practice we
                 demonstrate has become the one the market expects.
               </p>
               <p className="mv__note">
@@ -328,7 +328,7 @@ export default function Home() {
             <span className="eyebrow">Where the work was done</span>
             <h2>Production systems, under real constraints</h2>
             <p className="lede">
-              Aviation, banking, insurance, sport and AI research — including estates under
+              Aviation, banking, insurance, sport and AI research, including estates under
               regulated change control.
             </p>
           </div>
