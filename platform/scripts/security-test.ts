@@ -219,6 +219,41 @@ check("leads are given a retention date", leadsSrc.includes("purgeAfter"));
 check("bookings are given a retention date", bookingsSrc.includes("purgeAfter"));
 
 // ===========================================================================
+heading("The crawl surface matches the real routes");
+// ===========================================================================
+// The sitemap lists its URLs explicitly rather than globbing src/app, because
+// a glob would hand /admin to Google with the same confidence as /pricing.
+// That decision has a cost: the list can fall out of step with reality. So
+// derive the real routes from the filesystem here and compare both ways —
+// a new page missing from the sitemap is a page nobody finds, and /admin
+// appearing in it is the mistake the explicit list exists to prevent.
+const realRoutes = walk("src/app")
+  .filter((f) => f.endsWith("/page.tsx"))
+  .map((f) => f.replace(/^src\/app/, "").replace(/\/page\.tsx$/, ""));
+
+const sitemapSrc = read("src/app/sitemap.ts");
+const listedRoutes = [...sitemapSrc.matchAll(/path:\s*"([^"]*)"/g)].map((m) => m[1]);
+
+check("the sitemap excludes the admin console", !listedRoutes.includes("/admin"),
+  "/admin must never be advertised to a crawler");
+
+const shouldList = realRoutes.filter((r) => r !== "/admin");
+const missing = shouldList.filter((r) => !listedRoutes.includes(r));
+const stale = listedRoutes.filter((r) => !realRoutes.includes(r));
+
+check("every public page is in the sitemap", missing.length === 0, missing.join(", "));
+check("the sitemap lists no page that no longer exists", stale.length === 0, stale.join(", "));
+
+// robots.txt is a request, not a boundary — /admin is noindex in its own
+// metadata and the admin APIs answer 401. These checks are about the crawler
+// not wasting its budget, and about nothing appearing in a search result that
+// invites somebody to go looking for a console.
+const robotsSrc = read("src/app/robots.ts");
+check("robots disallows the admin console", robotsSrc.includes('"/admin"'));
+check("robots disallows the API surface", robotsSrc.includes('"/api/"'));
+check("robots points at the sitemap", robotsSrc.includes("sitemap.xml"));
+
+// ===========================================================================
 //  Live checks
 // ===========================================================================
 async function live() {
@@ -232,6 +267,23 @@ async function live() {
   check("X-Frame-Options DENY", h.get("x-frame-options") === "DENY");
   check("X-Content-Type-Options nosniff", h.get("x-content-type-options") === "nosniff");
   check("the server version is not advertised", !h.get("x-powered-by"), h.get("x-powered-by") ?? "");
+
+  // A crawler must be able to find the sitemap, and must not be pointed at
+  // the console. These are served by generated routes, so a build that drops
+  // them fails here rather than silently going unnoticed for a month.
+  const robotsRes = await fetch(`${BASE}/robots.txt`);
+  check("robots.txt is served", robotsRes.status === 200, `${robotsRes.status}`);
+  const robotsBody = await robotsRes.text();
+  check("robots.txt disallows /admin", /Disallow:\s*\/admin/.test(robotsBody));
+  check("robots.txt names the sitemap", /Sitemap:\s*http/.test(robotsBody));
+
+  const sitemapRes = await fetch(`${BASE}/sitemap.xml`);
+  check("sitemap.xml is served", sitemapRes.status === 200, `${sitemapRes.status}`);
+  const sitemapBody = await sitemapRes.text();
+  check("the served sitemap omits /admin", !/<loc>[^<]*\/admin<\/loc>/.test(sitemapBody));
+  check("the served sitemap is not empty",
+    (sitemapBody.match(/<loc>/g) ?? []).length >= 10,
+    `${(sitemapBody.match(/<loc>/g) ?? []).length} urls`);
 
   // The admin API must refuse everyone who does not hold the token.
   const noToken = await fetch(`${BASE}/api/admin/approvals`);
