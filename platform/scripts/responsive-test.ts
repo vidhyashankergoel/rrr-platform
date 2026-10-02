@@ -80,14 +80,28 @@ async function main() {
           if (r.width === 0 || r.height === 0) continue;
           if (r.right > doc.clientWidth + 2) {
             const node = el as HTMLElement;
-            // An element inside a deliberately scrollable container is fine.
-            // Containers that scroll horizontally on purpose: a wide data
-            // table or a process diagram is allowed to be wider than a phone,
-            // provided it sits in its own scroller and the page does not move.
-            const scroller = node.closest(
-              ".table-scroll, .compare, .flow, .ai-log, .term__body, .ai-actions, .chips",
-            );
-            if (scroller) continue;
+            // An element wider than the viewport is fine when an ancestor
+            // either clips it or scrolls it on purpose — a marquee track, a
+            // wide data table, a process diagram, a decorative blur bleeding
+            // past the edge of a section that hides its overflow.
+            //
+            // This used to be a hardcoded list of class names, which drifted
+            // the moment anything new was added: a diagram in its own
+            // scroller and a clipped background gradient both reported as
+            // defects because nobody had remembered to extend the list.
+            //
+            // Asking the computed style instead is self-maintaining. What
+            // actually matters is whether the page can be scrolled sideways,
+            // and that is already assertion 1 above.
+            let clipped = false;
+            for (let a = node.parentElement; a; a = a.parentElement) {
+              const ox = getComputedStyle(a).overflowX;
+              if (ox === "hidden" || ox === "auto" || ox === "scroll" || ox === "clip") {
+                clipped = true;
+                break;
+              }
+            }
+            if (clipped) continue;
             offenders.push(
               `${node.tagName.toLowerCase()}${node.className ? "." + String(node.className).split(" ")[0] : ""} (+${Math.round(r.right - doc.clientWidth)}px)`,
             );

@@ -149,3 +149,88 @@ jobs:
             exit 1
           fi
           echo "No database files tracked."
+
+  browser:
+    name: Accessibility and layout, in a real browser
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform
+
+    # Two suites that need a rendered page and therefore a booted server:
+    #
+    #   contrast-test    measures the computed colour of every text node
+    #                    against its composited background, across every page
+    #                    in both themes. It is what proves the WCAG 2.1 AA
+    #                    claim the stylesheet and /legal/accessibility make,
+    #                    and it existed for months without ever running on a
+    #                    push.
+    #
+    #   responsive-test  asserts the three things that actually break on a
+    #                    phone: horizontal overflow, tap targets under the AA
+    #                    minimum, and text collapsed below readable size.
+    #
+    # Both were being checked by hand, which means both were being checked
+    # when somebody remembered.
+    #
+    # e2e-test is deliberately not here. It resets a sandbox database and
+    # drives every form on the site, so it is a longer job with more to go
+    # wrong, and it belongs in its own workflow rather than bolted onto this.
+
+    env:
+      DATABASE_URL: "file:./ci.db"
+      RESEND_API_KEY: ""
+      SMTP_HOST: ""
+      LLM_BASE_URL: ""
+      # The start script serves on 3000; both suites default to 3111.
+      TEST_BASE: "http://localhost:3000"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate the Prisma client
+        run: npx prisma generate
+
+      - name: Create the scratch database
+        run: npx prisma db push --skip-generate
+
+      - name: Install the browser
+        # Chromium only. The suites measure computed styles and geometry,
+        # which do not differ enough between engines to justify tripling the
+        # install time on every push.
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Start the server
+        run: npm start &
+
+      - name: Wait for it to answer
+        # Poll rather than sleep: a fixed wait is either too short on a slow
+        # runner or wasted on a fast one, and this is the kind of flake that
+        # gets a whole job disabled rather than fixed.
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -o /dev/null http://localhost:3000/; then
+              echo "up after ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::the server never answered on :3000"
+          exit 1
+
+      - name: Colour contrast (WCAG 2.1 AA)
+        run: npx tsx scripts/contrast-test.ts
+
+      - name: Responsive layout and tap targets
+        run: npx tsx scripts/responsive-test.ts

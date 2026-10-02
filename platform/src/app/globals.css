@@ -1006,6 +1006,18 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
      value sits beside its own label. */
   .table-scroll--cards td.num { text-align: left; }
 
+  /* Below roughly 360px the label stops sitting beside the value.
+     `minmax(6.5rem, 38%)` puts a hard 104px floor under the label column, and
+     a price like "$18,000 - $35,000" will not shrink under about 180px, so the
+     row demanded 284px inside a 256px content box and pushed the whole page
+     sideways by 16px on a 280px screen — a Galaxy Fold closed, which is the
+     narrowest thing anyone actually browses on.
+     Stacked, the row has no minimum beyond its longest word. */
+  @media (max-width: 360px) {
+    .table-scroll--cards td { grid-template-columns: 1fr; gap: .15rem; }
+    .table-scroll--cards td::before { font-size: .66rem; }
+  }
+
   /* The truncated blurb under each engagement name is dropped here. It is a
      110-character slice ending in an ellipsis — tolerable as a hint in a wide
      table cell, just noise in a card, and it was costing four screens across
@@ -1207,6 +1219,34 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .section--systems::before { animation: none; }
+}
+
+/* ---------- Touch targets ---------------------------------------------------
+   WCAG 2.1 AAA 2.5.5 asks for 44x44 CSS px. The responsive suite holds touch
+   viewports to it rather than to the 24px floor of WCAG 2.2 AA 2.5.8, on the
+   reasoning that a link which is comfortable under a mouse is not comfortable
+   under a thumb.
+
+   These three were 24px tall — the line box and nothing else. They are the
+   proof links on the AI cards and the contact links on the founder card, both
+   added recently, both missed because they were only ever checked by eye on a
+   desktop.
+
+   The target grows, not the text: padding-block plus a negative margin keeps
+   the visual rhythm identical while giving the thumb something to hit.
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .ai-card__proof,
+  .proof-card__cta,
+  .founder__contact a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* The founder rows are a list: give the whole row the height rather than
+     letting three 44px links stack into a wall. */
+  .founder__contact li { min-height: 44px; align-items: center; }
+  .founder__contact { gap: 0; }
 }
 
 /* ---------- Print ---------- */
