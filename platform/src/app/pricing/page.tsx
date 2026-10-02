@@ -7,6 +7,7 @@ import { PageHead, CtaBand, Faq } from "@/components/Bits";
 import Estimator from "@/components/Estimator";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/pricing" },
   title: "Pricing",
   description:
     "Published pricing in Canadian dollars: fixed-scope engagements, an hourly rate card, and three retainer tiers. Estimate your engagement before you talk to anyone.",

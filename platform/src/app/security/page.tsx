@@ -4,6 +4,7 @@ import { company } from "@/lib/company";
 import { PageHead, CtaBand } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/security" },
   title: "Security",
   description:
     "How we secure what we build, how we protect your estate during an engagement, and the controls we will never compromise on — including what we refuse to do.",

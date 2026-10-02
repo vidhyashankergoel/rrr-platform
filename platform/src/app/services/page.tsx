@@ -5,6 +5,7 @@ import { PageHead, ServiceCard, CtaBand } from "@/components/Bits";
 import ServiceFilter from "@/components/ServiceFilter";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services" },
   title: "Services & pricing",
   description:
     "Cloud landing zones, on-premises migration, Kubernetes platforms, Terraform, CI/CD, GitOps, observability, databases, MLOps and security hardening — each with a published CAD price range and duration.",

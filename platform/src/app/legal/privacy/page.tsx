@@ -3,6 +3,7 @@ import { company } from "@/lib/company";
 import { PageHead } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/legal/privacy" },
   title: "Privacy notice",
   description:
     "How RRR Solution Providers collects, uses, retains and protects personal information under PIPEDA.",

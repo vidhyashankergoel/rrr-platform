@@ -262,6 +262,49 @@ check("the site claims Search Console ownership",
   /verification:\s*\{\s*google:/.test(layoutSrc),
   "metadata.verification.google is gone — the property will silently unverify");
 
+// Every indexable page declares itself canonical. Without this a campaign link
+// (?utm_source=linkedin) is a separate URL to a search engine, competing with
+// the clean one it was meant to promote — which matters rather a lot for a
+// site whose traffic is about to arrive tagged from LinkedIn.
+//
+// The canonical set and the sitemap set must be the same set. They answer the
+// same question — "which URLs are this site?" — so if they ever disagree, one
+// of them is lying to a crawler.
+// The home route is "" when derived from the filesystem and in the sitemap,
+// where it is concatenated onto the base URL, but "/" as a canonical, where it
+// is a path in its own right. Both spellings are correct in their own place,
+// so normalise before comparing rather than forcing one convention on the other.
+const asPath = (r: string) => (r === "" ? "/" : r);
+
+const canonicals = realRoutes
+  .filter((r) => r !== "/admin")
+  .map((r) => {
+    const file = r === "" ? "src/app/page.tsx" : `src/app${r}/page.tsx`;
+    const m = read(file).match(/canonical:\s*"([^"]*)"/);
+    return { route: asPath(r), canonical: m?.[1] };
+  });
+
+const uncanonical = canonicals.filter((c) => !c.canonical).map((c) => c.route);
+check("every indexable page declares a canonical", uncanonical.length === 0,
+  uncanonical.join(", "));
+
+const mismatched = canonicals.filter((c) => c.canonical && c.canonical !== c.route);
+check("every canonical points at its own page", mismatched.length === 0,
+  mismatched.map((c) => `${c.route} -> ${c.canonical}`).join(", "));
+
+const canonSet = new Set(canonicals.map((c) => c.canonical));
+const sitemapSet = new Set(listedRoutes.map(asPath));
+check("the canonical set and the sitemap set agree",
+  canonSet.size === sitemapSet.size && [...canonSet].every((c) => sitemapSet.has(c!)),
+  `${canonSet.size} canonical vs ${sitemapSet.size} in sitemap`);
+
+// The apex served the entire site with a 200, so the two hostnames were
+// duplicates of each other. A removed redirect silently restores that.
+const cfgSrc = read("next.config.ts");
+check("the apex redirects to www",
+  /type:\s*"host"/.test(cfgSrc) && /permanent:\s*true/.test(cfgSrc),
+  "the apex-to-www redirect is gone — both hostnames will serve the site again");
+
 // ===========================================================================
 //  Live checks
 // ===========================================================================
@@ -284,6 +327,26 @@ async function live() {
   check("the Search Console verification tag is served",
     /name="google-site-verification"/.test(homeBody),
     "absent from the live homepage — the property will unverify");
+
+  // The trailing slash is optional and the sitemap omits it too; what matters
+  // is that the page names itself on the canonical host, not which spelling.
+  check("the homepage declares itself canonical",
+    /rel="canonical" href="https:\/\/www\.rrrsolutionproviders\.ca\/?"/.test(homeBody),
+    "missing or wrong canonical on the live homepage");
+
+  // The apex is a real hostname, not whatever BASE points at, so this is the
+  // one check that cannot be aimed at a local server — asserting it while
+  // testing localhost would quietly be testing production instead.
+  if (BASE.includes("rrrsolutionproviders.ca")) {
+    // Follow nothing: the point is the status code the apex itself returns.
+    const apex = await fetch("https://rrrsolutionproviders.ca/", { redirect: "manual" });
+    check("the apex redirects rather than serving the site",
+      apex.status === 308 || apex.status === 301,
+      `${apex.status} — both hostnames are serving the site as duplicates`);
+    check("the apex redirects to www",
+      (apex.headers.get("location") ?? "").startsWith("https://www.rrrsolutionproviders.ca"),
+      apex.headers.get("location") ?? "no location header");
+  }
 
   const robotsRes = await fetch(`${BASE}/robots.txt`);
   check("robots.txt is served", robotsRes.status === 200, `${robotsRes.status}`);

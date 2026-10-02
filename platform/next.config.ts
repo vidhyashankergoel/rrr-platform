@@ -88,6 +88,37 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+
+  /**
+   * APEX TO WWW
+   *
+   * Both hostnames served the whole site with a 200, so Google saw two
+   * complete copies competing with each other and splitting whatever ranking
+   * signals the site earns. The sitemap only ever described the www copy.
+   *
+   * A redirect is the fix rather than a canonical tag. A canonical is a hint
+   * a search engine may disregard; a 308 is not optional, and it also means
+   * anyone who types the bare domain, and every link already pointing at it,
+   * lands on the hostname the sitemap, the structured data and every absolute
+   * URL on the site already agree on.
+   *
+   * 308 rather than 301 so the method and body survive the redirect — a 301
+   * lets a client turn a POST into a GET, which would quietly break a form
+   * submitted against the apex.
+   *
+   * The host condition matches the apex exactly, so www never matches its own
+   * rule and there is no loop.
+   */
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "rrrsolutionproviders.ca" }],
+        destination: "https://www.rrrsolutionproviders.ca/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

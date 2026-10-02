@@ -7,6 +7,7 @@ import { PageHead, CtaBand } from "@/components/Bits";
 import BookCallButton from "@/components/BookCall";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/trust" },
   title: "Why trust us",
   description:
     "We are a new firm. Here is how we earn trust: phased engagements, a read-only starting point, published pricing, an NDA before discovery, and work you can inspect yourself.",

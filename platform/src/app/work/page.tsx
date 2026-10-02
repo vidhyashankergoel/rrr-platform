@@ -4,6 +4,7 @@ import { displayClient, attributionLine, PRIOR_WORK_DISCLAIMER } from "@/lib/att
 import { PageHead, CtaBand } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/work" },
   title: "Our work",
   description:
     "Case studies from aviation, banking, insurance, sport and AI research — including a 180-microservice AWS migration with zero service disruption.",

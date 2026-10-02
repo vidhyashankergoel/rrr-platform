@@ -5,6 +5,7 @@ import { PageHead, CtaBand } from "@/components/Bits";
 import FounderCard from "@/components/FounderCard";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description:
     "Who we are, how we staff engagements, and how we use AI-assisted engineering without letting it near your production systems unsupervised.",

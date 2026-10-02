@@ -3,6 +3,7 @@ import { company } from "@/lib/company";
 import { PageHead } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/legal/accessibility" },
   title: "Accessibility",
   description:
     "Our accessibility commitment and conformance status under the AODA and WCAG 2.1 Level AA, and how to request content in an accessible format.",

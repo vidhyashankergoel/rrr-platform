@@ -6,6 +6,7 @@ import BookCallButton from "@/components/BookCall";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description:
     "Book a free 30-minute scoping call, or send an enquiry. Toronto, Ontario — remote delivery across North America.",

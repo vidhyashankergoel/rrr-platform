@@ -3,6 +3,7 @@ import { company } from "@/lib/company";
 import { Mark, Lockup } from "@/components/Logo";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/brand" },
   title: "Brand",
   robots: { index: false, follow: false },
 };

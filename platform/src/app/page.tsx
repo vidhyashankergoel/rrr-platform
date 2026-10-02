@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { caseStudies, faq, auditOffer, services } from "@/lib/catalogue";
 import { company, currencyFromDollars as money } from "@/lib/company";
@@ -67,6 +68,10 @@ const STACK_OMIT = new Set(["Shell", "Container infrastructure"]);
 const STACK = Array.from(new Set(caseStudies.flatMap((c) => c.stack)))
   .filter((t) => !STACK_OMIT.has(t))
   .sort((a, b) => a.localeCompare(b));
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

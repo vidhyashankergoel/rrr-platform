@@ -4,6 +4,7 @@ import { company } from "@/lib/company";
 import { PageHead, CtaBand } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/story" },
   title: "Our story",
   description:
     "How RRR Solution Providers came about, what we are here to do, where we intend to get to, and what we hold to while we do it.",

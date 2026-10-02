@@ -3,6 +3,7 @@ import { company } from "@/lib/company";
 import { PageHead } from "@/components/Bits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/legal/terms" },
   title: "Terms of use",
   description: "Terms governing use of this website.",
 };
