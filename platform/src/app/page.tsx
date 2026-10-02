@@ -12,6 +12,8 @@ import HowWeWork from "@/components/HowWeWork";
 import BookCallButton from "@/components/BookCall";
 import { RevealGroup, Marquee } from "@/components/Enhancements";
 import { CaseCard } from "@/components/Expand";
+import ArchFlow from "@/components/ArchFlow";
+import Engineering from "@/components/Engineering";
 import { toCaseView } from "@/lib/case-view";
 import Reviews from "@/components/Reviews";
 
@@ -82,11 +84,11 @@ export default function Home() {
               <i className="dot" /> Taking new engagements · Toronto, ON
             </span>
             <h1>
-              Your infrastructure should be <em>boring</em>.
+              Engineered to run <em>without us</em>.
             </h1>
             <p className="hero__gloss">
-              Boring means nothing pages you at 3&nbsp;a.m., nothing depends on one person&apos;s
-              memory, and a deploy is uneventful. That is the whole job.
+              Multi-cloud platforms built with AI and agentic tooling in the loop — reviewed by
+              engineers, handed over as code you own, and operable by your team the day we leave.
             </p>
             <p className="hero__lede">
               We build, migrate and operate cloud platforms for Canadian teams — AWS, Azure and GCP,
@@ -207,6 +209,32 @@ export default function Home() {
               See all {services.length} services with pricing
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ---------------- HOW WE ENGINEER ---------------- */}
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head center">
+            <span className="eyebrow">How we engineer</span>
+            <h2>AI in the loop. Engineers on the gate.</h2>
+            <p className="lede">
+              Every claim below links to code you can read before you hire anybody.
+            </p>
+          </div>
+
+          <Engineering />
+        </div>
+      </section>
+
+      {/* ---------------- DELIVERY ARCHITECTURE ---------------- */}
+      <section className="section section--alt">
+        <div className="wrap">
+          <div className="section-head center">
+            <span className="eyebrow">Commit to production</span>
+            <h2>The path every change takes</h2>
+          </div>
+          <ArchFlow />
         </div>
       </section>
 

@@ -1020,6 +1020,115 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
   .table-scroll--cards td[data-label="Term"] { display: none; }
 }
 
+/* ---------- Delivery architecture diagram --------------------------------- */
+.archflow { margin: 0; }
+.archflow__scroll { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+.archflow__svg { display: block; width: 100%; min-width: 860px; height: auto; }
+.archflow__cap {
+  margin-top: var(--sp-4); font-size: .88rem; color: var(--text-2);
+  max-width: 68ch; margin-inline: auto; text-align: center;
+}
+
+/* The spine, and a dash travelling along it. stroke-dashoffset animation is
+   what makes the path read as flow rather than as a drawn line. */
+.af-spine { fill: none; stroke: var(--line); stroke-width: 2; }
+.af-spine-flow {
+  fill: none; stroke: url(#af-line); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 26 420; stroke-dashoffset: 446;
+  animation: af-travel 5.5s linear infinite;
+}
+@keyframes af-travel { to { stroke-dashoffset: 0; } }
+
+.af-loop {
+  fill: none; stroke: var(--amber-500); stroke-width: 1.6; stroke-dasharray: 5 5;
+  opacity: .75; animation: af-dash 1.6s linear infinite;
+}
+@keyframes af-dash { to { stroke-dashoffset: -20; } }
+.af-loop-label { font-size: 11px; fill: var(--warn); font-weight: 600; letter-spacing: .02em; }
+
+.af-stage rect {
+  fill: url(#af-box); stroke: var(--line); stroke-width: 1.5;
+  transition: stroke .25s var(--ease);
+}
+.af-stage:hover rect { stroke: var(--accent-500); }
+.af-stage__label { font-size: 15px; font-weight: 700; fill: var(--text); }
+.af-stage__sub { font-size: 11.5px; fill: var(--text-3); }
+
+/* Each node pulses on the beat its packet would arrive, so the eye follows
+   the sequence rather than seeing five things blink at once. */
+.af-node {
+  fill: var(--accent-500);
+  animation: af-pulse 5.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * .9s);
+}
+@keyframes af-pulse {
+  0%, 82%, 100% { r: 4; opacity: .5; }
+  86%           { r: 8; opacity: 1; }
+  92%           { r: 4; opacity: .5; }
+}
+
+.af-cloud rect { fill: var(--brand-800); stroke: var(--accent-500); stroke-width: 1.3; opacity: .92; }
+.af-cloud text { font-size: 13px; font-weight: 700; fill: #dff6f1; }
+.af-fan { fill: none; stroke: var(--line); stroke-width: 1.4; stroke-dasharray: 4 4; opacity: .8; }
+.af-gate { font-size: 10.5px; fill: var(--text-3); font-style: italic; }
+
+@media (max-width: 900px) {
+  /* The scroller gets a visible edge so it reads as scrollable rather than
+     as a diagram that has been cut off. */
+  .archflow__scroll {
+    mask-image: linear-gradient(90deg, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, #000 94%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .af-spine-flow { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; opacity: .55; }
+  .af-loop { animation: none; }
+  .af-node { animation: none; opacity: .9; }
+}
+
+/* ---------- AI capability cards ------------------------------------------- */
+.ai-grid { margin-bottom: var(--sp-7); }
+.ai-card { display: flex; flex-direction: column; gap: var(--sp-3); position: relative; }
+.ai-card__tag { align-self: flex-start; }
+.ai-card__h { font-size: var(--step-1); margin: 0; line-height: 1.3; }
+.ai-card__p { margin: 0; flex: 1; color: var(--text-2); font-size: .92rem; }
+.ai-card__proof {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .82rem; font-weight: 650; color: var(--accent-500);
+  text-decoration: none; font-family: var(--font-mono);
+}
+.ai-card__proof svg { width: 14px; height: 14px; transition: transform .2s var(--ease); }
+.ai-card__proof:hover svg { transform: translate(2px, -2px); }
+
+/* ---------- Delivery strategy strip ---------------------------------------
+   A four-up row on a wide screen, a horizontal snap-scroller on a phone. The
+   snap matters: without it a half-visible fifth card reads as a rendering
+   fault rather than as more content. */
+.delivery-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4);
+}
+.delivery {
+  border-left: 2px solid var(--accent-500);
+  padding: var(--sp-2) 0 var(--sp-2) var(--sp-4);
+}
+.delivery__k {
+  display: block; font-family: var(--font-mono); font-size: .76rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--accent-500);
+  margin-bottom: .4rem;
+}
+.delivery__p { margin: 0; font-size: .88rem; color: var(--text-2); }
+
+@media (max-width: 860px) {
+  .delivery-strip {
+    grid-template-columns: none;
+    grid-auto-flow: column; grid-auto-columns: 78%;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-bottom: var(--sp-3);
+  }
+  .delivery { scroll-snap-align: start; }
+}
+
 /* ---------- Print ---------- */
 @media print {
   .site-header, .site-footer, .cta-band, .nav__actions { display: none; }
