@@ -5,6 +5,8 @@ import { Mark, Lockup } from "@/components/Logo";
 export const metadata: Metadata = {
   alternates: { canonical: "/brand" },
   title: "Brand",
+  description:
+    "The RRR Solution Providers brand: the logo and its clear space, the colour tokens, the type scale, and how to use them.",
   robots: { index: false, follow: false },
 };
 

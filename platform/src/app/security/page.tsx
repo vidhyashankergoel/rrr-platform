@@ -265,7 +265,7 @@ export default function SecurityPage() {
           <div className="timeline">
             <div className="tl-item">
               <span className="tag tag--accent">Continuous</span>
-              <h4>1 · Detect</h4>
+              <h3>1 · Detect</h3>
               <p>
                 SAST, DAST, dependency scanning, image scanning, IaC scanning and runtime detection —
                 each catching a different class of problem, all reporting to one place.
@@ -273,7 +273,7 @@ export default function SecurityPage() {
             </div>
             <div className="tl-item">
               <span className="tag">Within 24h for critical</span>
-              <h4>2 · Triage in context</h4>
+              <h3>2 · Triage in context</h3>
               <p>
                 A critical CVE in a library you never call is not critical. We assess exploitability in
                 your actual architecture and rank accordingly, so your team is not chasing noise.
@@ -281,7 +281,7 @@ export default function SecurityPage() {
             </div>
             <div className="tl-item">
               <span className="tag">Agreed SLA</span>
-              <h4>3 · Remediate with an owner</h4>
+              <h3>3 · Remediate with an owner</h3>
               <p>
                 Every accepted finding gets a named owner and a target date. Anything not fixed is
                 formally risk-accepted in writing by someone with the authority to accept it — not left
@@ -290,7 +290,7 @@ export default function SecurityPage() {
             </div>
             <div className="tl-item">
               <span className="tag">Permanent</span>
-              <h4>4 · Prevent recurrence</h4>
+              <h3>4 · Prevent recurrence</h3>
               <p>
                 The fix is not the fix. A policy-as-code rule that blocks the same class of issue at the
                 pipeline is the fix. Otherwise you will find it again next quarter.
@@ -298,7 +298,7 @@ export default function SecurityPage() {
             </div>
             <div className="tl-item">
               <span className="tag">Quarterly</span>
-              <h4>5 · Verify the controls still hold</h4>
+              <h3>5 · Verify the controls still hold</h3>
               <p>
                 Controls decay. We re-test that the gates still block what they claimed to block, and
                 that the alerts still fire.

@@ -34,9 +34,9 @@
   --crit: #b3261e;
 
   /* Type */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --step--1: clamp(0.80rem, 0.77rem + 0.15vw, 0.875rem);
   --step-0:  clamp(0.95rem, 0.92rem + 0.18vw, 1.05rem);
@@ -426,7 +426,9 @@ td strong { color: var(--text); font-weight: 650; }
   content:""; position: absolute; left: -2.2rem; top: .42rem; width: 20px; height: 20px;
   border-radius: 50%; background: var(--surface); border: 2.5px solid var(--accent-500);
 }
-.tl-item h4 { margin-bottom: .3rem; }
+/* Timeline headings are h3 (an h4 under an h2 skipped a level), but keep
+   the smaller size they were drawn at. */
+.tl-item h3 { font-size: var(--step-1); margin-bottom: .3rem; }
 .tl-item .tag { margin-bottom: .5rem; }
 
 /* ---------- Accordion (FAQ) ---------- */
@@ -487,7 +489,7 @@ details.acc .acc__body p:last-child { margin-bottom: 0; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: var(--sp-6); }
 @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .footer-grid { grid-template-columns: 1fr; } }
-.site-footer h5 { color: #fff; font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 var(--sp-4); font-weight: 700; }
+.site-footer h2 { color: #fff; font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 var(--sp-4); font-weight: 700; }
 .site-footer ul { list-style: none; padding: 0; margin: 0; }
 .site-footer li { margin-bottom: .55rem; font-size: .9rem; }
 .site-footer .brand { color: #fff; }

@@ -8,11 +8,11 @@ import { company } from "@/lib/company";
 export const metadata: Metadata = {
   metadataBase: new URL(company.siteUrl),
   title: {
-    default: `${company.shortName} — Cloud, Kubernetes & Platform Engineering | Toronto`,
+    default: `${company.shortName} — Cloud Platform Engineering, Toronto`,
     template: `%s | ${company.shortName}`,
   },
   description:
-    "Toronto-based cloud and platform engineering. AWS, Azure and GCP builds, on-premises migration, Kubernetes, Terraform, CI/CD, observability and database migration. Fixed-price engagements with published CAD pricing.",
+    "Toronto cloud and platform engineering: AWS, Azure and GCP, Kubernetes, Terraform, CI/CD and observability. Fixed-price, with CAD pricing published.",
   applicationName: company.shortName,
   authors: [{ name: company.legalName }],
   openGraph: {

@@ -141,7 +141,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h5>Services</h5>
+            <h2>Services</h2>
             <ul>
               <li><Link href="/services#landing-zone">Cloud landing zone</Link></li>
               <li><Link href="/services#migration">Cloud migration</Link></li>
@@ -155,7 +155,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h5>Company</h5>
+            <h2>Company</h2>
             <ul>
               <li><Link href="/story">Our story</Link></li>
               <li><Link href="/about">About us</Link></li>
@@ -168,7 +168,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h5>Contact</h5>
+            <h2>Contact</h2>
             <ul>
               <li><a href={`mailto:${company.email}`}>{company.email}</a></li>
               <li><a href={`tel:${company.phoneHref}`}>{company.phone}</a></li>

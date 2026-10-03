@@ -190,35 +190,35 @@ export default function AboutPage() {
           </div>
           <div className="timeline">
             <div className="tl-item">
-              <h4>We tell you when you don&rsquo;t need us</h4>
+              <h3>We tell you when you don&rsquo;t need us</h3>
               <p>
                 If a two-day fix solves it, we will say so on the free call rather than shape it into a
                 six-week engagement. It costs us a project and earns us the next three.
               </p>
             </div>
             <div className="tl-item">
-              <h4>We do not silently choose for you</h4>
+              <h3>We do not silently choose for you</h3>
               <p>
                 Cloud, region, Kubernetes distribution, state backend, deployment strategy, recovery
                 objectives — these are your decisions. We bring options and trade-offs, not a fait accompli.
               </p>
             </div>
             <div className="tl-item">
-              <h4>We build the simplest thing that works</h4>
+              <h3>We build the simplest thing that works</h3>
               <p>
                 Every additional component is something your team has to operate at 03:00. If a senior
                 engineer would call it unnecessarily complicated, we simplify it.
               </p>
             </div>
             <div className="tl-item">
-              <h4>We re-quote scope changes rather than absorb them</h4>
+              <h3>We re-quote scope changes rather than absorb them</h3>
               <p>
                 Silent absorption becomes a surprise invoice or a missed deadline. Neither is fair to
                 you, so changes are priced when they arise.
               </p>
             </div>
             <div className="tl-item">
-              <h4>We hand it back properly</h4>
+              <h3>We hand it back properly</h3>
               <p>
                 Everything in your accounts and repositories, with runbooks and recorded sessions. The
                 test: your team can run it the day we leave.

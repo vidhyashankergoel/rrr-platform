@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/trust" },
   title: "Why trust us",
   description:
-    "We are a new firm. Here is how we earn trust: phased engagements, a read-only starting point, published pricing, an NDA before discovery, and work you can inspect yourself.",
+    "How a new firm earns trust: phased engagements, a read-only starting point, published pricing, an NDA before discovery, and work you can inspect.",
 };
 
 const LADDER = [
@@ -197,27 +197,27 @@ export default function TrustPage() {
           <div className="timeline">
             <div className="tl-item">
               <span className="tag tag--accent">Phase 0 · {money(auditOffer.price)}</span>
-              <h4>Audit</h4>
+              <h3>Audit</h3>
               <p>Read-only. A written report of exposure, waste and fragility. Standalone value: you know what is wrong, whoever fixes it.</p>
             </div>
             <div className="tl-item">
               <span className="tag">Phase 1</span>
-              <h4>Foundation</h4>
+              <h3>Foundation</h3>
               <p>The landing zone or the infrastructure code. Standalone value: your estate is reproducible and reviewable for the first time.</p>
             </div>
             <div className="tl-item">
               <span className="tag">Phase 2</span>
-              <h4>The main build</h4>
+              <h3>The main build</h3>
               <p>Platform, migration wave, pipeline or observability stack. Standalone value: the primary outcome you engaged us for.</p>
             </div>
             <div className="tl-item">
               <span className="tag">Phase 3</span>
-              <h4>Hardening and handover</h4>
+              <h3>Hardening and handover</h3>
               <p>Security, runbooks, recorded sessions, and your engineers demonstrating they can operate it. Standalone value: independence from us.</p>
             </div>
             <div className="tl-item">
               <span className="tag tag--amber">Optional</span>
-              <h4>Retainer</h4>
+              <h3>Retainer</h3>
               <p>Only if you want it. It has never been a condition of anything above, and it never will be.</p>
             </div>
           </div>

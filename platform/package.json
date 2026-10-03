@@ -48,7 +48,8 @@
     "clean:dupes": "find . -name '* [0-9].*' -not -path './node_modules/*' -delete 2>/dev/null || true",
     "pretypecheck": "npm run -s clean:dupes",
     "prebuild": "npm run -s clean:dupes",
-    "pretest": "npm run -s clean:dupes"
+    "pretest": "npm run -s clean:dupes",
+    "test:pages": "tsx scripts/page-quality-test.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

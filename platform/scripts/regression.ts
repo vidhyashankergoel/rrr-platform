@@ -12,6 +12,36 @@
  */
 
 import { spawn } from "node:child_process";
+import { readdirSync, rmSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+/**
+ * iCloud sync writes "name 2.ts" copies into .next-build, and TypeScript reads
+ * them as redeclarations — so Types fails with nothing actually wrong. The npm
+ * pre-script handles `npm run test`, but this file is also run directly, and
+ * the copies reappear whenever the build directory changes. So sweep here too,
+ * immediately before anything reads them.
+ */
+function removeSyncDuplicates(dir: string): number {
+  let removed = 0;
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return 0;
+  }
+  for (const entry of entries) {
+    if (entry === "node_modules" || entry === ".git") continue;
+    const full = join(dir, entry);
+    if (/ \d+\.[^.]+$/.test(entry)) {
+      rmSync(full, { force: true, recursive: true });
+      removed += 1;
+    } else if (statSync(full).isDirectory()) {
+      removed += removeSyncDuplicates(full);
+    }
+  }
+  return removed;
+}
 
 const BASE = process.env.TEST_BASE ?? "http://localhost:3111";
 const fast = process.argv.includes("--fast");
@@ -138,6 +168,13 @@ const SUITES: Suite[] = [
     description: "12 viewports x 10 pages: overflow, target size, text size",
   },
   {
+    name: "Page quality",
+    script: "scripts/page-quality-test.ts",
+    needsServer: true,
+    slow: false,
+    description: "Heading order, search metadata, landmarks and alt text",
+  },
+  {
     name: "Load and reliability",
     script: "scripts/load-test.ts",
     needsServer: true,
@@ -194,10 +231,13 @@ async function main() {
   // isolated sandbox — never against whatever the dev server is pointed at.
   const sandbox = BASE.includes(":3210") || process.env.SANDBOX === "1";
 
+  const swept = removeSyncDuplicates(".");
+
   console.log("========================================");
   console.log(" REGRESSION SUITE");
   console.log("========================================");
   console.log(` target:     ${BASE}`);
+  if (swept) console.log(` swept:      ${swept} sync-duplicate file(s) before typechecking`);
   console.log(` dev server: ${up ? "up" : "DOWN — server suites will be skipped"}`);
   console.log(` mode:       ${fast ? "fast (browser and load suites skipped)" : "full"}`);
   console.log("");

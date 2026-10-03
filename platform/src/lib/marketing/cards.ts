@@ -131,9 +131,9 @@ function lockup(y: number): string {
       </g>
     </svg>
     <text x="74" y="24" font-size="${TYPE.caption}" font-weight="650" fill="${PAPER}"
-          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
     <text x="74" y="50" font-size="${TYPE.micro}" fill="${MUTED}"
-          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
             company.siteUrl.replace(/^https?:\/\//, ""),
           )} &#183; ${esc(company.city)}, ${esc(company.region)}</text>
   </g>`;
@@ -175,11 +175,11 @@ export function quoteCard(statement: string, pillar: string): Visual {
 
   const body = `
   <text x="${PAD}" y="${PAD + 100}" font-size="${TYPE.caption}" font-weight="650" fill="${TEAL}"
-        letter-spacing="2.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(
+        letter-spacing="2.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
           pillar.toUpperCase(),
         )}</text>
   <text font-size="${TYPE.statement}" font-weight="680" fill="${PAPER}" letter-spacing="-1"
-        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
 ${text}
   </text>
 ${lockup(SIZE - PAD - 56)}`;
@@ -227,9 +227,9 @@ export function diagramFor(angle: Angle): Visual {
     <rect x="${PAD}" y="${y}" width="${INNER}" height="${boxH}" rx="16" fill="${INK_SOFT}" stroke="${TEAL_DEEP}" stroke-opacity="0.45"/>
     <circle cx="${PAD + 44}" cy="${y + boxH / 2}" r="15" fill="${TEAL}"/>
     <text x="${PAD + 44}" y="${y + boxH / 2 + 8}" font-size="${TYPE.micro}" font-weight="700" fill="${INK}"
-          text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${i + 1}</text>
+          text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${i + 1}</text>
     <text x="${PAD + 84}" y="${y + boxH / 2 + 11}" font-size="${TYPE.body}" fill="${PAPER}"
-          font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(stage)}</text>
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(stage)}</text>
   </g>
 ${arrow}`;
     })
@@ -241,9 +241,9 @@ ${arrow}`;
 
   const body = `
   <text x="${PAD}" y="${PAD + 72}" font-size="${TYPE.caption}" font-weight="650" fill="${TEAL}"
-        letter-spacing="2.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">HOW IT WORKS</text>
+        letter-spacing="2.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">HOW IT WORKS</text>
   <text font-size="${TYPE.heading}" font-weight="680" fill="${PAPER}" letter-spacing="-0.8"
-        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
 ${heading}
   </text>
 ${rows}
@@ -310,13 +310,13 @@ export function ogCard(): { svg: string; width: number; height: number } {
   <rect width="${W}" height="${H}" fill="${INK}"/>
   <rect width="${W}" height="8" fill="url(#og)"/>
   <text x="${PAD}" y="${PAD + 112}" font-size="60" font-weight="700" fill="${PAPER}" letter-spacing="-1.2"
-        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
   <text font-size="52" fill="${TEAL}" font-weight="600" letter-spacing="-0.6"
-        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
 ${text}
   </text>
   <text x="${PAD}" y="${H - PAD}" font-size="28" fill="${MUTED}"
-        font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">${esc(
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
           company.siteUrl.replace(/^https?:\/\//, ""),
         )} &#183; ${esc(company.city)}, ${esc(company.regionName)}</text>
 </svg>`,

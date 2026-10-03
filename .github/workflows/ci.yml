@@ -242,3 +242,10 @@ jobs:
 
       - name: Responsive layout and tap targets
         run: npx tsx scripts/responsive-test.ts
+
+      - name: Page quality — headings, metadata, landmarks
+        # Heading hierarchy, the metadata a search result is built from, and
+        # the attributes assistive technology needs. None of it is visible on
+        # the page, which is why 26 defects survived months of review until
+        # something measured them.
+        run: npx tsx scripts/page-quality-test.ts

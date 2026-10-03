@@ -5,7 +5,8 @@ import { PageHead } from "@/components/Bits";
 export const metadata: Metadata = {
   alternates: { canonical: "/legal/terms" },
   title: "Terms of use",
-  description: "Terms governing use of this website.",
+  description:
+    "Terms governing use of this website: acceptable use, intellectual property, limitation of liability, and the governing law of Ontario, Canada.",
 };
 
 export default function TermsPage() {

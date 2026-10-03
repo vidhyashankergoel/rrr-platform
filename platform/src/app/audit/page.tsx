@@ -28,9 +28,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/audit" },
   title: auditOffer.name,
   description:
-    `A ${auditOffer.durationLabel} fixed-price infrastructure audit for ${money(auditOffer.price)} CAD. ` +
-    "Read-only access, a written report on security exposure, cost waste and reliability risk, " +
-    "and a prioritized remediation plan you keep whether or not you continue with us.",
+    `A fixed-price infrastructure audit: ${auditOffer.durationLabel}, ${money(auditOffer.price)} CAD. ` +
+    "Read-only access, a written report on security, cost and reliability, and a plan you keep.",
 };
 
 /** What happens on each of the five days. */
