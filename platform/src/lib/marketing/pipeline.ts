@@ -54,17 +54,28 @@ export interface Run {
  */
 const POST_DAYS = [2, 3, 4];
 
-/** The next `count` posting days on or after `from`, as ISO dates. */
-export function upcomingSlots(from: Date, count = 3): string[] {
+/**
+ * The next `count` posting days on or after `from`, skipping any already
+ * taken.
+ *
+ * `taken` matters more than it looks. The scheduler runs every Monday for the
+ * Tuesday, Wednesday and Thursday after it — so a second run in the same week,
+ * whether a manual `marketing:plan` or a re-run of the job, would otherwise
+ * hand back the same three dates and queue a second post on each of them.
+ * Nothing downstream would notice: the filenames differ because they carry the
+ * angle, so the pull request would simply contain six posts for three days.
+ */
+export function upcomingSlots(from: Date, count = 3, taken: string[] = []): string[] {
+  const used = new Set(taken);
   const dates: string[] = [];
   const cursor = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate()));
 
-  // 28 days is four weeks; if three posting days have not appeared by then,
-  // something is wrong with POST_DAYS rather than with the calendar.
-  for (let i = 0; i < 28 && dates.length < count; i += 1) {
-    if (POST_DAYS.includes(cursor.getUTCDay())) {
-      dates.push(cursor.toISOString().slice(0, 10));
-    }
+  // 90 days rather than 28: with a backlog already queued the next free day
+  // can legitimately be several weeks out, and running out of calendar should
+  // not silently return fewer slots than asked for.
+  for (let i = 0; i < 90 && dates.length < count; i += 1) {
+    const iso = cursor.toISOString().slice(0, 10);
+    if (POST_DAYS.includes(cursor.getUTCDay()) && !used.has(iso)) dates.push(iso);
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
   return dates;
@@ -117,12 +128,17 @@ export function composeOne(slot: Slot): { finished?: Finished; rejected?: Reject
  * the strategist does not repeat itself across invocations — the scheduler
  * reads them from the queue on disk and passes them in.
  */
-export function plan(from: Date, alreadyUsed: string[], count = 3): Run {
+export function plan(
+  from: Date,
+  alreadyUsed: string[],
+  count = 3,
+  takenDates: string[] = [],
+): Run {
   const made: Finished[] = [];
   const rejected: Rejected[] = [];
   const used = [...alreadyUsed];
 
-  for (const date of upcomingSlots(from, count)) {
+  for (const date of upcomingSlots(from, count, takenDates)) {
     const { finished, rejected: no } = composeOne({ date, used });
     if (finished) {
       made.push(finished);

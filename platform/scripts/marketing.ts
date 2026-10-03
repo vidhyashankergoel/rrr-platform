@@ -21,13 +21,16 @@ import { credentialsPresent } from "../src/lib/marketing/publish";
 
 const QUEUE = "marketing/queue";
 
-/** Angle ids already queued, so the strategist never repeats one. */
-function alreadyUsed(): string[] {
-  if (!existsSync(QUEUE)) return [];
-  return readdirSync(QUEUE)
+/** Everything already queued, read back out of the files. */
+function queued(): { angles: string[]; dates: string[] } {
+  if (!existsSync(QUEUE)) return { angles: [], dates: [] };
+  const bodies = readdirSync(QUEUE)
     .filter((f) => f.endsWith(".md"))
-    .map((f) => readFileSync(join(QUEUE, f), "utf8"))
-    .flatMap((body) => /^angle:\s*(\S+)$/m.exec(body)?.[1] ?? []);
+    .map((f) => readFileSync(join(QUEUE, f), "utf8"));
+  return {
+    angles: bodies.flatMap((b) => /^angle:\s*(\S+)$/m.exec(b)?.[1] ?? []),
+    dates: bodies.flatMap((b) => /^date:\s*(\S+)$/m.exec(b)?.[1] ?? []),
+  };
 }
 
 function front(post: Finished): string {
@@ -57,8 +60,8 @@ function front(post: Finished): string {
 }
 
 function cmdPlan() {
-  const used = alreadyUsed();
-  const run = plan(new Date(), used, 3);
+  const { angles: used, dates: taken } = queued();
+  const run = plan(new Date(), used, 3, taken);
 
   mkdirSync(QUEUE, { recursive: true });
 
@@ -77,7 +80,7 @@ function cmdPlan() {
   }
 
   console.log(`\n  ${run.made.length} queued, ${run.rejected.length} blocked`);
-  console.log(`  ${used.length} angles already used`);
+  console.log(`  ${used.length} angles already used, ${taken.length} days already booked`);
 
   const creds = credentialsPresent();
   console.log(

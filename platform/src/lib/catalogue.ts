@@ -584,9 +584,22 @@ export interface CaseStudy {
   stack: string[];
 }
 
+/**
+ * NOTE ON SLUGS
+ *
+ * A slug is published. It is the React key that appears in the streamed
+ * payload, the `id` on the article in /work, and the aria-labelledby target on
+ * the dialog — so view-source carries it even where the page renders the
+ * descriptive label instead of the name.
+ *
+ * For an engagement delivered under prior employment, the slug must therefore
+ * be as non-identifying as `clientDescriptive`. "citibank", "gtaa" and "rsa"
+ * were none of those things: two were the organisation's own initials and one
+ * was simply the name. Checked by attribution-test.
+ */
 export const caseStudies: CaseStudy[] = [
   {
-    slug: "gtaa",
+    slug: "airport-authority",
     client: "Greater Toronto Airports Authority",
     clientDescriptive: "A major Canadian international airport authority",
     clientMinimal: "Aviation sector, Canada",
@@ -614,7 +627,7 @@ export const caseStudies: CaseStudy[] = [
     stack: ["AWS", "EKS", "Terraform", "Ansible", "Istio", "ArgoCD", "GitHub Actions", "Kiali", "Jaeger"],
   },
   {
-    slug: "rsa",
+    slug: "insurance-group",
     client: "RSA Insurance Group",
     clientDescriptive: "A multinational general insurance group",
     clientMinimal: "Insurance sector",
@@ -639,7 +652,7 @@ export const caseStudies: CaseStudy[] = [
     stack: ["Azure", "Virtual WAN", "AKS", "Azure Monitor", "Key Vault"],
   },
   {
-    slug: "citibank",
+    slug: "retail-investment-bank",
     client: "Citibank",
     clientDescriptive: "A global retail and investment bank",
     clientMinimal: "Banking sector",

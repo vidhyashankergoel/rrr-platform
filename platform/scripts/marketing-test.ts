@@ -190,6 +190,20 @@ check("the next run repeats nothing",
   second.made.every((p) => !used.includes(p.angleId)),
   second.made.map((p) => p.angleId).join(", "));
 
+// A second run in the same week must not book days that are already spoken
+// for. This shipped broken: the planner returned the same three dates, the
+// filenames differed because they carry the angle, and the queue quietly ended
+// up with two posts on each of Tuesday, Wednesday and Thursday.
+const week1 = plan(new Date("2026-10-05T00:00:00Z"), [], 3);
+const booked = week1.made.map((p) => p.date);
+const week2 = plan(new Date("2026-10-05T00:00:00Z"), week1.made.map((p) => p.angleId), 3, booked);
+check("a second run does not double-book a day",
+  week2.made.every((p) => !booked.includes(p.date)),
+  `${booked.join(", ")} vs ${week2.made.map((p) => p.date).join(", ")}`);
+check("a second run still produces three posts", week2.made.length === 3);
+check("slots are never duplicated within one run",
+  new Set(week1.made.map((p) => p.date)).size === week1.made.length);
+
 // Exhaustion is reported, not papered over by repeating.
 const exhausted = composeOne({ date: "2026-12-01", used: ids });
 check("an exhausted rotation refuses rather than repeats",

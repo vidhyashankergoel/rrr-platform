@@ -196,6 +196,45 @@ async function main() {
     }
   }
 
+
+  // -------------------------------------------------------------------------
+  // Slugs are published too
+  // -------------------------------------------------------------------------
+  // A slug reaches the browser three ways: as the React key in the streamed
+  // payload, as the `id` on the article in /work, and as the aria-labelledby
+  // target on the dialog. So a page can render "A global retail and investment
+  // bank" and still name the bank in view-source — which is exactly what it
+  // did. The slugs were "citibank", "gtaa" and "rsa": one name and two sets of
+  // the organisation's own initials.
+  const GENERIC_WORDS = new Set([
+    "group", "canada", "canadian", "limited", "technologies", "international",
+    "authority", "insurance", "services", "solutions", "systems", "company",
+  ]);
+
+  for (const study of caseStudies) {
+    if (!study.employer) continue;        // our own clients are named on purpose
+
+    const slug = study.slug.toLowerCase();
+
+    for (const word of [study.client, study.employer]
+      .filter((n): n is string => Boolean(n))
+      .flatMap((n) => n.split(/[^A-Za-z]+/))
+      .filter((w) => w.length >= 4 && !GENERIC_WORDS.has(w.toLowerCase()))) {
+      check(`${study.slug}: the slug does not contain "${word}"`, !slug.includes(word.toLowerCase()));
+    }
+
+    // Initials, which is how "gtaa" and "rsa" got past a word-based check.
+    const initials = study.client
+      .split(/\s+/)
+      .filter((w) => /^[A-Z]/.test(w))
+      .map((w) => w[0].toLowerCase())
+      .join("");
+    if (initials.length >= 2) {
+      check(`${study.slug}: the slug is not the client's initials`,
+        slug.replace(/-/g, "") !== initials, initials);
+    }
+  }
+
   console.log("\n========================================");
   console.log(` ${pass} passed, ${fail} failed`);
   console.log("========================================");
