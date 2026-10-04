@@ -69,6 +69,9 @@ const AMBER = "#FFC25C";
 const PAPER = "#F4F7FA";
 const MUTED = "#8FA8BE";
 
+/** One stack, used by every text node on every card. */
+const FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+
 /** XML-escape. Any text reaching an SVG must go through this. */
 function esc(s: string): string {
   return s
@@ -131,9 +134,9 @@ function lockup(y: number): string {
       </g>
     </svg>
     <text x="74" y="24" font-size="${TYPE.caption}" font-weight="650" fill="${PAPER}"
-          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
+          font-family="${FONT}">${esc(company.shortName)}</text>
     <text x="74" y="50" font-size="${TYPE.micro}" fill="${MUTED}"
-          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
+          font-family="${FONT}">${esc(
             company.siteUrl.replace(/^https?:\/\//, ""),
           )} &#183; ${esc(company.city)}, ${esc(company.region)}</text>
   </g>`;
@@ -175,11 +178,11 @@ export function quoteCard(statement: string, pillar: string): Visual {
 
   const body = `
   <text x="${PAD}" y="${PAD + 100}" font-size="${TYPE.caption}" font-weight="650" fill="${TEAL}"
-        letter-spacing="2.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
+        letter-spacing="2.5" font-family="${FONT}">${esc(
           pillar.toUpperCase(),
         )}</text>
   <text font-size="${TYPE.statement}" font-weight="680" fill="${PAPER}" letter-spacing="-1"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+        font-family="${FONT}">
 ${text}
   </text>
 ${lockup(SIZE - PAD - 56)}`;
@@ -227,9 +230,9 @@ export function diagramFor(angle: Angle): Visual {
     <rect x="${PAD}" y="${y}" width="${INNER}" height="${boxH}" rx="16" fill="${INK_SOFT}" stroke="${TEAL_DEEP}" stroke-opacity="0.45"/>
     <circle cx="${PAD + 44}" cy="${y + boxH / 2}" r="15" fill="${TEAL}"/>
     <text x="${PAD + 44}" y="${y + boxH / 2 + 8}" font-size="${TYPE.micro}" font-weight="700" fill="${INK}"
-          text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${i + 1}</text>
+          text-anchor="middle" font-family="${FONT}">${i + 1}</text>
     <text x="${PAD + 84}" y="${y + boxH / 2 + 11}" font-size="${TYPE.body}" fill="${PAPER}"
-          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(stage)}</text>
+          font-family="${FONT}">${esc(stage)}</text>
   </g>
 ${arrow}`;
     })
@@ -241,9 +244,9 @@ ${arrow}`;
 
   const body = `
   <text x="${PAD}" y="${PAD + 72}" font-size="${TYPE.caption}" font-weight="650" fill="${TEAL}"
-        letter-spacing="2.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">HOW IT WORKS</text>
+        letter-spacing="2.5" font-family="${FONT}">HOW IT WORKS</text>
   <text font-size="${TYPE.heading}" font-weight="680" fill="${PAPER}" letter-spacing="-0.8"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+        font-family="${FONT}">
 ${heading}
   </text>
 ${rows}
@@ -283,6 +286,85 @@ function altFor(text: string): string {
   return lastStop > 120 ? cut.slice(0, lastStop + 1) : `${cut.slice(0, 297).trimEnd()}...`;
 }
 
+
+// --- Results card -----------------------------------------------------------
+
+/**
+ * A card of outcomes, with the full contact block rather than just the domain.
+ *
+ * This is the one card format meant to be read on its own, detached from the
+ * post that carried it — somebody screenshots it, or it turns up in a feed
+ * with the text collapsed. So it carries the mark, the legal name, the site,
+ * the email and the phone, because a card that makes somebody want to call
+ * and does not say how is a wasted impression.
+ *
+ * Every figure passed in must already be published on the site. Nothing here
+ * invents a number, and `screen()` in compliance.ts will refuse the post that
+ * carries it if one appears from nowhere.
+ */
+export function resultsCard(
+  eyebrow: string,
+  lines: { value: string; label: string }[],
+): Visual {
+  const rowH = 132;
+  const top = 330;
+
+  const rows = lines
+    .map((row, i) => {
+      const y = top + i * rowH;
+      const label = wrap(row.label, TYPE.caption, INNER - 40);
+      return `  <g>
+    <line x1="${PAD}" y1="${y - 26}" x2="${SIZE - PAD}" y2="${y - 26}" stroke="${TEAL_DEEP}" stroke-opacity="0.28"/>
+    <text x="${PAD}" y="${y + 24}" font-size="${TYPE.heading}" font-weight="700" fill="${TEAL}"
+          letter-spacing="-0.6" font-family="${FONT}">${esc(row.value)}</text>
+    <text x="${PAD}" y="${y + 60}" font-size="${TYPE.caption}" fill="${MUTED}"
+          font-family="${FONT}">${esc(label[0] ?? "")}</text>
+  </g>`;
+    })
+    .join("\n");
+
+  const body = `
+  <text x="${PAD}" y="${PAD + 92}" font-size="${TYPE.caption}" font-weight="650" fill="${TEAL}"
+        letter-spacing="2.5" font-family="${FONT}">${esc(eyebrow.toUpperCase())}</text>
+  <text x="${PAD}" y="${PAD + 164}" font-size="${TYPE.heading}" font-weight="690" fill="${PAPER}"
+        letter-spacing="-0.8" font-family="${FONT}">What we delivered</text>
+${rows}
+${contactBlock(SIZE - PAD - 104)}`;
+
+  return {
+    kind: "quote",
+    svg: frame(body),
+    alt: altFor(
+      `${eyebrow}. What we delivered: ` +
+        lines.map((l) => `${l.value} ${l.label}`).join("; ") + ".",
+    ),
+    width: SIZE,
+    height: SIZE,
+  };
+}
+
+/** The lockup plus how to actually reach the firm. */
+function contactBlock(y: number): string {
+  const site = company.siteUrl.replace(/^https?:\/\//, "");
+  return `
+  <g transform="translate(${PAD} ${y})">
+    <rect width="72" height="72" rx="17" fill="${INK_SOFT}"/>
+    <svg x="11" y="11" width="50" height="50" viewBox="22 21 52 52" overflow="visible">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M27 67V47h7.5a6 6 0 0 1 0 12H27l9 8" stroke="${AMBER}" stroke-width="5" opacity="0.55"/>
+        <path d="M41 62V38h9a7 7 0 0 1 0 14h-9l11 10" stroke="${TEAL_DEEP}" stroke-width="5.5" opacity="0.9"/>
+        <path d="M56 56V26h10.5a8 8 0 0 1 0 16H56l13 14" stroke="${TEAL}" stroke-width="6.5"/>
+      </g>
+    </svg>
+    <text x="92" y="27" font-size="${TYPE.body}" font-weight="700" fill="${PAPER}"
+          font-family="${FONT}">${esc(company.legalName)}</text>
+    <text x="92" y="55" font-size="${TYPE.micro}" fill="${TEAL}"
+          font-family="${FONT}">${esc(site)}</text>
+    <text x="92" y="79" font-size="${TYPE.micro}" fill="${MUTED}"
+          font-family="${FONT}">${esc(company.email)} &#183; ${esc(company.phone)} &#183; ${esc(company.city)}, ${esc(company.region)}</text>
+  </g>`;
+}
+
 /**
  * The site's own link-preview image, built from the same parts. A LinkedIn
  * post that links to the site renders this card, so it is the most-seen image
@@ -310,13 +392,13 @@ export function ogCard(): { svg: string; width: number; height: number } {
   <rect width="${W}" height="${H}" fill="${INK}"/>
   <rect width="${W}" height="8" fill="url(#og)"/>
   <text x="${PAD}" y="${PAD + 112}" font-size="60" font-weight="700" fill="${PAPER}" letter-spacing="-1.2"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(company.shortName)}</text>
+        font-family="${FONT}">${esc(company.shortName)}</text>
   <text font-size="52" fill="${TEAL}" font-weight="600" letter-spacing="-0.6"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+        font-family="${FONT}">
 ${text}
   </text>
   <text x="${PAD}" y="${H - PAD}" font-size="28" fill="${MUTED}"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">${esc(
+        font-family="${FONT}">${esc(
           company.siteUrl.replace(/^https?:\/\//, ""),
         )} &#183; ${esc(company.city)}, ${esc(company.regionName)}</text>
 </svg>`,
