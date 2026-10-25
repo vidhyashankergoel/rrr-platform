@@ -1,0 +1,57 @@
+name: Public presence
+
+# Hourly. This is the one job that has to run somewhere that never sleeps.
+#
+# The ops loop (`npm run agents:run`) can watch everything else, but it needs a
+# database and a machine that is awake, and a laptop is neither at 3am. A site
+# that goes down on Friday evening and is noticed on Monday has been down for
+# the entire window in which somebody might have hired us.
+#
+# It checks only what is externally observable and needs no credentials: the
+# pages a buyer reaches from search, the generated routes that carry our search
+# presence, and the two tags that break invisibly — og:image and the Search
+# Console verification. A broken deploy changes none of those on the page
+# itself, which is exactly why nobody notices.
+#
+# It publishes nothing and changes nothing. On a critical finding it fails,
+# which surfaces in the Actions tab and in the usual failure notification.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: presence
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Is the site still selling
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate the Prisma client
+        # The promote module imports the catalogue, which pulls in generated
+        # types. Nothing here opens a database.
+        run: npx prisma generate
+
+      - name: Check the public presence
+        run: npm run presence:check

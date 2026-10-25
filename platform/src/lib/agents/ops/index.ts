@@ -17,6 +17,7 @@ import { followupRunner } from "./followup";
 import { worklist } from "./worklist";
 import { linkedinAgent, githubAgent } from "./presence";
 import { outreachAgent } from "./outreach";
+import { promoteAgent } from "./promote";
 import { watchdog } from "./watchdog";
 
 /**
@@ -31,6 +32,7 @@ export const OPS_AGENTS: OpsAgent[] = [
   worklist,
   linkedinAgent,
   outreachAgent,
+  promoteAgent,
   githubAgent,
   watchdog,
 ];

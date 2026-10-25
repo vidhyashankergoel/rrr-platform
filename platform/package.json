@@ -50,7 +50,8 @@
     "prebuild": "npm run -s clean:dupes",
     "pretest": "npm run -s clean:dupes",
     "test:pages": "tsx scripts/page-quality-test.ts",
-    "growth": "tsx scripts/growth.ts"
+    "growth": "tsx scripts/growth.ts",
+    "presence:check": "tsx scripts/presence-check.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

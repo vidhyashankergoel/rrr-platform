@@ -34,6 +34,7 @@ export type OpsAgentKey =
   | "worklist"
   | "linkedin"
   | "outreach"
+  | "promote"
   | "github"
   | "watchdog";
 
